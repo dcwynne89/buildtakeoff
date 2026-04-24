@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roof Pitch Calculator — Angle, Multiplier & Rafter Length | BuildTakeoff</title>
+  <meta name="description" content="Free roof pitch calculator. Enter rise and run to get pitch notation, angle in degrees, pitch multiplier, and rafter length. Download PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/roof-pitch/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Roof Pitch Calculator</h1>
+      <p>Enter your rise and run to instantly get pitch notation, angle in degrees, pitch multiplier, and rafter length. Works for any roof slope.</p>
+      <div class="tag-row">
+        <span class="tag">Pitch</span>
+        <span class="tag">Angle</span>
+        <span class="tag">Rafter Length</span>
+        <span class="tag">Multiplier</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Roof Dimensions</div>
+
+        <div class="field">
+          <label>Input Method</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="m-rise" onclick="setMode('rise')">Rise &amp; Run</button>
+            <button class="toggle-btn" id="m-angle" onclick="setMode('angle')">Angle (degrees)</button>
+            <button class="toggle-btn" id="m-pitch" onclick="setMode('pitch')">Pitch (X:12)</button>
+          </div>
+        </div>
+
+        <div id="input-rise">
+          <div class="field">
+            <label for="rise">Rise</label>
+            <div class="input-wrap">
+              <input type="number" id="rise" value="6" min="0" step="0.5" />
+              <span class="input-unit">in</span>
+            </div>
+            <div class="field-hint">Vertical height for every 12" of run</div>
+          </div>
+          <div class="field">
+            <label for="run">Run</label>
+            <div class="input-wrap">
+              <input type="number" id="run" value="12" min="1" step="0.5" />
+              <span class="input-unit">in</span>
+            </div>
+            <div class="field-hint">Horizontal distance — standard is 12"</div>
+          </div>
+        </div>
+
+        <div id="input-angle" style="display:none;">
+          <div class="field">
+            <label for="angle-in">Roof Angle</label>
+            <div class="input-wrap">
+              <input type="number" id="angle-in" value="26.57" min="0" max="89" step="0.1" />
+              <span class="input-unit">°</span>
+            </div>
+            <div class="field-hint">e.g. 26.57° = 6/12 pitch</div>
+          </div>
+        </div>
+
+        <div id="input-pitch" style="display:none;">
+          <div class="field">
+            <label for="pitch-in">Pitch (X/12)</label>
+            <div class="input-wrap">
+              <input type="number" id="pitch-in" value="6" min="0" max="24" step="0.5" />
+              <span class="input-unit">/12</span>
+            </div>
+            <div class="field-hint">e.g. enter 6 for a 6/12 pitch</div>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Roof Span (Optional)</div>
+        <div class="field">
+          <label for="span">Total Roof Span</label>
+          <div class="input-wrap">
+            <input type="number" id="span" value="" min="0" step="1" placeholder="24" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Total width of the building — used to calculate total rafter length</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Quick Reference</div>
+        <div style="background:var(--surface-alt,#0a0d1a);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:0.5rem;">
+          <table style="width:100%;border-collapse:collapse;font-size:0.78rem;">
+            <thead>
+              <tr style="background:var(--orange-dim,rgba(249,115,22,0.1));">
+                <th style="padding:0.5rem 0.75rem;text-align:left;color:var(--orange);font-weight:700;">Pitch</th>
+                <th style="padding:0.5rem 0.75rem;text-align:left;color:var(--orange);font-weight:700;">Angle</th>
+                <th style="padding:0.5rem 0.75rem;text-align:left;color:var(--orange);font-weight:700;">Multiplier</th>
+                <th style="padding:0.5rem 0.75rem;text-align:left;color:var(--orange);font-weight:700;">Category</th>
+              </tr>
+            </thead>
+            <tbody id="ref-table">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Roof Pitch</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Pitch Notation</div>
+          <div class="result-value" id="res-pitch">—</div>
+          <div class="result-sub" id="res-pitch-sub">Industry standard X:12 format</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Angle</div>
+          <div class="result-value" id="res-angle">—</div>
+          <div class="result-sub">Degrees from horizontal</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Pitch Multiplier</div>
+          <div class="result-value" id="res-mult">—</div>
+          <div class="result-sub" id="res-mult-sub">Multiply plan area by this to get roof area</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Rafter Length</div>
+          <div class="result-value" id="res-rafter">—</div>
+          <div class="result-sub" id="res-rafter-sub">Per foot of run (horizontal)</div>
+        </div>
+        <div class="result-item" id="res-total-row" style="display:none;">
+          <div class="result-label">Total Rafter Length</div>
+          <div class="result-value" id="res-total-rafter">—</div>
+          <div class="result-sub" id="res-total-sub">From ridge to eave, one side</div>
+        </div>
+        <div class="result-item" id="res-slope-row">
+          <div class="result-label">Slope Category</div>
+          <div class="result-value" id="res-slope">—</div>
+          <div class="result-sub" id="res-slope-sub"></div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="../../calculators/roofing-squares/" class="btn btn-ghost">→ Roofing Squares Calculator</a>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>Understanding Roof Pitch</h2>
+      <p>Roof pitch is the slope of a roof expressed as a ratio of vertical rise to horizontal run. In the US, it's typically written as X:12 — meaning the roof rises X inches for every 12 inches of horizontal run.</p>
+      <h3>Why Pitch Matters</h3>
+      <ul>
+        <li><strong>Material quantities:</strong> A steeper pitch means more actual roof area than plan area. Use the pitch multiplier to convert your blueprint sq ft to actual roofing sq ft.</li>
+        <li><strong>Rafter length:</strong> The steeper the pitch, the longer the rafters needed — critical for ordering lumber.</li>
+        <li><strong>Shingle type:</strong> Low-slope roofs (below 2/12) require special underlayments and materials.</li>
+        <li><strong>Labor cost:</strong> Steep roofs (above 8/12) are significantly more dangerous and expensive to work on.</li>
+      </ul>
+      <h3>Common Roof Pitches by Application</h3>
+      <ul>
+        <li><strong>2/12 – 3/12:</strong> Low slope — flat-style roofs, requires special shingles or membrane</li>
+        <li><strong>4/12 – 5/12:</strong> Common residential — easy to walk, standard shingles</li>
+        <li><strong>6/12 – 8/12:</strong> Moderate — most common in the US, good drainage</li>
+        <li><strong>9/12 – 12/12:</strong> Steep — dramatic look, harder to work on, great for snow shedding</li>
+        <li><strong>Above 12/12:</strong> Very steep — requires safety equipment, specialty contractors</li>
+      </ul>
+      <h3>The Pitch Multiplier Explained</h3>
+      <p>If your floor plan shows a 20×40 ft footprint (800 sq ft), and your roof has a 6/12 pitch (multiplier 1.118), the actual roof surface area is 800 × 1.118 = 894 sq ft. This is what you order materials for.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Got your pitch? Calculate your shingles.</h3>
+        <p>Take these numbers into the Roofing Squares Calculator to get your bundle and square count.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="../../calculators/roofing-squares/" class="eco-link">Roofing Squares →</a>
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    const PITCHES = [
+      {rise:1, label:'1/12', angle:4.76,  mult:1.003, cat:'Very Low'},
+      {rise:2, label:'2/12', angle:9.46,  mult:1.014, cat:'Low Slope'},
+      {rise:3, label:'3/12', angle:14.04, mult:1.031, cat:'Low Slope'},
+      {rise:4, label:'4/12', angle:18.43, mult:1.054, cat:'Conventional'},
+      {rise:5, label:'5/12', angle:22.62, mult:1.083, cat:'Conventional'},
+      {rise:6, label:'6/12', angle:26.57, mult:1.118, cat:'Conventional'},
+      {rise:7, label:'7/12', angle:30.26, mult:1.158, cat:'Conventional'},
+      {rise:8, label:'8/12', angle:33.69, mult:1.202, cat:'Steep'},
+      {rise:9, label:'9/12', angle:36.87, mult:1.250, cat:'Steep'},
+      {rise:10,label:'10/12',angle:39.81, mult:1.302, cat:'Steep'},
+      {rise:12,label:'12/12',angle:45.00, mult:1.414, cat:'Very Steep'},
+    ];
+
+    // Build reference table
+    const tbody = document.getElementById('ref-table');
+    PITCHES.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.style.borderTop = '1px solid var(--border)';
+      tr.innerHTML = `<td style="padding:0.45rem 0.75rem;font-weight:700;">${p.label}</td><td style="padding:0.45rem 0.75rem;color:var(--text-muted)">${p.angle}°</td><td style="padding:0.45rem 0.75rem;">${p.mult}</td><td style="padding:0.45rem 0.75rem;color:var(--text-muted);font-size:0.72rem;">${p.cat}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    let inputMode = 'rise';
+    function setMode(m) {
+      inputMode = m;
+      ['rise','angle','pitch'].forEach(id => {
+        document.getElementById('input-'+id).style.display = id===m ? '' : 'none';
+        document.getElementById('m-'+id).classList.toggle('active', id===m);
+      });
+      calculate();
+    }
+
+    function slopeCategory(angle) {
+      if (angle < 9.5)  return ['Very Low / Flat', 'Requires membrane roofing, not standard shingles'];
+      if (angle < 18.5) return ['Low Slope', 'Works with most shingles, good for walkability'];
+      if (angle < 34)   return ['Conventional', 'Most common residential pitch range'];
+      if (angle < 45)   return ['Steep Slope', 'Premium labor cost, excellent drainage'];
+      return ['Very Steep', 'Specialty work required, maximum snow shedding'];
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setR(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let lastRise=6, lastRun=12, lastSpan=0, lastAngle=0, lastMult=1;
+
+    function calculate() {
+      let rise, run = 12;
+
+      if (inputMode === 'rise') {
+        rise = parseFloat(document.getElementById('rise').value) || 0;
+        run  = parseFloat(document.getElementById('run').value)  || 12;
+      } else if (inputMode === 'angle') {
+        const deg = parseFloat(document.getElementById('angle-in').value) || 0;
+        rise = Math.tan(deg * Math.PI / 180) * 12;
+        run  = 12;
+      } else {
+        rise = parseFloat(document.getElementById('pitch-in').value) || 0;
+        run  = 12;
+      }
+
+      const span = parseFloat(document.getElementById('span').value) || 0;
+
+      if (!rise && !run) return;
+
+      const angle    = Math.atan(rise/run) * 180 / Math.PI;
+      const mult     = Math.sqrt(rise*rise + run*run) / run;
+      const rafterPf = Math.sqrt(rise*rise + run*run) / 12; // per foot of run (since rise is per 12" run)
+      const pitchX   = (rise/run*12).toFixed(2).replace(/\.00$/,'').replace(/\.(\d)0$/,'.$1');
+
+      lastRise = rise; lastRun = run; lastSpan = span;
+      lastAngle = angle; lastMult = mult;
+
+      setR('res-pitch', pitchX + '/12');
+      document.getElementById('res-pitch-sub').textContent = 'Rises '+pitchX+'" for every 12" of run';
+      setR('res-angle', angle.toFixed(2) + '°');
+      setR('res-mult',  mult.toFixed(4));
+      document.getElementById('res-mult-sub').textContent = 'Plan area × ' + mult.toFixed(3) + ' = actual roof area';
+      setR('res-rafter', rafterPf.toFixed(4) + ' ft');
+      document.getElementById('res-rafter-sub').textContent = 'Per 1 ft of horizontal run';
+
+      if (span > 0) {
+        const halfSpan  = span / 2;
+        const rafterLen = Math.sqrt(Math.pow(halfSpan * rise / run, 2) + halfSpan*halfSpan);
+        document.getElementById('res-total-row').style.display = '';
+        setR('res-total-rafter', rafterLen.toFixed(2) + ' ft');
+        document.getElementById('res-total-sub').textContent = span+'ft span → '+halfSpan+'ft run per side';
+      } else {
+        document.getElementById('res-total-row').style.display = 'none';
+      }
+
+      const [cat, sub] = slopeCategory(angle);
+      setR('res-slope', cat);
+      document.getElementById('res-slope-sub').textContent = sub;
+    }
+
+    function downloadPDF() {
+      const {jsPDF} = window.jspdf; const doc = new jsPDF();
+      const pitchX = (lastRise/lastRun*12).toFixed(2).replace(/\.00$/,'');
+      const angle  = lastAngle.toFixed(2);
+      const mult   = lastMult.toFixed(4);
+      const date   = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22); doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0); doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12); doc.setFontSize(10); doc.text('Roof Pitch Calculator',14,20);
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text('BuildTakeoff.co',14,35); doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('RESULTS',14,55); doc.setDrawColor(249,115,22); doc.line(14,57,196,57);
+
+      const rows = [
+        ['Pitch Notation', pitchX+'/12'],
+        ['Angle', angle+'°'],
+        ['Pitch Multiplier', mult],
+        ['Rafter Length (per ft run)', (Math.sqrt(lastRise*lastRise+lastRun*lastRun)/12).toFixed(4)+' ft'],
+      ];
+      if (lastSpan > 0) {
+        const rafterLen = Math.sqrt(Math.pow(lastSpan/2*lastRise/lastRun,2)+(lastSpan/2)*(lastSpan/2));
+        rows.push(['Total Rafter Length (one side)', rafterLen.toFixed(2)+' ft']);
+      }
+      rows.forEach(([k,v],i) => {
+        doc.setFont('helvetica','normal'); doc.setTextColor(60,60,60); doc.text(k+':',14,67+i*12);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20); doc.text(v,110,67+i*12);
+      });
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('BuildTakeoff.co  ·  BuildInvoice.co',14,280);
+      doc.save('roof-pitch-takeoff.pdf');
+    }
+
+    // Attach events
+    document.querySelectorAll('input').forEach(el => el.addEventListener('input', calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
