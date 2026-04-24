@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paint Calculator — How Many Gallons Do I Need? | BuildTakeoff</title>
+  <meta name="description" content="Free paint calculator for contractors. Enter room dimensions, coats, and door/window count to get exact gallons needed and total cost. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/paint/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Paint Calculator</h1>
+      <p>Get exact gallons needed for any room or surface — with door/window deductions, multiple coats, and optional cost estimate.</p>
+      <div class="tag-row">
+        <span class="tag">Paint</span>
+        <span class="tag">Interior</span>
+        <span class="tag">Exterior</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Room Dimensions</div>
+
+        <div class="field">
+          <label for="plength">Room Length</label>
+          <div class="input-wrap">
+            <input type="number" id="plength" value="15" min="0" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="pwidth">Room Width</label>
+          <div class="input-wrap">
+            <input type="number" id="pwidth" value="12" min="0" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="pheight">Ceiling Height</label>
+          <div class="input-wrap">
+            <input type="number" id="pheight" value="9" min="0" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Openings (deduct)</div>
+        <div class="field">
+          <label for="pdoors">Number of Doors</label>
+          <div class="input-wrap">
+            <input type="number" id="pdoors" value="1" min="0" step="1" />
+          </div>
+          <div class="field-hint">Each standard door ≈ 21 sq ft deducted</div>
+        </div>
+        <div class="field">
+          <label for="pwindows">Number of Windows</label>
+          <div class="input-wrap">
+            <input type="number" id="pwindows" value="2" min="0" step="1" />
+          </div>
+          <div class="field-hint">Each standard window ≈ 15 sq ft deducted</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Paint Settings</div>
+        <div class="field">
+          <label for="pcoats">Number of Coats</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="coat1" onclick="setCoats(1)">1 coat</button>
+            <button class="toggle-btn active" id="coat2" onclick="setCoats(2)">2 coats</button>
+            <button class="toggle-btn" id="coat3" onclick="setCoats(3)">3 coats</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="pcoverage">Paint coverage</label>
+          <div class="input-wrap">
+            <input type="number" id="pcoverage" value="400" min="100" step="25" />
+            <span class="input-unit">sq ft/gal</span>
+          </div>
+          <div class="field-hint">Typical: 350–400 for flat; 300–350 for semi-gloss</div>
+        </div>
+        <div class="field">
+          <label for="pprice">Paint price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="pprice" value="" min="0" step="1" placeholder="55" />
+            <span class="input-unit">$/gallon</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Gallons Needed</div>
+          <div class="result-value" id="res-gallons">—</div>
+          <div class="result-sub" id="res-gal-sub">Across all coats</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Paintable Wall Area</div>
+          <div class="result-value" id="res-wallarea">—</div>
+          <div class="result-sub">After door/window deductions</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Quarts Needed</div>
+          <div class="result-value" id="res-quarts">—</div>
+          <div class="result-sub">If buying quart cans</div>
+        </div>
+
+        <div class="result-item" id="pcost-row" style="display:none;">
+          <div class="result-label">Estimated Paint Cost</div>
+          <div class="result-value" id="res-pcost">—</div>
+          <div class="result-sub">Materials only</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your painting labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.10" placeholder="1.50" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Interior painting: typically $1.50–$3.50/sq ft of wall area</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate How Much Paint You Need</h2>
+      <p>One gallon of paint covers approximately 350–400 square feet. To find exactly how much you need, calculate the total wall area of the room, subtract openings, and divide by your paint's coverage rate.</p>
+
+      <h3>The Formula</h3>
+      <p>Wall Area = 2 × (Length + Width) × Height. Subtract 21 sq ft per door and 15 sq ft per window. Divide by coverage rate, then multiply by number of coats.</p>
+
+      <h3>Coverage Rates by Paint Type</h3>
+      <ul>
+        <li><strong>Flat/Matte</strong> — 400 sq ft per gallon (most coverage)</li>
+        <li><strong>Eggshell</strong> — 375 sq ft per gallon</li>
+        <li><strong>Satin</strong> — 350 sq ft per gallon</li>
+        <li><strong>Semi-Gloss</strong> — 300–350 sq ft per gallon (lower porosity)</li>
+        <li><strong>Primer</strong> — 200–300 sq ft per gallon (more absorption)</li>
+      </ul>
+
+      <h3>Pro Tips for Accurate Paint Estimation</h3>
+      <ul>
+        <li>Always round up to the nearest whole gallon — you can't buy 0.7 of a gallon</li>
+        <li>Dark colors often require 3 coats; factor this into your bid</li>
+        <li>Textured walls (orange peel, knockdown) absorb more — reduce coverage by 10–15%</li>
+        <li>Buy from the same batch (dye lot) for large areas — colors vary between batches</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Ready to quote the paint job?</h3>
+        <p>Take these quantities straight into BuildQuotes for a professional proposal.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/flooring/" class="eco-link">Flooring Calc</a>
+        <a href="../../calculators/tile/" class="eco-link">Tile Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let coats = 2;
+    function setCoats(n) {
+      coats = n;
+      [1,2,3].forEach(i => document.getElementById('coat'+i).classList.toggle('active', i===n));
+      calculate();
+    }
+
+    function animateValue(el) { el.classList.remove('updated'); void el.offsetWidth; el.classList.add('updated'); }
+    function setResult(id, val) {
+      const el = document.getElementById(id);
+      if (el && el.textContent !== val) { el.textContent = val; animateValue(el); }
+    }
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('plength').value)||0;
+      const W = parseFloat(document.getElementById('pwidth').value)||0;
+      const H = parseFloat(document.getElementById('pheight').value)||0;
+      const doors = parseInt(document.getElementById('pdoors').value)||0;
+      const windows = parseInt(document.getElementById('pwindows').value)||0;
+      const coverage = parseFloat(document.getElementById('pcoverage').value)||400;
+      const price = parseFloat(document.getElementById('pprice').value)||0;
+
+      if (!L || !W || !H) { setResult('res-gallons','—'); setResult('res-wallarea','—'); setResult('res-quarts','—'); return; }
+
+      const totalWall = 2 * (L + W) * H;
+      const paintable = Math.max(0, totalWall - (doors * 21) - (windows * 15));
+      const gallons = Math.ceil((paintable / coverage) * coats);
+      const quarts = Math.ceil((paintable / coverage) * coats * 4);
+
+      setResult('res-wallarea', Math.round(paintable).toLocaleString() + ' sq ft');
+      setResult('res-gallons', gallons + ' gallons');
+      setResult('res-quarts', quarts + ' quarts');
+      document.getElementById('res-gal-sub').textContent = coats + ' coat' + (coats>1?'s':'') + ' · ' + coverage + ' sq ft/gal coverage';
+
+      const matCostCalc = price > 0 ? gallons * price : 0;
+      updateLabor(Math.round(paintable), Math.round(paintable).toLocaleString() + ' sq ft wall area', matCostCalc, 'sq ft');
+
+      if (price > 0) {
+        document.getElementById('pcost-row').style.display='';
+        setResult('res-pcost','$'+(gallons*price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('pcost-row').style.display='none';
+      }
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const L = parseFloat(document.getElementById('plength').value)||0;
+      const W = parseFloat(document.getElementById('pwidth').value)||0;
+      const H = parseFloat(document.getElementById('pheight').value)||0;
+      const doors = parseInt(document.getElementById('pdoors').value)||0;
+      const windows = parseInt(document.getElementById('pwindows').value)||0;
+      const coverage = parseFloat(document.getElementById('pcoverage').value)||400;
+      const totalWall = 2*(L+W)*H;
+      const paintable = Math.max(0,totalWall-(doors*21)-(windows*15));
+      const gallons = Math.ceil((paintable/coverage)*coats);
+      const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22); doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+      doc.setFontSize(18); doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10); doc.text('Paint Calculator',14,20);
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
+      doc.setFontSize(9); doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);
+      doc.setDrawColor(249,115,22); doc.line(14,57,196,57);
+      const inputs=[['Room L×W×H',L+'×'+W+'×'+H+' ft'],['Doors',doors],['Windows',windows],['Coats',coats],['Coverage',coverage+' sq ft/gal']];
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60); doc.text(String(k)+':',14,67+i*10);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20);
+        doc.text(String(v),80,67+i*10); doc.setFont('helvetica','normal');
+      });
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,125); doc.line(14,127,196,127);
+      const results=[
+        ['Gallons Needed',gallons+' gallons',true],
+        ['Paintable Area',Math.round(paintable).toLocaleString()+' sq ft',false],
+        ['Total Wall Area',Math.round(totalWall).toLocaleString()+' sq ft',false],
+      ];
+      results.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,133+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');
+        doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,141+i*14);
+        doc.setFont('helvetica','bold'); doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);
+        doc.text(v,130,141+i*14);
+      });
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('paint-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('plength').value)||0;
+      const W=parseFloat(document.getElementById('pwidth').value)||0;
+      const H=parseFloat(document.getElementById('pheight').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Painting — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Room:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft, '+H+' ft ceiling, '+coats+' coats',80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('painting-estimate.pdf');
+    }
+
+    document.querySelectorAll('input').forEach(el => el.addEventListener('input', calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

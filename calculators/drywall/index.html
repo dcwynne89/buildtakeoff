@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drywall Calculator — How Many Sheets of Drywall Do I Need? | BuildTakeoff</title>
+  <meta name="description" content="Free drywall calculator. Enter room dimensions to get exact sheet count, joint compound, screws, and cost. Includes ceiling option and waste factor. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/drywall/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Drywall Calculator</h1>
+      <p>Get exact sheet count, joint compound buckets, screws, and total cost for any room. Includes ceiling option and adjustable waste factor.</p>
+      <div class="tag-row">
+        <span class="tag">Drywall</span>
+        <span class="tag">Sheetrock</span>
+        <span class="tag">Interior</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Room Dimensions</div>
+        <div class="field">
+          <label for="dl">Room Length</label>
+          <div class="input-wrap"><input type="number" id="dl" value="16" min="0" step="0.5" /><span class="input-unit">ft</span></div>
+        </div>
+        <div class="field">
+          <label for="dw">Room Width</label>
+          <div class="input-wrap"><input type="number" id="dw" value="14" min="0" step="0.5" /><span class="input-unit">ft</span></div>
+        </div>
+        <div class="field">
+          <label for="dh">Wall Height</label>
+          <div class="input-wrap"><input type="number" id="dh" value="9" min="0" step="0.5" /><span class="input-unit">ft</span></div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Openings (deduct)</div>
+        <div class="field">
+          <label for="ddoors">Number of Doors</label>
+          <div class="input-wrap"><input type="number" id="ddoors" value="1" min="0" step="1" /></div>
+          <div class="field-hint">Each door ≈ 21 sq ft deducted</div>
+        </div>
+        <div class="field">
+          <label for="dwindows">Number of Windows</label>
+          <div class="input-wrap"><input type="number" id="dwindows" value="2" min="0" step="1" /></div>
+          <div class="field-hint">Each window ≈ 15 sq ft deducted</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Options</div>
+        <div class="field">
+          <label>Include Ceiling</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="ceil-no" onclick="setCeiling(false)">Walls only</button>
+            <button class="toggle-btn" id="ceil-yes" onclick="setCeiling(true)">Walls + ceiling</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Sheet Size</label>
+          <div class="input-wrap">
+            <select id="dsheet" onchange="calculate()">
+              <option value="32">4Ã—8 (32 sq ft) — Standard</option>
+              <option value="36">4Ã—9 (36 sq ft)</option>
+              <option value="40">4Ã—10 (40 sq ft)</option>
+              <option value="48">4Ã—12 (48 sq ft)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Waste Factor</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="dw10" onclick="setWaste(10)">+10%</button>
+            <button class="toggle-btn" id="dw15" onclick="setWaste(15)">+15%</button>
+          </div>
+          <div class="field-hint">15% for rooms with lots of cuts around openings</div>
+        </div>
+        <div class="field">
+          <label for="dprice">Sheet price (optional)</label>
+          <div class="input-wrap"><input type="number" id="dprice" value="" min="0" step="0.25" placeholder="14.50" /><span class="input-unit">$/sheet</span></div>
+          <div class="field-hint">Current average: $12â€“$18 per 4Ã—8 sheet</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Sheets of Drywall</div>
+          <div class="result-value" id="res-sheets">—</div>
+          <div class="result-sub" id="res-sheets-sub">Includes waste factor</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Area</div>
+          <div class="result-value" id="res-area">—</div>
+          <div class="result-sub" id="res-area-sub">After deductions</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Joint Compound</div>
+          <div class="result-value" id="res-mud">—</div>
+          <div class="result-sub">4.5 gal bucket / 200 sq ft</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Drywall Screws</div>
+          <div class="result-value" id="res-screws">—</div>
+          <div class="result-sub">1 lb box / 200 sq ft</div>
+        </div>
+        <div class="result-item" id="dprice-row" style="display:none;">
+          <div class="result-label">Estimated Sheet Cost</div>
+          <div class="result-value" id="res-dcost">—</div>
+          <div class="result-sub">Sheets only</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your drywall installation labor rate to generate a complete job cost estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="1.75" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Drywall hang + tape + mud: typically $1.50â€“$3.50/sq ft</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Drywall Sheets for a Room</h2>
+      <p>Calculate your total wall area, subtract openings, add your ceiling if needed, then divide by the sheet size. Always add a waste factor — drywall cuts around outlets, windows, and corners generate significant scrap.</p>
+      <h3>The Formula</h3>
+      <p>Wall Area = 2 Ã— (Length + Width) Ã— Height. Subtract 21 sq ft per door and 15 sq ft per window. Add ceiling (L Ã— W) if drywalling the ceiling. Divide by 32 (for 4Ã—8 sheets) and round up.</p>
+      <h3>Waste Factors by Room Type</h3>
+      <ul>
+        <li><strong>Simple rectangular room</strong> — 10% waste is sufficient</li>
+        <li><strong>Rooms with many windows/doors</strong> — 15% to account for extra cuts</li>
+        <li><strong>Angled ceilings or complex shapes</strong> — 15â€“20% waste</li>
+      </ul>
+      <h3>What Else Do You Need?</h3>
+      <ul>
+        <li>Joint compound: 1 bucket (4.5 gal) covers approximately 200 sq ft per coat</li>
+        <li>Drywall screws: 1 lb box for every 200 sq ft (approx. 32 screws per sheet at 16" OC)</li>
+        <li>Joint tape: 1 roll (75 ft) for every 2â€“3 sheets</li>
+        <li>Corner bead: measure linear feet of all outside corners</li>
+        <li>Primer: always prime before painting new drywall</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Drywall quantities locked in?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/paint/" class="eco-link">Paint Calculator</a>
+        <a href="../../calculators/flooring/" class="eco-link">Flooring Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let inclCeiling=false, dWaste=10;
+    function setCeiling(v){inclCeiling=v;document.getElementById('ceil-no').classList.toggle('active',!v);document.getElementById('ceil-yes').classList.toggle('active',v);calculate();}
+    function setWaste(n){dWaste=n;[10,15].forEach(v=>document.getElementById('dw'+v).classList.toggle('active',v===n));calculate();}
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcArea=0, calcMatCost=0;
+    function calculate(){
+      const L=parseFloat(document.getElementById('dl').value)||0;
+      const W=parseFloat(document.getElementById('dw').value)||0;
+      const H=parseFloat(document.getElementById('dh').value)||0;
+      const doors=parseInt(document.getElementById('ddoors').value)||0;
+      const windows=parseInt(document.getElementById('dwindows').value)||0;
+      const sheetSqFt=parseFloat(document.getElementById('dsheet').value)||32;
+      const price=parseFloat(document.getElementById('dprice').value)||0;
+      if(!L||!W||!H){setResult('res-sheets','—');setResult('res-area','—');setResult('res-mud','—');setResult('res-screws','—');return;}
+      const walls=2*(L+W)*H;
+      const ceiling=inclCeiling?L*W:0;
+      const raw=Math.max(0,walls-(doors*21)-(windows*15))+ceiling;
+      const total=raw*(1+dWaste/100);
+      const sheets=Math.ceil(total/sheetSqFt);
+      const mud=Math.ceil(total/200);
+      const screws=Math.ceil(total/200);
+      calcArea=Math.round(raw);
+      setResult('res-sheets',sheets+' sheets');
+      setResult('res-area',Math.round(raw).toLocaleString()+' sq ft');
+      setResult('res-mud',mud+' bucket'+(mud>1?'s':''));
+      setResult('res-screws',screws+' lb box'+(screws>1?'es':''));
+      document.getElementById('res-sheets-sub').textContent='Includes '+dWaste+'% waste · '+sheetSqFt+' sq ft/sheet';
+      document.getElementById('res-area-sub').textContent=(inclCeiling?'Walls + ceiling':'Walls only')+' · after deductions';
+      calcMatCost=price>0?sheets*price:0;
+      if(price>0){document.getElementById('dprice-row').style.display='';setResult('res-dcost','$'+(sheets*price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));}
+      else{document.getElementById('dprice-row').style.display='none';}
+      updateLabor(calcArea,calcArea.toLocaleString()+' sq ft',calcMatCost,'sq ft');
+    }
+
+    // â”€â”€ LABOR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('dl').value)||0;
+      const W=parseFloat(document.getElementById('dw').value)||0;
+      const H=parseFloat(document.getElementById('dh').value)||0;
+      const sheetSqFt=parseFloat(document.getElementById('dsheet').value)||32;
+      const doors=parseInt(document.getElementById('ddoors').value)||0;
+      const windows=parseInt(document.getElementById('dwindows').value)||0;
+      const raw=Math.max(0,2*(L+W)*H-(doors*21)-(windows*15))+(inclCeiling?L*W:0);
+      const total=raw*(1+dWaste/100);
+      const sheets=Math.ceil(total/sheetSqFt);
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('Drywall Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Room',L+'Ã—'+W+' ft, '+H+' ft walls'],['Ceiling',inclCeiling?'Yes':'No'],['Sheet',sheetSqFt+' sq ft'],['Waste',dWaste+'%']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,115);doc.line(14,117,196,117);
+      [['Drywall Sheets',sheets+' sheets',true],['Joint Compound',Math.ceil(total/200)+' buckets',false],['Drywall Screws',Math.ceil(total/200)+' lb boxes',false],['Area',Math.round(raw).toLocaleString()+' sq ft',false]].forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,123+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,131+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,131+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('drywall-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Drywall — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('drywall-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

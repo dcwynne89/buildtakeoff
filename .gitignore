@@ -1,0 +1,7 @@
+# Dev scripts — not part of the site
+fix_encoding.py
+fix-encoding.ps1
+buildhq-preview.html
+_labor_template.html
+*.ps1
+*.py

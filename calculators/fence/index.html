@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fence Calculator — Posts, Rails &amp; Pickets | BuildTakeoff</title>
+  <meta name="description" content="Free fence material calculator. Enter fence length and spacing to get exact post count, rails, pickets, and concrete bags needed. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/fence/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Fence Calculator</h1>
+      <p>Calculate posts, rails, pickets, and concrete bags for any wood privacy or picket fence. Adjust post spacing, rail count, and picket width.</p>
+      <div class="tag-row">
+        <span class="tag">Wood Fence</span>
+        <span class="tag">Privacy</span>
+        <span class="tag">Picket</span>
+        <span class="tag">Posts</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Fence Dimensions</div>
+
+        <div class="field">
+          <label for="flen">Total Fence Length</label>
+          <div class="input-wrap">
+            <input type="number" id="flen" value="100" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Add up all sides of your fence perimeter</div>
+        </div>
+
+        <div class="field">
+          <label for="fheight">Fence Height</label>
+          <div class="input-wrap">
+            <input type="number" id="fheight" value="6" min="2" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Post Settings</div>
+        <div class="field">
+          <label>Post Spacing</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="ps6" onclick="setSpacing(6)">6 ft</button>
+            <button class="toggle-btn active" id="ps8" onclick="setSpacing(8)">8 ft</button>
+          </div>
+          <div class="field-hint">8 ft is standard for wood privacy fences</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Rail Count</div>
+        <div class="toggle-group">
+          <button class="toggle-btn" id="r2" onclick="setRails(2)">2 rails</button>
+          <button class="toggle-btn active" id="r3" onclick="setRails(3)">3 rails</button>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.75rem;color:var(--text-muted);">3 rails for 6ft+ fences; 2 rails for 4ft or under</div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Picket Settings</div>
+        <div class="field">
+          <label for="pwidth">Picket Width</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="pw3" onclick="setPicketWidth(3.5)">3.5" (std)</button>
+            <button class="toggle-btn" id="pw6" onclick="setPicketWidth(5.5)">5.5" (wide)</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="pgap">Gap Between Pickets</label>
+          <div class="input-wrap">
+            <input type="number" id="pgap" value="0" min="0" step="0.25" placeholder="0" />
+            <span class="input-unit">in</span>
+          </div>
+          <div class="field-hint">0" for solid privacy; 0.5"–1" for some air gap</div>
+        </div>
+
+        <div class="field">
+          <label for="fprice-post">Post price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="fprice-post" value="" min="0" step="0.5" placeholder="12" />
+            <span class="input-unit">$/post</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fprice-picket">Picket price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="fprice-picket" value="" min="0" step="0.25" placeholder="1.85" />
+            <span class="input-unit">$/picket</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Posts Needed</div>
+          <div class="result-value" id="r-posts">—</div>
+          <div class="result-sub" id="r-posts-sub">Includes end and corner posts</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Rails</div>
+          <div class="result-value" id="r-rails">—</div>
+          <div class="result-sub" id="r-rails-sub">Horizontal rails</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Pickets</div>
+          <div class="result-value" id="r-pickets">—</div>
+          <div class="result-sub" id="r-pickets-sub">Vertical boards</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Concrete Bags (80 lb)</div>
+          <div class="result-value" id="r-concrete">—</div>
+          <div class="result-sub">2 bags per post hole</div>
+        </div>
+
+        <div class="result-item" id="fcost-wrap" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="r-cost">—</div>
+          <div class="result-sub">Posts + pickets only</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per lin ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.50" placeholder="15" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/lin ft</span>
+            </div>
+            <div class="field-hint">Wood fence install: typically $15–$30/linear ft installed</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Fence Materials</h2>
+      <p>Planning a fence project requires knowing exactly how many posts, rails, and pickets you need before ordering. Getting this wrong costs money and time — this calculator gives you the precise quantities.</p>
+
+      <h3>Post Count Formula</h3>
+      <p>Posts = (Total Length ÷ Spacing) + 1. For example, a 100 ft fence with 8 ft spacing needs (100÷8)+1 = 13.5, rounded up to 14 posts. Always add 1 for the final end post.</p>
+
+      <h3>Picket Count Formula</h3>
+      <p>Pickets per foot = 12 ÷ (picket width + gap). A 3.5" picket with no gap uses 12÷3.5 = 3.43 pickets per foot. Multiply by total fence length.</p>
+
+      <h3>Concrete for Post Holes</h3>
+      <ul>
+        <li>Use 2 bags of 80 lb Quikrete per post for standard 6" diameter holes</li>
+        <li>Hole depth should be 1/3 to 1/2 the post length below grade</li>
+        <li>6 ft fence: use 8 ft posts (2 ft below grade)</li>
+        <li>In cold climates, dig below the frost line to prevent heaving</li>
+      </ul>
+
+      <h3>Rail Sizing</h3>
+      <ul>
+        <li>Use 2×4 pressure-treated lumber for rails in most climates</li>
+        <li>2 rails for fences 4 ft and under; 3 rails for 6 ft; 4 rails for 8 ft</li>
+        <li>Rails run between posts — count spans, not posts</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Got your fence quantities?</h3>
+        <p>Build the proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/concrete-slab/" class="eco-link">Concrete Calc</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let spacing=8, rails=3, picketW=3.5;
+
+    function setSpacing(n){spacing=n;[6,8].forEach(v=>document.getElementById('ps'+v).classList.toggle('active',v===n));calculate();}
+    function setRails(n){rails=n;[2,3].forEach(v=>document.getElementById('r'+v).classList.toggle('active',v===n));calculate();}
+    function setPicketWidth(n){picketW=n;document.getElementById('pw3').classList.toggle('active',n===3.5);document.getElementById('pw6').classList.toggle('active',n===5.5);calculate();}
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate(){
+      const len=parseFloat(document.getElementById('flen').value)||0;
+      const gap=parseFloat(document.getElementById('pgap').value)||0;
+      const pricePost=parseFloat(document.getElementById('fprice-post').value)||0;
+      const pricePicket=parseFloat(document.getElementById('fprice-picket').value)||0;
+
+      if(!len){setResult('r-posts','—');setResult('r-rails','—');setResult('r-pickets','—');setResult('r-concrete','—');return;}
+
+      const posts=Math.ceil(len/spacing)+1;
+      const sections=posts-1;
+      const totalRails=sections*rails;
+      const picketSpacing=picketW+(gap/12)*12; // inches total per picket
+      const pickets=Math.ceil((len*12)/picketSpacing);
+      const concrete=posts*2;
+
+      setResult('r-posts',posts+' posts');
+      setResult('r-rails',totalRails+' rails');
+      setResult('r-pickets',pickets+' pickets');
+      setResult('r-concrete',concrete+' bags');
+      document.getElementById('r-posts-sub').textContent=spacing+'ft spacing · '+sections+' sections';
+      document.getElementById('r-rails-sub').textContent=rails+' rails per section';
+      document.getElementById('r-pickets-sub').textContent=picketW+'" wide + '+gap+'" gap';
+
+      const pricePost=parseFloat(document.getElementById('fprice-post').value)||0;
+      const pricePicket=parseFloat(document.getElementById('fprice-picket').value)||0;
+      const matCostCalc = (pricePost>0||pricePicket>0) ? (posts*pricePost)+(pickets*pricePicket) : 0;
+      updateLabor(len, len.toLocaleString() + ' lin ft', matCostCalc, 'lin ft');
+
+      if(pricePost>0||pricePicket>0){
+        document.getElementById('fcost-wrap').style.display='';
+        const total=(posts*pricePost)+(pickets*pricePicket);
+        setResult('r-cost','$'+total.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('fcost-wrap').style.display='none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const len=parseFloat(document.getElementById('flen').value)||0;
+      const gap=parseFloat(document.getElementById('pgap').value)||0;
+      const posts=Math.ceil(len/spacing)+1;
+      const totalRails=(posts-1)*rails;
+      const pickets=Math.ceil((len*12)/(picketW+(gap/12)*12));
+      const concrete=posts*2;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Fence Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Total Length',len+' ft'],['Post Spacing',spacing+' ft'],['Rails',rails+' per section'],['Picket Width',picketW+'"'],['Picket Gap',gap+'"']];
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');});
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,125);doc.line(14,127,196,127);
+      const results=[['Posts',posts+' posts',true],['Rails',totalRails+' rails',false],['Pickets',pickets+' pickets',false],['Concrete Bags',concrete+' bags (80lb)',false]];
+      results.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,133+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,141+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,141+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('fence-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='lin ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'lin ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const len=parseFloat(document.getElementById('flen').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const posts=Math.ceil(len/spacing)+1;
+      const totalRails=(posts-1)*rails;
+      const gap=parseFloat(document.getElementById('pgap').value)||0;
+      const pickets=Math.ceil((len*12)/(picketW+(gap/12)*12));
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Fence — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Fence:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(len+' lin ft / '+spacing+'ft spacing / '+rails+' rails',80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,85);doc.line(14,87,196,87);
+      [['Posts',posts+' posts'],['Rails',totalRails+' rails'],['Pickets',pickets+' pickets'],['Concrete',posts*2+' bags (80lb)']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,100,97+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,145);doc.line(14,147,196,147);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,157+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,157+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,183,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,194);doc.text(tot>0?fmt(tot):'—',130,194);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('fence-estimate.pdf');
+    }
+
+    document.querySelectorAll('input').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

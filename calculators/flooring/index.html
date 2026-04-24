@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flooring Calculator — Square Footage, Yards &amp; Boxes | BuildTakeoff</title>
+  <meta name="description" content="Free flooring calculator. Calculate square footage, square yards, and box count for hardwood, LVP, laminate, or tile. Includes waste factor and cost estimate. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/flooring/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Flooring Calculator</h1>
+      <p>Calculate square footage, square yards, and box count for hardwood, LVP, laminate, tile, or carpet. Includes adjustable waste factor.</p>
+      <div class="tag-row">
+        <span class="tag">Hardwood</span>
+        <span class="tag">LVP</span>
+        <span class="tag">Laminate</span>
+        <span class="tag">Tile</span>
+        <span class="tag">Carpet</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Room Dimensions</div>
+
+        <div class="field">
+          <label for="fl">Room Length</label>
+          <div class="input-wrap">
+            <input type="number" id="fl" value="18" min="0" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fw">Room Width</label>
+          <div class="input-wrap">
+            <input type="number" id="fw" value="14" min="0" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Flooring Type</div>
+        <div class="field">
+          <select id="ftype" onchange="calculate()">
+            <option value="20">LVP / Laminate (20 sq ft/box)</option>
+            <option value="22">Hardwood planks (22 sq ft/box)</option>
+            <option value="25">Wide-plank hardwood (25 sq ft/box)</option>
+            <option value="12">Tile 12×12 (12 sq ft/box)</option>
+            <option value="16">Tile 16×16 (16 sq ft/box)</option>
+            <option value="18">Tile 18×18 (18 sq ft/box)</option>
+            <option value="1">Carpet (priced per sq yd)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Waste Factor</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="fw5" onclick="setWaste(5)">+5%</button>
+            <button class="toggle-btn active" id="fw10" onclick="setWaste(10)">+10%</button>
+            <button class="toggle-btn" id="fw15" onclick="setWaste(15)">+15%</button>
+          </div>
+          <div class="field-hint">10% standard; 15% for diagonal or herringbone patterns</div>
+        </div>
+
+        <div class="field">
+          <label for="fprice">Price per sq ft (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="fprice" value="" min="0" step="0.25" placeholder="3.50" />
+            <span class="input-unit">$/sq ft</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Square Feet Needed</div>
+          <div class="result-value" id="f-sqft">—</div>
+          <div class="result-sub" id="f-sqft-sub">Includes waste factor</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Boxes to Order</div>
+          <div class="result-value" id="f-boxes">—</div>
+          <div class="result-sub" id="f-boxes-sub">Round up — never short yourself</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Square Yards</div>
+          <div class="result-value" id="f-sqyd">—</div>
+          <div class="result-sub">For carpet &amp; some installer quotes</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Base Room Area</div>
+          <div class="result-value" id="f-base">—</div>
+          <div class="result-sub">Before waste factor</div>
+        </div>
+
+        <div class="result-item" id="fcost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="f-cost">—</div>
+          <div class="result-sub">Material only</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your installation labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="3.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">LVP/laminate install: $2–$4/sq ft &nbsp;&bull;&nbsp; Hardwood: $4–$8/sq ft</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Flooring Square Footage</h2>
+      <p>Measure room length × width to get base square footage. Always add a waste factor before ordering — you can't go back mid-job if you run short.</p>
+
+      <h3>Recommended Waste Factors by Installation</h3>
+      <ul>
+        <li><strong>Straight lay (LVP, laminate)</strong> — 10% overage</li>
+        <li><strong>Diagonal pattern</strong> — 15% overage (more cuts = more waste)</li>
+        <li><strong>Herringbone / chevron</strong> — 15–20% overage</li>
+        <li><strong>Tile with pattern</strong> — 10–15% depending on complexity</li>
+        <li><strong>Carpet</strong> — 10% + account for seam placement</li>
+      </ul>
+
+      <h3>Boxes vs. Square Feet</h3>
+      <ul>
+        <li>LVP and laminate are typically sold in boxes covering 20–24 sq ft per box</li>
+        <li>Tile is sold in boxes by the sq ft — check the label for exact coverage</li>
+        <li>Hardwood is often sold by the carton (22–25 sq ft) or by the piece</li>
+        <li>Always order from the same lot number to ensure consistent color matching</li>
+      </ul>
+
+      <h3>Pro Tip: Irregular Rooms</h3>
+      <p>For L-shaped or irregular rooms, break the space into rectangles, calculate each separately, and add them together. Add extra waste for the seams and cuts where shapes meet.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Flooring quantities ready?</h3>
+        <p>Jump to BuildQuotes and build a professional flooring proposal.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/tile/" class="eco-link">Tile Calculator</a>
+        <a href="../../calculators/paint/" class="eco-link">Paint Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let fWaste=10;
+    function setWaste(n){
+      fWaste=n;
+      [5,10,15].forEach(v=>document.getElementById('fw'+v).classList.toggle('active',v===n));
+      calculate();
+    }
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate(){
+      const L=parseFloat(document.getElementById('fl').value)||0;
+      const W=parseFloat(document.getElementById('fw').value)||0;
+      const boxSize=parseFloat(document.getElementById('ftype').value)||20;
+      const price=parseFloat(document.getElementById('fprice').value)||0;
+
+      if(!L||!W){setResult('f-sqft','—');setResult('f-boxes','—');setResult('f-sqyd','—');setResult('f-base','—');return;}
+
+      const base=L*W;
+      const total=base*(1+fWaste/100);
+      const sqyd=total/9;
+      const boxes=boxSize>1?Math.ceil(total/boxSize):null;
+
+      setResult('f-base',base.toFixed(1)+' sq ft');
+      setResult('f-sqft',total.toFixed(1)+' sq ft');
+      setResult('f-sqyd',sqyd.toFixed(1)+' sq yd');
+      document.getElementById('f-sqft-sub').textContent='Includes '+fWaste+'% waste factor';
+
+      const matCostCalc = price > 0 ? total * price : 0;
+      updateLabor(Math.round(total), total.toFixed(1) + ' sq ft', matCostCalc, 'sq ft');
+
+      if(boxSize>1){
+        setResult('f-boxes',boxes+' boxes');
+        document.getElementById('f-boxes-sub').textContent=boxSize+' sq ft per box';
+      } else {
+        setResult('f-boxes',sqyd.toFixed(1)+' sq yd');
+        document.getElementById('f-boxes-sub').textContent='Carpet sold by sq yard';
+      }
+
+      if(price>0){
+        document.getElementById('fcost-row').style.display='';
+        setResult('f-cost','$'+(total*price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('fcost-row').style.display='none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('fl').value)||0;
+      const W=parseFloat(document.getElementById('fw').value)||0;
+      const boxSize=parseFloat(document.getElementById('ftype').value)||20;
+      const typeLabel=document.getElementById('ftype').options[document.getElementById('ftype').selectedIndex].text;
+      const base=L*W;
+      const total=base*(1+fWaste/100);
+      const boxes=boxSize>1?Math.ceil(total/boxSize):null;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Flooring Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Room',L+'×'+W+' ft'],['Flooring Type',typeLabel],['Waste Factor',fWaste+'%']];
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');});
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,105);doc.line(14,107,196,107);
+      const results=[
+        ['Sq Ft Needed',total.toFixed(1)+' sq ft',true],
+        boxes?['Boxes',boxes+' boxes',false]:['Sq Yards',(total/9).toFixed(1)+' sq yd',false],
+        ['Base Area',base.toFixed(1)+' sq ft',false],
+      ];
+      results.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,113+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,121+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,121+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('flooring-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('fl').value)||0;
+      const W=parseFloat(document.getElementById('fw').value)||0;
+      const typeLabel=document.getElementById('ftype').options[document.getElementById('ftype').selectedIndex].text;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Flooring — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Room:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft / '+fWaste+'% waste / '+typeLabel.split('(')[0],80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('flooring-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

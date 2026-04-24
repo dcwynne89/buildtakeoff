@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gravel Calculator — Cubic Yards &amp; Tons | BuildTakeoff</title>
+  <meta name="description" content="Free gravel and fill calculator. Enter length, width, and depth to get cubic yards and tons of gravel, crushed stone, or fill dirt. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/gravel/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Gravel &amp; Fill Calculator</h1>
+      <p>Calculate cubic yards and tons of gravel, crushed stone, pea gravel, or fill dirt for driveways, drainage, and site work.</p>
+      <div class="tag-row">
+        <span class="tag">Gravel</span>
+        <span class="tag">Crushed Stone</span>
+        <span class="tag">Fill Dirt</span>
+        <span class="tag">Site Work</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Area Dimensions</div>
+
+        <div class="field">
+          <label for="gl">Length</label>
+          <div class="input-wrap">
+            <input type="number" id="gl" value="50" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="gw">Width</label>
+          <div class="input-wrap">
+            <input type="number" id="gw" value="12" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="gd">Depth</label>
+          <div class="input-wrap">
+            <input type="number" id="gd" value="4" min="0.5" step="0.5" />
+            <span class="input-unit">in</span>
+          </div>
+          <div class="field-hint">Typical driveway: 4"–6" base + 2" top layer</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Material Type</div>
+        <div class="field">
+          <select id="gmat" onchange="calculate()">
+            <option value="1.35">Crushed stone / gravel (1.35 t/yd³)</option>
+            <option value="1.40">Pea gravel (1.40 t/yd³)</option>
+            <option value="1.25">Fill dirt (1.25 t/yd³)</option>
+            <option value="1.50">Limestone (1.50 t/yd³)</option>
+            <option value="1.10">Topsoil (1.10 t/yd³)</option>
+            <option value="0.95">Mulch / wood chips (0.95 t/yd³)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="gp">Price per ton (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="gp" value="" min="0" step="1" placeholder="35" />
+            <span class="input-unit">$/ton</span>
+          </div>
+          <div class="field-hint">Average gravel: $25–$45/ton delivered</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Waste Factor</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="gw-off" onclick="setWaste(false)">No waste</button>
+          <button class="toggle-btn" id="gw-on" onclick="setWaste(true)">+10% waste</button>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Cubic Yards</div>
+          <div class="result-value" id="g-yards">—</div>
+          <div class="result-sub" id="g-yards-sub">Total volume needed</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Tons</div>
+          <div class="result-value" id="g-tons">—</div>
+          <div class="result-sub" id="g-tons-sub">Based on selected material</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Square Footage</div>
+          <div class="result-value" id="g-sqft">—</div>
+          <div class="result-sub">Coverage area</div>
+        </div>
+
+        <div class="result-item" id="gcost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="g-cost">—</div>
+          <div class="result-sub">Delivered material cost</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="1.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Gravel spread &amp; compact: typically $0.75–$2.00/sq ft installed</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="4" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Cubic Yards of Gravel</h2>
+      <p>Gravel is sold by the ton or cubic yard depending on the supplier. This calculator gives you both so you can order accurately regardless of how your supplier prices material.</p>
+
+      <h3>The Formula</h3>
+      <p>Volume (cu ft) = Length × Width × (Depth ÷ 12). Convert to cubic yards by dividing by 27. Then multiply cubic yards by the material's density to get tons.</p>
+
+      <h3>Recommended Depths by Application</h3>
+      <ul>
+        <li><strong>Driveway base layer</strong> — 4"–6" of compacted crushed stone</li>
+        <li><strong>Driveway top layer</strong> — 2"–3" of pea gravel or decorative stone</li>
+        <li><strong>Drainage French drain</strong> — 12"+ of clean crushed stone</li>
+        <li><strong>Landscaping beds</strong> — 2"–3" of pea gravel or decorative rock</li>
+        <li><strong>Walkways &amp; paths</strong> — 3"–4" of compacted gravel</li>
+      </ul>
+
+      <h3>Tons vs. Cubic Yards</h3>
+      <ul>
+        <li>Most quarries and suppliers price by the ton (weight)</li>
+        <li>Landscaping suppliers sometimes price by the cubic yard (volume)</li>
+        <li>1 cubic yard of crushed stone ≈ 1.35 tons</li>
+        <li>Always confirm the density with your supplier — it varies by material and moisture content</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Gravel quantities locked in?</h3>
+        <p>Build your site work quote in BuildQuotes or jump straight to invoicing.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/concrete-slab/" class="eco-link">Concrete Calc</a>
+        <a href="../../calculators/fence/" class="eco-link">Fence Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let gWaste = false;
+    function setWaste(v) {
+      gWaste = v;
+      document.getElementById('gw-off').classList.toggle('active',!v);
+      document.getElementById('gw-on').classList.toggle('active',v);
+      calculate();
+    }
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate() {
+      const L=parseFloat(document.getElementById('gl').value)||0;
+      const W=parseFloat(document.getElementById('gw').value)||0;
+      const D=parseFloat(document.getElementById('gd').value)||0;
+      const density=parseFloat(document.getElementById('gmat').value)||1.35;
+      const price=parseFloat(document.getElementById('gp').value)||0;
+
+      if(!L||!W||!D){setResult('g-yards','—');setResult('g-tons','—');setResult('g-sqft','—');return;}
+
+      const sqft=L*W;
+      const cuFt=L*W*(D/12);
+      const factor=gWaste?1.10:1.0;
+      const yards=(cuFt/27)*factor;
+      const tons=yards*density;
+
+      setResult('g-yards',yards.toFixed(2)+' yd³');
+      setResult('g-tons',tons.toFixed(2)+' tons');
+      setResult('g-sqft',sqft.toLocaleString()+' sq ft');
+      document.getElementById('g-yards-sub').textContent=gWaste?'Includes 10% overage':'No waste factor';
+      document.getElementById('g-tons-sub').textContent='Density: '+density+' t/yd³';
+
+      const matCostCalc = price > 0 ? tons * price : 0;
+      updateLabor(sqft, sqft.toLocaleString() + ' sq ft', matCostCalc, 'sq ft');
+
+      if(price>0){
+        document.getElementById('gcost-row').style.display='';
+        setResult('g-cost','$'+(tons*price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('gcost-row').style.display='none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('gl').value)||0;
+      const W=parseFloat(document.getElementById('gw').value)||0;
+      const D=parseFloat(document.getElementById('gd').value)||0;
+      const density=parseFloat(document.getElementById('gmat').value)||1.35;
+      const matLabel=document.getElementById('gmat').options[document.getElementById('gmat').selectedIndex].text.split(' (')[0];
+      const factor=gWaste?1.10:1.0;
+      const yards=(L*W*(D/12)/27)*factor;
+      const tons=yards*density;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Gravel & Fill Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Length',L+' ft'],['Width',W+' ft'],['Depth',D+' inches'],['Material',matLabel],['Waste',gWaste?'10%':'None']];
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);
+        doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,125);doc.line(14,127,196,127);
+      const results=[['Cubic Yards',yards.toFixed(2)+' yd³',true],['Tons',tons.toFixed(2)+' tons',false],['Coverage Area',(L*W).toLocaleString()+' sq ft',false]];
+      results.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,133+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,141+i*14);doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,141+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('gravel-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('gl').value)||0;
+      const W=parseFloat(document.getElementById('gw').value)||0;
+      const D=parseFloat(document.getElementById('gd').value)||0;
+      const matLabel=document.getElementById('gmat').options[document.getElementById('gmat').selectedIndex].text.split(' (')[0];
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Gravel & Fill — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Area:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft @ '+D+'" / '+matLabel,80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('gravel-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

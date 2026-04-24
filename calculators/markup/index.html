@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contractor Markup Calculator — Bid Price, Margin &amp; Profit | BuildTakeoff</title>
+  <meta name="description" content="Free contractor markup and margin calculator. Enter your costs and target markup or margin to get your bid price, profit, and gross margin. Know what to charge before you quote." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/markup/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .markup-mode-toggle { display:flex; gap:0; margin-bottom:1.5rem; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border); }
+    .markup-mode-btn { flex:1; padding:0.65rem; background:var(--surface); color:var(--text-muted); border:none; font-family:inherit; font-size:0.85rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .markup-mode-btn.active { background:var(--orange); color:#000; }
+    .result-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+    .result-box { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:1rem; }
+    .result-box.primary { border-color:var(--orange); background:var(--orange-dim); grid-column:1/-1; }
+    .result-box .rb-label { font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); margin-bottom:0.4rem; }
+    .result-box .rb-value { font-size:1.5rem; font-weight:900; letter-spacing:-0.03em; color:var(--text); }
+    .result-box.primary .rb-value { font-size:2.2rem; color:var(--orange); }
+    .result-box .rb-sub { font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem; }
+    .edu-callout { background:var(--orange-dim); border:1px solid var(--border-hover); border-radius:var(--radius-sm); padding:1rem 1.25rem; margin-top:1rem; font-size:0.83rem; color:var(--text-dim); line-height:1.6; }
+    .edu-callout strong { color:var(--orange); }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Contractor Markup &amp; Margin Calculator</h1>
+      <p>Enter your project costs and target markup or margin to instantly calculate your bid price, gross profit, and effective margin. Know what to charge before you quote.</p>
+      <div class="tag-row">
+        <span class="tag">Markup</span>
+        <span class="tag">Margin</span>
+        <span class="tag">Bid Pricing</span>
+        <span class="tag">Business</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+
+      <!-- INPUTS -->
+      <div class="panel">
+        <div class="panel-title">Your Project Costs</div>
+
+        <div class="field">
+          <label for="cost-mat">Material Cost</label>
+          <div class="input-wrap"><input type="number" id="cost-mat" value="2500" min="0" step="50" placeholder="2500" /><span class="input-unit">$</span></div>
+        </div>
+        <div class="field">
+          <label for="cost-lab">Labor Cost</label>
+          <div class="input-wrap"><input type="number" id="cost-lab" value="1800" min="0" step="50" placeholder="1800" /><span class="input-unit">$</span></div>
+          <div class="field-hint">Your actual cost to pay workers (not what you charge the client)</div>
+        </div>
+        <div class="field">
+          <label for="cost-other">Overhead / Other Costs</label>
+          <div class="input-wrap"><input type="number" id="cost-other" value="" min="0" step="25" placeholder="0" /><span class="input-unit">$</span></div>
+          <div class="field-hint">Equipment rental, permits, disposal fees, etc.</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing Target</div>
+
+        <div class="markup-mode-toggle">
+          <button class="markup-mode-btn active" id="mode-markup" onclick="setMode('markup')">Markup %</button>
+          <button class="markup-mode-btn" id="mode-margin" onclick="setMode('margin')">Margin %</button>
+        </div>
+
+        <div class="field" id="field-markup">
+          <label for="pct-input" id="pct-label">Markup Percentage</label>
+          <div class="input-wrap"><input type="number" id="pct-input" value="35" min="0" max="500" step="1" /><span class="input-unit">%</span></div>
+          <div class="field-hint" id="pct-hint">35% markup on a $4,300 cost = $5,805 bid</div>
+        </div>
+
+        <div class="edu-callout" id="markup-edu">
+          <strong>Markup vs Margin — know the difference:</strong><br>
+          Markup = profit as % of <em>your cost</em>. Margin = profit as % of <em>what you charge</em>.<br>
+          A 30% markup = only 23% margin. Most contractors confuse these and underprice jobs.
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-panel">
+        <div class="panel-title">Your Bid</div>
+
+        <div class="result-grid">
+          <div class="result-box primary">
+            <div class="rb-label">Your Bid Price</div>
+            <div class="rb-value" id="r-bid">—</div>
+            <div class="rb-sub" id="r-bid-sub">What you charge the client</div>
+          </div>
+
+          <div class="result-box">
+            <div class="rb-label">Total Cost</div>
+            <div class="rb-value" id="r-cost">—</div>
+            <div class="rb-sub">Your break-even</div>
+          </div>
+
+          <div class="result-box">
+            <div class="rb-label">Gross Profit</div>
+            <div class="rb-value" id="r-profit">—</div>
+            <div class="rb-sub">Bid minus your costs</div>
+          </div>
+
+          <div class="result-box">
+            <div class="rb-label">Gross Margin</div>
+            <div class="rb-value" id="r-margin">—</div>
+            <div class="rb-sub">Profit Ã· bid price</div>
+          </div>
+
+          <div class="result-box">
+            <div class="rb-label">Effective Markup</div>
+            <div class="rb-value" id="r-markup">—</div>
+            <div class="rb-sub">Profit Ã· cost</div>
+          </div>
+
+          <div class="result-box">
+            <div class="rb-label">$/hr (if hourly)</div>
+            <div class="rb-value" id="r-perhour">—</div>
+            <div class="rb-sub" id="r-perhour-sub">Enter hours below</div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:1.25rem;">
+          <label for="hours-est">Estimated hours (optional)</label>
+          <div class="input-wrap"><input type="number" id="hours-est" min="0" step="1" placeholder="20" oninput="calculate()" /><span class="input-unit">hrs</span></div>
+        </div>
+
+        <div class="result-divider"></div>
+        <a href="https://buildquotes.co" target="_blank" class="btn btn-primary">→ Build This Quote in BuildQuotes</a>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Invoice This Job at BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- QUICK REFERENCE -->
+    <div class="seo-block fade-up delay-2">
+      <h2>Markup vs Margin — The Contractor's Guide to Pricing</h2>
+      <p>The most expensive mistake a contractor can make is confusing markup with margin. Quoting a "30% margin" when you're calculating markup means you're losing money on every job.</p>
+
+      <h3>The Key Difference</h3>
+      <p><strong>Markup</strong> is profit expressed as a percentage of your <em>cost</em>. <strong>Margin</strong> is profit expressed as a percentage of your <em>selling price</em>. The same dollar profit looks very different as markup vs margin.</p>
+
+      <h3>Common Markup â†” Margin Equivalents</h3>
+      <ul>
+        <li>10% markup = 9.1% margin</li>
+        <li>20% markup = 16.7% margin</li>
+        <li>30% markup = 23.1% margin</li>
+        <li>40% markup = 28.6% margin</li>
+        <li>50% markup = 33.3% margin</li>
+        <li>100% markup = 50.0% margin</li>
+      </ul>
+
+      <h3>Industry Standard Markups by Trade</h3>
+      <ul>
+        <li><strong>General contractor</strong> — 15â€“25% on subcontractor costs; 10â€“20% on materials</li>
+        <li><strong>Specialty trades</strong> (plumbing, electrical, HVAC) — 30â€“50% markup is common</li>
+        <li><strong>Painting</strong> — 25â€“40% markup on materials + labor</li>
+        <li><strong>Roofing</strong> — 20â€“40% markup depending on market</li>
+        <li><strong>Flooring</strong> — 30â€“50% markup on materials</li>
+      </ul>
+
+      <h3>What Overhead Am I Missing?</h3>
+      <ul>
+        <li>Vehicle costs, fuel, and maintenance</li>
+        <li>Tools and equipment depreciation</li>
+        <li>Insurance (general liability, workers comp)</li>
+        <li>Office expenses, software, accounting</li>
+        <li>Your own salary as owner/operator</li>
+        <li>Unpaid estimate time (1 in 3 bids typically don't win)</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Know your number? Build the quote.</h3>
+        <p>Take your bid price into BuildQuotes for a professional proposal, or invoice directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+        <a href="../../calculators/concrete-slab/" class="eco-link">Concrete Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let mode = 'markup';
+    function setMode(m) {
+      mode = m;
+      document.getElementById('mode-markup').classList.toggle('active', m==='markup');
+      document.getElementById('mode-margin').classList.toggle('active', m==='margin');
+      document.getElementById('pct-label').textContent = m==='markup' ? 'Markup Percentage' : 'Target Margin Percentage';
+      document.getElementById('markup-edu').style.display = m==='margin' ? 'none' : '';
+      calculate();
+    }
+
+    function fmt(n,dec=2){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});}
+    function pct(n){return n.toFixed(1)+'%';}
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setR(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate() {
+      const mat = parseFloat(document.getElementById('cost-mat').value)||0;
+      const lab = parseFloat(document.getElementById('cost-lab').value)||0;
+      const other = parseFloat(document.getElementById('cost-other').value)||0;
+      const pctVal = parseFloat(document.getElementById('pct-input').value)||0;
+      const hours = parseFloat(document.getElementById('hours-est').value)||0;
+      const totalCost = mat + lab + other;
+
+      if (!totalCost) {
+        ['r-bid','r-cost','r-profit','r-margin','r-markup','r-perhour'].forEach(id=>setR(id,'—'));
+        return;
+      }
+
+      let bid, profit, margin, markup;
+
+      if (mode === 'markup') {
+        bid = totalCost * (1 + pctVal/100);
+        profit = bid - totalCost;
+        markup = pctVal;
+        margin = (profit / bid) * 100;
+      } else {
+        // margin mode: bid = cost / (1 - margin%)
+        if (pctVal >= 100) { setR('r-bid','âˆž'); return; }
+        bid = totalCost / (1 - pctVal/100);
+        profit = bid - totalCost;
+        margin = pctVal;
+        markup = (profit / totalCost) * 100;
+      }
+
+      setR('r-bid', fmt(bid));
+      setR('r-cost', fmt(totalCost));
+      setR('r-profit', fmt(profit));
+      setR('r-margin', pct(margin));
+      setR('r-markup', pct(markup));
+
+      document.getElementById('r-bid-sub').textContent =
+        'Materials: '+fmt(mat)+' · Labor: '+fmt(lab)+(other>0?' · Other: '+fmt(other):'');
+
+      if (hours > 0) {
+        setR('r-perhour', fmt(bid/hours));
+        document.getElementById('r-perhour-sub').textContent = 'Bid Ã· '+hours+' hrs';
+      } else {
+        setR('r-perhour', '—');
+        document.getElementById('r-perhour-sub').textContent = 'Enter hours above';
+      }
+
+      // Update hint
+      document.getElementById('pct-hint').textContent =
+        mode==='markup'
+          ? pct(pctVal)+' markup on '+fmt(totalCost)+' cost = '+fmt(bid)+' bid'
+          : pct(pctVal)+' margin on '+fmt(bid)+' bid = '+fmt(profit)+' profit';
+    }
+
+    document.querySelectorAll('input').forEach(el => el.addEventListener('input', calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

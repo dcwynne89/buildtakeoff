@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Concrete Slab Calculator — Cubic Yards &amp; Bag Count | BuildTakeoff</title>
+  <meta name="description" content="Free concrete slab calculator. Enter length, width, and thickness to get exact cubic yards, 80lb bag count, and total cost. Download a PDF takeoff report instantly." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/concrete-slab/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Concrete Slab Calculator</h1>
+      <p>Calculate exact cubic yards, bag count, and cost for any concrete pour. Includes 10% waste factor option.</p>
+      <div class="tag-row">
+        <span class="tag">Concrete</span>
+        <span class="tag">Foundation</span>
+        <span class="tag">Driveways</span>
+        <span class="tag">Patios</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+
+      <!-- INPUTS -->
+      <div class="panel">
+        <div class="panel-title">Slab Dimensions</div>
+
+        <div class="field">
+          <label for="length">Length</label>
+          <div class="input-wrap">
+            <input type="number" id="length" value="20" min="0" step="0.5" placeholder="20" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="width">Width</label>
+          <div class="input-wrap">
+            <input type="number" id="width" value="20" min="0" step="0.5" placeholder="20" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="thickness">Thickness</label>
+          <div class="input-wrap">
+            <input type="number" id="thickness" value="4" min="1" step="0.5" placeholder="4" />
+            <span class="input-unit">in</span>
+          </div>
+          <div class="field-hint">Typical: 4" for patios, 6" for driveways, 8" for heavy loads</div>
+        </div>
+
+        <div class="field">
+          <label for="price">Concrete price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="price" value="" min="0" step="1" placeholder="150" />
+            <span class="input-unit">$/yd³</span>
+          </div>
+          <div class="field-hint">Current average: $140–$165/cubic yard delivered</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Waste Factor</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="waste-off" onclick="setWaste(false)">No waste</button>
+          <button class="toggle-btn" id="waste-on" onclick="setWaste(true)">+10% waste</button>
+        </div>
+        <div class="waste-notice" id="waste-notice" style="margin-top:0.75rem;">
+          ✓ 10% overage included — recommended for all pours
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Cubic Yards Needed</div>
+          <div class="result-value" id="res-yards">—</div>
+          <div class="result-sub" id="res-yards-sub">Enter dimensions above</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">80 lb Bags (Quikrete)</div>
+          <div class="result-value" id="res-bags80">—</div>
+          <div class="result-sub">Each bag = 0.60 cu ft</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">60 lb Bags (Quikrete)</div>
+          <div class="result-value" id="res-bags60">—</div>
+          <div class="result-sub">Each bag = 0.45 cu ft</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-item">
+          <div class="result-label">Square Footage</div>
+          <div class="result-value" id="res-sqft">—</div>
+          <div class="result-sub">Total slab area</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Delivered ready-mix cost</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice this job? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="2.50" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Concrete flatwork: typically $2.50–$5.00/sq ft installed</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO CONTENT -->
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Concrete for a Slab</h2>
+      <p>Calculating the right amount of concrete for a slab prevents costly overorders and frustrating shortfalls mid-pour. The formula is straightforward but easy to get wrong if you skip the unit conversions.</p>
+
+      <h3>The Concrete Slab Formula</h3>
+      <p>Volume (cubic feet) = Length × Width × (Thickness ÷ 12). Then divide by 27 to convert to cubic yards, since concrete is sold by the yard.</p>
+      <p><strong>Example:</strong> A 20×20 ft patio at 4" thick = 20 × 20 × (4/12) = 133.3 cu ft ÷ 27 = <strong>4.94 cubic yards</strong>.</p>
+
+      <h3>When to Add a Waste Factor</h3>
+      <p>Always add 5–10% overage to account for spillage, subgrade irregularities, and the concrete that remains in the chute. Running short mid-pour is a serious problem — cold joints are structural weaknesses.</p>
+
+      <h3>Ready-Mix vs. Bags</h3>
+      <ul>
+        <li>Ready-mix trucks are cost-effective for pours over 1 cubic yard</li>
+        <li>An 80 lb bag yields approximately 0.60 cubic feet of concrete</li>
+        <li>A 60 lb bag yields approximately 0.45 cubic feet of concrete</li>
+        <li>For small jobs under 1 yard, bags are usually more practical</li>
+        <li>Most trucks have a minimum delivery of 1 yard with short-load fees</li>
+      </ul>
+
+      <h3>Standard Slab Thicknesses</h3>
+      <ul>
+        <li><strong>4 inches</strong> — Residential patios, sidewalks, garage floors</li>
+        <li><strong>5–6 inches</strong> — Driveways, RV pads, heavy traffic areas</li>
+        <li><strong>8+ inches</strong> — Commercial slabs, heavy equipment pads</li>
+      </ul>
+    </div>
+
+    <!-- ECOSYSTEM STRIP -->
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Got your quantities? Now build the quote.</h3>
+        <p>Jump to BuildQuotes and turn these numbers into a professional proposal in minutes.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let includeWaste = false;
+
+    function setWaste(val) {
+      includeWaste = val;
+      document.getElementById('waste-off').classList.toggle('active', !val);
+      document.getElementById('waste-on').classList.toggle('active', val);
+      document.getElementById('waste-notice').classList.toggle('show', val);
+      calculate();
+    }
+
+    function animateValue(el) {
+      el.classList.remove('updated');
+      void el.offsetWidth;
+      el.classList.add('updated');
+    }
+
+    function setResult(id, val) {
+      const el = document.getElementById(id);
+      if (el && el.textContent !== val) {
+        el.textContent = val;
+        animateValue(el);
+      }
+    }
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('length').value) || 0;
+      const W = parseFloat(document.getElementById('width').value) || 0;
+      const T = parseFloat(document.getElementById('thickness').value) || 0;
+      const P = parseFloat(document.getElementById('price').value) || 0;
+
+      if (!L || !W || !T) {
+        setResult('res-yards', '—');
+        setResult('res-bags80', '—');
+        setResult('res-bags60', '—');
+        setResult('res-sqft', '—');
+        document.getElementById('res-yards-sub').textContent = 'Enter dimensions above';
+        document.getElementById('cost-row').style.display = 'none';
+        return;
+      }
+
+      const sqft = L * W;
+      const volCuFt = L * W * (T / 12);
+      const factor = includeWaste ? 1.10 : 1.0;
+      const yards = volCuFt / 27 * factor;
+      const bags80 = Math.ceil(volCuFt * factor / 0.60);
+      const bags60 = Math.ceil(volCuFt * factor / 0.45);
+
+      setResult('res-yards', yards.toFixed(2) + ' yd³');
+      setResult('res-bags80', bags80.toLocaleString() + ' bags');
+      setResult('res-bags60', bags60.toLocaleString() + ' bags');
+      setResult('res-sqft', sqft.toLocaleString() + ' sq ft');
+
+      document.getElementById('res-yards-sub').textContent =
+        includeWaste ? 'Includes 10% waste overage' : 'No waste factor applied';
+
+      const matCostCalc = P > 0 ? yards * P : 0;
+      updateLabor(sqft, sqft.toLocaleString() + ' sq ft', matCostCalc, 'sq ft');
+
+      if (P > 0) {
+        const cost = yards * P;
+        document.getElementById('cost-row').style.display = '';
+        setResult('res-cost', '$' + cost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const L = parseFloat(document.getElementById('length').value) || 0;
+      const W = parseFloat(document.getElementById('width').value) || 0;
+      const T = parseFloat(document.getElementById('thickness').value) || 0;
+      const date = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+
+      // Header
+      doc.setFillColor(249, 115, 22);
+      doc.rect(0, 0, 210, 28, 'F');
+      doc.setFont('helvetica','bold');
+      doc.setTextColor(0,0,0);
+      doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT', 14, 12);
+      doc.setFontSize(10);
+      doc.text('Concrete Slab Calculator', 14, 20);
+
+      // Meta
+      doc.setTextColor(60,60,60);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9);
+      doc.text('Generated by buildtakeoff.co', 14, 35);
+      doc.text('Date: ' + date, 14, 42);
+
+      // Inputs
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(11);
+      doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS', 14, 55);
+      doc.setDrawColor(249,115,22);
+      doc.line(14, 57, 196, 57);
+
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(10);
+      doc.setTextColor(60,60,60);
+      const inputs = [
+        ['Slab Length', L + ' ft'],
+        ['Slab Width', W + ' ft'],
+        ['Thickness', T + ' inches'],
+        ['Waste Factor', includeWaste ? '10% overage' : 'None'],
+      ];
+      inputs.forEach(([k,v], i) => {
+        doc.text(k + ':', 14, 67 + i*10);
+        doc.setFont('helvetica','bold');
+        doc.setTextColor(20,20,20);
+        doc.text(v, 80, 67 + i*10);
+        doc.setFont('helvetica','normal');
+        doc.setTextColor(60,60,60);
+      });
+
+      // Results
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(11);
+      doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES', 14, 115);
+      doc.line(14, 117, 196, 117);
+
+      const sqft = L * W;
+      const volCuFt = L * W * (T / 12);
+      const factor = includeWaste ? 1.10 : 1.0;
+      const yards = (volCuFt / 27 * factor).toFixed(2);
+      const bags80 = Math.ceil(volCuFt * factor / 0.60);
+      const bags60 = Math.ceil(volCuFt * factor / 0.45);
+
+      const results = [
+        ['Cubic Yards (Ready-Mix)', yards + ' yd³', true],
+        ['80 lb Bags (Quikrete)', bags80 + ' bags', false],
+        ['60 lb Bags (Quikrete)', bags60 + ' bags', false],
+        ['Total Square Footage', sqft.toLocaleString() + ' sq ft', false],
+      ];
+
+      results.forEach(([k,v,bold], i) => {
+        if (bold) {
+          doc.setFillColor(255, 237, 213);
+          doc.roundedRect(12, 123 + i*14, 184, 12, 2, 2, 'F');
+        }
+        doc.setFont('helvetica', bold ? 'bold' : 'normal');
+        doc.setTextColor(bold ? 180 : 60, bold ? 80 : 60, bold ? 0 : 60);
+        doc.text(k + ':', 16, 131 + i*14);
+        doc.setFont('helvetica','bold');
+        doc.setTextColor(bold ? 180 : 20, bold ? 80 : 20, bold ? 0 : 20);
+        doc.text(v, 130, 131 + i*14);
+      });
+
+      // Footer
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co', 14, 280);
+
+      doc.save('concrete-slab-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('length').value)||0;
+      const W=parseFloat(document.getElementById('width').value)||0;
+      const T=parseFloat(document.getElementById('thickness').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Concrete Slab — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Slab:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft @ '+T+'"',80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('concrete-slab-estimate.pdf');
+    }
+
+    // Live calc
+    document.querySelectorAll('input').forEach(el => {
+      el.addEventListener('input', calculate);
+    });
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

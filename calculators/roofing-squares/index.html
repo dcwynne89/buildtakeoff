@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roofing Calculator — Squares, Shingle Bundles &amp; Cost | BuildTakeoff</title>
+  <meta name="description" content="Free roofing calculator. Enter roof dimensions and pitch to get roofing squares, shingle bundles, and total cost. Includes pitch multiplier and waste factor. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/roofing-squares/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Roofing Squares Calculator</h1>
+      <p>Calculate roofing squares, shingle bundles, and material cost with automatic pitch adjustment and waste factor.</p>
+      <div class="tag-row">
+        <span class="tag">Roofing</span>
+        <span class="tag">Shingles</span>
+        <span class="tag">Pitch</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+
+      <!-- INPUTS -->
+      <div class="panel">
+        <div class="panel-title">Roof Dimensions</div>
+
+        <div class="field">
+          <label for="rlength">Roof Footprint Length</label>
+          <div class="input-wrap">
+            <input type="number" id="rlength" value="40" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Measure the ground footprint (not the slope)</div>
+        </div>
+
+        <div class="field">
+          <label for="rwidth">Roof Footprint Width</label>
+          <div class="input-wrap">
+            <input type="number" id="rwidth" value="30" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="pitch">Roof Pitch</label>
+          <div class="input-wrap">
+            <select id="pitch">
+              <option value="1.003">Flat / 1:12</option>
+              <option value="1.014">2:12</option>
+              <option value="1.031">3:12</option>
+              <option value="1.054">4:12</option>
+              <option value="1.083" selected>5:12</option>
+              <option value="1.118">6:12</option>
+              <option value="1.158">7:12</option>
+              <option value="1.202">8:12</option>
+              <option value="1.250">9:12</option>
+              <option value="1.302">10:12</option>
+              <option value="1.357">11:12</option>
+              <option value="1.414">12:12 (steep)</option>
+            </select>
+          </div>
+          <div class="field-hint">Common residential: 4:12–6:12</div>
+        </div>
+
+        <div class="field">
+          <label for="rprice">Shingle price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="rprice" value="" min="0" step="1" placeholder="35" />
+            <span class="input-unit">$/bundle</span>
+          </div>
+          <div class="field-hint">Average $30–$45 per bundle for 3-tab; $50–$80 for architectural</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Waste Factor</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="rwaste-off" onclick="setWaste(false)">No waste</button>
+          <button class="toggle-btn" id="rwaste-10" onclick="setWaste(10)">+10%</button>
+          <button class="toggle-btn" id="rwaste-15" onclick="setWaste(15)">+15%</button>
+        </div>
+        <div class="waste-notice" id="waste-notice" style="margin-top:0.75rem;">
+          ✓ Waste overage included — recommended for cut waste and hips/valleys
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Roofing Squares</div>
+          <div class="result-value" id="res-squares">—</div>
+          <div class="result-sub" id="res-sq-sub">1 square = 100 sq ft</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Shingle Bundles</div>
+          <div class="result-value" id="res-bundles">—</div>
+          <div class="result-sub">3 bundles per square</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Actual Roof Area</div>
+          <div class="result-value" id="res-area">—</div>
+          <div class="result-sub" id="res-area-sub">Pitch-adjusted surface area</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Footprint Area</div>
+          <div class="result-value" id="res-footprint">—</div>
+          <div class="result-sub">Ground-level measurement</div>
+        </div>
+
+        <div class="result-item" id="rcost-row" style="display:none;">
+          <div class="result-label">Estimated Shingle Cost</div>
+          <div class="result-value" id="res-rcost">—</div>
+          <div class="result-sub">Materials only</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per square</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="5" placeholder="150" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/square</span>
+            </div>
+            <div class="field-hint">Roofing labor: typically $150–$300/square installed</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO CONTENT -->
+      <h2>How to Calculate Roofing Squares</h2>
+      <p>A roofing square equals 100 square feet of roof surface. To order the right amount of shingles, you need to account for the actual pitched surface area — not just the ground footprint.</p>
+
+      <h3>The Pitch Multiplier</h3>
+      <p>A 6:12 pitch roof has a slope multiplier of 1.118, meaning the actual surface is 11.8% larger than the footprint. This calculator applies the correct pitch multiplier automatically so your bundle count is accurate.</p>
+
+      <h3>Why Add a Waste Factor?</h3>
+      <ul>
+        <li>Straight gable roofs: 10% waste is standard</li>
+        <li>Complex roofs with hips, valleys, and dormers: 15–20% waste</li>
+        <li>Never order exactly what you calculate — overage protects against damaged shingles and dye-lot variations</li>
+      </ul>
+
+      <h3>Bundles Per Square</h3>
+      <ul>
+        <li>Standard 3-tab shingles: 3 bundles per square</li>
+        <li>Architectural shingles: typically 3 bundles per square</li>
+        <li>Some heavy premium products: 4 bundles per square (check manufacturer specs)</li>
+      </ul>
+
+      <h3>What About Underlayment and Ridge Cap?</h3>
+      <ul>
+        <li>Felt underlayment: 1 roll covers 4 squares</li>
+        <li>Synthetic underlayment: 1 roll covers 10–20 squares</li>
+        <li>Ridge cap shingles: measure linear feet of ridgeline separately</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Got your roofing quantities?</h3>
+        <p>Jump to BuildQuotes and put together a professional roofing proposal.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/roof-pitch/" class="eco-link">Roof Pitch Calc</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let wastePct = 0;
+
+    function setWaste(pct) {
+      wastePct = pct;
+      ['rwaste-off','rwaste-10','rwaste-15'].forEach(id => {
+        document.getElementById(id).classList.remove('active');
+      });
+      if (pct === 0) document.getElementById('rwaste-off').classList.add('active');
+      if (pct === 10) document.getElementById('rwaste-10').classList.add('active');
+      if (pct === 15) document.getElementById('rwaste-15').classList.add('active');
+      document.getElementById('waste-notice').classList.toggle('show', pct > 0);
+      document.getElementById('waste-notice').textContent =
+        pct > 0 ? `✓ ${pct}% waste overage included` : '';
+      calculate();
+    }
+
+    function animateValue(el) {
+      el.classList.remove('updated'); void el.offsetWidth; el.classList.add('updated');
+    }
+    function setResult(id, val) {
+      const el = document.getElementById(id);
+      if (el && el.textContent !== val) { el.textContent = val; animateValue(el); }
+    }
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('rlength').value) || 0;
+      const W = parseFloat(document.getElementById('rwidth').value) || 0;
+      const pitch = parseFloat(document.getElementById('pitch').value) || 1;
+      const P = parseFloat(document.getElementById('rprice').value) || 0;
+
+      if (!L || !W) {
+        setResult('res-squares','—'); setResult('res-bundles','—');
+        setResult('res-area','—'); setResult('res-footprint','—');
+        return;
+      }
+
+      const footprint = L * W;
+      const actualArea = footprint * pitch * (1 + wastePct/100);
+      const squares = actualArea / 100;
+      const bundles = Math.ceil(squares * 3);
+
+      setResult('res-squares', squares.toFixed(1));
+      setResult('res-bundles', bundles + ' bundles');
+      setResult('res-area', Math.round(actualArea).toLocaleString() + ' sq ft');
+      setResult('res-footprint', Math.round(footprint).toLocaleString() + ' sq ft');
+      document.getElementById('res-sq-sub').textContent =
+        wastePct > 0 ? `Includes ${wastePct}% waste overage` : 'No waste factor';
+      document.getElementById('res-area-sub').textContent =
+        'Pitch multiplier: ' + pitch.toFixed(3);
+
+      const matCostCalc = P > 0 ? bundles * P : 0;
+      const sqNum = parseFloat(squares) || 0;
+      updateLabor(sqNum, squares + ' squares', matCostCalc, 'square');
+
+      if (P > 0) {
+        document.getElementById('rcost-row').style.display = '';
+        setResult('res-rcost', '$' + (bundles * P).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('rcost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const L = parseFloat(document.getElementById('rlength').value)||0;
+      const W = parseFloat(document.getElementById('rwidth').value)||0;
+      const pitch = parseFloat(document.getElementById('pitch').value)||1;
+      const pitchLabel = document.getElementById('pitch').options[document.getElementById('pitch').selectedIndex].text;
+      const footprint = L * W;
+      const actualArea = footprint * pitch * (1 + wastePct/100);
+      const squares = (actualArea/100).toFixed(1);
+      const bundles = Math.ceil((actualArea/100)*3);
+      const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);
+      doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');
+      doc.setTextColor(0,0,0);
+      doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);
+      doc.text('Roofing Squares Calculator',14,20);
+      doc.setTextColor(60,60,60);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9);
+      doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(11);
+      doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);
+      doc.setDrawColor(249,115,22);
+      doc.line(14,57,196,57);
+
+      const inputs=[['Length',L+' ft'],['Width',W+' ft'],['Pitch',pitchLabel],['Waste',wastePct>0?wastePct+'%':'None']];
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60); doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20);
+        doc.text(v,80,67+i*10);
+        doc.setFont('helvetica','normal');
+      });
+
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(11);
+      doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,115);
+      doc.line(14,117,196,117);
+      const results=[
+        ['Roofing Squares',squares+' squares',true],
+        ['Shingle Bundles',bundles+' bundles',false],
+        ['Actual Roof Area',Math.round(actualArea).toLocaleString()+' sq ft',false],
+        ['Footprint Area',Math.round(footprint).toLocaleString()+' sq ft',false],
+      ];
+      results.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,123+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');
+        doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,131+i*14);
+        doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);
+        doc.text(v,130,131+i*14);
+      });
+
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('roofing-squares-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='square';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'square';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('rlength').value)||0;
+      const W=parseFloat(document.getElementById('rwidth').value)||0;
+      const pitch=parseFloat(document.getElementById('pitch').value)||1;
+      const pitchLabel=document.getElementById('pitch').options[document.getElementById('pitch').selectedIndex].text;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Roofing — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Roof:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft, Pitch: '+pitchLabel,80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('roofing-estimate.pdf');
+    }
+
+    document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
