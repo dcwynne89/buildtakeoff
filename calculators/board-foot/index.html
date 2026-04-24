@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Board Foot Calculator — Lumber Board Feet & Cost | BuildTakeoff</title>
+  <meta name="description" content="Free board foot calculator. Enter lumber dimensions and quantity to get total board feet and cost. Supports mixed lumber orders. Download PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/board-foot/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .lumber-table{width:100%;border-collapse:collapse;margin-top:0.5rem;}
+    .lumber-table th{background:var(--surface);padding:0.5rem 0.75rem;text-align:left;font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border);}
+    .lumber-table td{padding:0.5rem 0.75rem;font-size:0.85rem;border-bottom:1px solid var(--border);}
+    .lumber-table tr:last-child td{border-bottom:none;}
+    .lumber-table input{background:transparent;border:none;color:var(--text);font-size:0.85rem;width:100%;outline:none;font-family:inherit;}
+    .lumber-table input:focus{background:rgba(249,115,22,0.06);border-radius:4px;}
+    .lumber-table .row-bf{font-weight:700;color:var(--orange);}
+    .add-row-btn{display:flex;align-items:center;gap:0.5rem;background:rgba(249,115,22,0.08);border:1px dashed rgba(249,115,22,0.3);border-radius:8px;padding:0.6rem 1rem;color:var(--orange);font-size:0.82rem;font-weight:600;cursor:pointer;width:100%;margin-top:0.5rem;transition:all 0.2s;}
+    .add-row-btn:hover{background:rgba(249,115,22,0.15);}
+    .del-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;padding:0 0.25rem;line-height:1;}
+    .del-btn:hover{color:#ef4444;}
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Board Foot Calculator</h1>
+      <p>Calculate board feet for any lumber dimensions. Add multiple lumber types to get your full order total — with optional cost estimate.</p>
+      <div class="tag-row">
+        <span class="tag">Board Feet</span>
+        <span class="tag">Multi-Item</span>
+        <span class="tag">Cost</span>
+        <span class="tag">PDF</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel" style="flex:2;">
+        <div class="panel-title">Lumber Order</div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem;">Board Feet = (Thickness × Width × Length in inches) ÷ 144</p>
+
+        <div style="overflow-x:auto;">
+          <table class="lumber-table">
+            <thead>
+              <tr>
+                <th>Thickness (in)</th>
+                <th>Width (in)</th>
+                <th>Length (ft)</th>
+                <th>Qty</th>
+                <th>$/BF</th>
+                <th>Board Feet</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="lumber-tbody">
+            </tbody>
+          </table>
+        </div>
+
+        <button class="add-row-btn" onclick="addRow()">
+          <i data-lucide="plus-circle" style="width:16px;height:16px;"></i>
+          Add Lumber Type
+        </button>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Global Settings</div>
+        <div class="field">
+          <label for="global-price">Default $/Board Foot</label>
+          <div class="input-wrap">
+            <input type="number" id="global-price" value="" placeholder="e.g. 4.50" min="0" step="0.01" oninput="calculate()" />
+            <span class="input-unit">$/BF</span>
+          </div>
+          <div class="field-hint">Applied to rows with no individual price set</div>
+        </div>
+        <div class="field">
+          <label for="waste-pct">Waste Factor</label>
+          <div class="input-wrap">
+            <input type="number" id="waste-pct" value="10" min="0" max="30" step="5" oninput="calculate()" />
+            <span class="input-unit">%</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Common Lumber Sizes</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;">
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(1,4,8)">1×4×8</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(1,6,8)">1×6×8</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(2,4,8)">2×4×8</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(2,4,10)">2×4×10</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(2,4,12)">2×4×12</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(2,6,8)">2×6×8</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(2,6,10)">2×6×10</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(2,8,12)">2×8×12</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(2,10,12)">2×10×12</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(4,4,8)">4×4×8</button>
+          <button class="tag" style="cursor:pointer;" onclick="quickAdd(6,6,8)">6×6×8</button>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Order Summary</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Total Board Feet</div>
+          <div class="result-value" id="res-bf">0 BF</div>
+          <div class="result-sub" id="res-bf-sub">Before waste</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">With Waste Factor</div>
+          <div class="result-value" id="res-bf-waste">0 BF</div>
+          <div class="result-sub" id="res-waste-sub">Order this amount</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Pieces</div>
+          <div class="result-value" id="res-pieces">0</div>
+          <div class="result-sub">All lumber items combined</div>
+        </div>
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Based on $/BF entered</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Order Breakdown</div>
+        <div id="breakdown-list" style="display:flex;flex-direction:column;gap:0.4rem;"></div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff</button>
+        <a href="../../calculators/framing-studs/" class="btn btn-ghost">→ Framing Stud Calculator</a>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Board Feet</h2>
+      <p>A board foot is a unit of lumber measurement equal to 1 inch thick × 12 inches wide × 12 inches long (144 cubic inches). The formula is:</p>
+      <p style="background:var(--surface);padding:1rem;border-radius:8px;border-left:3px solid var(--orange);font-family:monospace;margin:1rem 0;"><strong>Board Feet = (Thickness × Width × Length) ÷ 144</strong><br/>where thickness and width are in inches, length is in inches (multiply feet × 12)</p>
+      <h3>Examples</h3>
+      <ul>
+        <li><strong>2×4×8ft:</strong> (2 × 4 × 96) ÷ 144 = <strong>5.33 BF</strong></li>
+        <li><strong>1×6×12ft:</strong> (1 × 6 × 144) ÷ 144 = <strong>6 BF</strong></li>
+        <li><strong>2×10×16ft:</strong> (2 × 10 × 192) ÷ 144 = <strong>26.67 BF</strong></li>
+      </ul>
+      <h3>Nominal vs Actual Dimensions</h3>
+      <p>Board feet use <em>nominal</em> dimensions (the stated size), not actual dimensions. A 2×4 is actually 1.5" × 3.5" — but for board foot calculations, you use 2 and 4. This is the industry standard.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Turn your lumber list into a quote.</h3>
+        <p>Take your board foot totals into BuildQuotes to create a professional estimate.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="../../calculators/framing-studs/" class="eco-link">Framing Studs →</a>
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let rows = [];
+    let rowId = 0;
+
+    function addRow(t=2, w=4, l=8, qty=1, price='') {
+      const id = rowId++;
+      rows.push({id, t, w, l, qty, price});
+      renderTable();
+      calculate();
+    }
+
+    function quickAdd(t, w, l) {
+      addRow(t, w, l, 1, '');
+    }
+
+    function removeRow(id) {
+      rows = rows.filter(r => r.id !== id);
+      renderTable();
+      calculate();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('lumber-tbody');
+      tbody.innerHTML = '';
+      rows.forEach(r => {
+        const bf = calcBF(r.t, r.w, r.l, r.qty);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="number" value="${r.t}" min="0.25" step="0.25" onchange="updateRow(${r.id},'t',this.value)" /></td>
+          <td><input type="number" value="${r.w}" min="1" step="1" onchange="updateRow(${r.id},'w',this.value)" /></td>
+          <td><input type="number" value="${r.l}" min="1" step="1" onchange="updateRow(${r.id},'l',this.value)" /></td>
+          <td><input type="number" value="${r.qty}" min="1" step="1" onchange="updateRow(${r.id},'qty',this.value)" /></td>
+          <td><input type="number" value="${r.price}" placeholder="—" min="0" step="0.01" onchange="updateRow(${r.id},'price',this.value)" /></td>
+          <td class="row-bf">${bf.toFixed(2)} BF</td>
+          <td><button class="del-btn" onclick="removeRow(${r.id})">✕</button></td>`;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function updateRow(id, field, val) {
+      const r = rows.find(r => r.id === id);
+      if (!r) return;
+      r[field] = field === 'price' ? val : parseFloat(val)||0;
+      renderTable();
+      calculate();
+    }
+
+    function calcBF(t, w, l, qty) {
+      return (t * w * (l * 12)) / 144 * qty;
+    }
+
+    function calculate() {
+      const globalPrice = parseFloat(document.getElementById('global-price').value)||0;
+      const waste = parseFloat(document.getElementById('waste-pct').value)||0;
+
+      let totalBF = 0, totalPieces = 0, totalCost = 0, hasCost = false;
+      const breakdown = [];
+
+      rows.forEach(r => {
+        const bf = calcBF(r.t, r.w, r.l, r.qty);
+        const price = r.price !== '' ? parseFloat(r.price)||0 : globalPrice;
+        totalBF += bf;
+        totalPieces += r.qty;
+        if (price > 0) { totalCost += bf * price; hasCost = true; }
+        breakdown.push({label: `${r.t}×${r.w}×${r.l}ft × ${r.qty}`, bf, price});
+      });
+
+      const bfWithWaste = totalBF * (1 + waste/100);
+
+      function setR(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+      setR('res-bf', totalBF.toFixed(2)+' BF');
+      setR('res-bf-sub', 'Net board feet');
+      setR('res-bf-waste', bfWithWaste.toFixed(2)+' BF');
+      setR('res-waste-sub', 'With '+waste+'% waste — order this');
+      setR('res-pieces', totalPieces);
+
+      if (hasCost) {
+        document.getElementById('cost-row').style.display='';
+        setR('res-cost','$'+totalCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display='none';
+      }
+
+      const bl = document.getElementById('breakdown-list');
+      bl.innerHTML = breakdown.map(b =>
+        `<div class="breakdown-row"><span>${b.label}</span><span style="font-weight:700;">${b.bf.toFixed(2)} BF</span></div>`
+      ).join('');
+    }
+
+    function downloadPDF() {
+      const {jsPDF} = window.jspdf; const doc = new jsPDF();
+      const globalPrice = parseFloat(document.getElementById('global-price').value)||0;
+      const waste = parseFloat(document.getElementById('waste-pct').value)||0;
+      const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22); doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0); doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12); doc.setFontSize(10); doc.text('Board Foot Calculator',14,20);
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text('BuildTakeoff.co',14,35); doc.text('Date: '+date,14,42);
+
+      let y = 55;
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('LUMBER ORDER',14,y); doc.setDrawColor(249,115,22); doc.line(14,y+2,196,y+2);
+      y += 12;
+
+      const headers = ['Size','Length','Qty','Board Feet'];
+      const colX = [14,70,100,130,170];
+      headers.forEach((h,i) => {
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+        doc.text(h, colX[i], y);
+      });
+      y += 6; doc.line(14,y,196,y); y+=5;
+
+      let totalBF = 0, totalCost = 0;
+      rows.forEach(r => {
+        const bf = calcBF(r.t, r.w, r.l, r.qty);
+        const price = r.price !== '' ? parseFloat(r.price)||0 : globalPrice;
+        totalBF += bf;
+        if (price > 0) totalCost += bf * price;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(40,40,40);
+        doc.text(`${r.t}"×${r.w}"`, colX[0], y);
+        doc.text(`${r.l} ft`, colX[1], y);
+        doc.text(String(r.qty), colX[2], y);
+        doc.text(bf.toFixed(2)+' BF', colX[3], y);
+        y += 8;
+      });
+
+      const bfWaste = totalBF * (1 + waste/100);
+      doc.line(14,y,196,y); y+=8;
+      doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(20,20,20);
+      doc.text('Total Board Feet: '+totalBF.toFixed(2)+' BF',14,y); y+=8;
+      doc.text('With '+waste+'% Waste: '+bfWaste.toFixed(2)+' BF (order this)',14,y); y+=8;
+      if (totalCost > 0) {
+        doc.setTextColor(249,115,22);
+        doc.text('Estimated Cost: $'+totalCost.toLocaleString('en-US',{minimumFractionDigits:2}),14,y);
+      }
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('BuildTakeoff.co  ·  BuildInvoice.co',14,280);
+      doc.save('board-foot-takeoff.pdf');
+    }
+
+    // Start with 3 default rows
+    addRow(2,4,8,10,'');
+    addRow(2,6,10,4,'');
+    addRow(4,4,8,2,'');
+    lucide.createIcons();
+  </script>
+</body>
+</html>

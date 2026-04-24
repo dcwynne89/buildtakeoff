@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Framing Stud Calculator — Stud Count, Plates & Lumber | BuildTakeoff</title>
+  <meta name="description" content="Free framing stud calculator. Enter wall dimensions and spacing to get stud count, plate linear footage, and total lumber needed. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/framing-studs/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Framing Stud Calculator</h1>
+      <p>Enter your wall dimensions and layout to get an exact stud count, plate linear footage, and total lumber needed — ready for your material order.</p>
+      <div class="tag-row">
+        <span class="tag">Stud Count</span>
+        <span class="tag">Plates</span>
+        <span class="tag">Linear Feet</span>
+        <span class="tag">Cost</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Wall Dimensions</div>
+
+        <div class="field">
+          <label for="wallLength">Total Wall Length</label>
+          <div class="input-wrap">
+            <input type="number" id="wallLength" value="40" min="1" step="1" oninput="calculate()" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Total linear footage of all walls combined</div>
+        </div>
+
+        <div class="field">
+          <label for="wallHeight">Wall Height</label>
+          <div class="input-wrap">
+            <input type="number" id="wallHeight" value="9" min="6" step="0.5" oninput="calculate()" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Stud Spacing</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="sp-16" onclick="setSpacing(16)">16" OC</button>
+            <button class="toggle-btn" id="sp-24" onclick="setSpacing(24)">24" OC</button>
+          </div>
+          <div class="field-hint" id="spacing-hint">16" on-center — standard residential framing</div>
+        </div>
+
+        <div class="field">
+          <label>Stud Size</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="sz-2x4" onclick="setSize('2x4')">2×4</button>
+            <button class="toggle-btn" id="sz-2x6" onclick="setSize('2x6')">2×6</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Openings & Layout</div>
+
+        <div class="field">
+          <label for="numDoors">Doors</label>
+          <div class="input-wrap">
+            <input type="number" id="numDoors" value="2" min="0" step="1" oninput="calculate()" />
+            <span class="input-unit">doors</span>
+          </div>
+          <div class="field-hint">+4 studs per door (2 king + 2 trimmer)</div>
+        </div>
+
+        <div class="field">
+          <label for="numWindows">Windows</label>
+          <div class="input-wrap">
+            <input type="number" id="numWindows" value="4" min="0" step="1" oninput="calculate()" />
+            <span class="input-unit">windows</span>
+          </div>
+          <div class="field-hint">+4 studs per window (2 king + 2 trimmer + cripples)</div>
+        </div>
+
+        <div class="field">
+          <label for="numCorners">Exterior Corners</label>
+          <div class="input-wrap">
+            <input type="number" id="numCorners" value="4" min="0" step="1" oninput="calculate()" />
+            <span class="input-unit">corners</span>
+          </div>
+          <div class="field-hint">+3 studs per corner</div>
+        </div>
+
+        <div class="field">
+          <label for="numIntersections">Wall Intersections (T-walls)</label>
+          <div class="input-wrap">
+            <input type="number" id="numIntersections" value="2" min="0" step="1" oninput="calculate()" />
+            <span class="input-unit">intersections</span>
+          </div>
+          <div class="field-hint">+3 studs per intersection</div>
+        </div>
+
+        <div class="field">
+          <label for="wastePercent">Waste Factor</label>
+          <div class="input-wrap">
+            <input type="number" id="wastePercent" value="10" min="0" max="30" step="5" oninput="calculate()" />
+            <span class="input-unit">%</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing (Optional)</div>
+
+        <div class="field">
+          <label for="studPrice">Price Per Stud</label>
+          <div class="input-wrap">
+            <input type="number" id="studPrice" value="" min="0" step="0.01" placeholder="6.50" oninput="calculate()" />
+            <span class="input-unit">$</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Framing Materials</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Total Studs Needed</div>
+          <div class="result-value" id="res-studs">—</div>
+          <div class="result-sub" id="res-studs-sub">Including waste factor</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Base Stud Count</div>
+          <div class="result-value" id="res-base-studs">—</div>
+          <div class="result-sub">Layout + openings + corners</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Plate Linear Footage</div>
+          <div class="result-value" id="res-plates-lf">—</div>
+          <div class="result-sub">Double top plate + single bottom plate</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Lumber (studs)</div>
+          <div class="result-value" id="res-lf-studs">—</div>
+          <div class="result-sub" id="res-lf-sub">Linear feet at wall height</div>
+        </div>
+        <div class="result-item" id="res-cost-row" style="display:none;">
+          <div class="result-label">Estimated Stud Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Materials only</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-breakdown" id="res-breakdown">
+          <div class="panel-title" style="font-size:0.78rem;margin-bottom:0.75rem;">Stud Count Breakdown</div>
+          <div class="breakdown-row"><span>Layout studs (spacing)</span><span id="br-layout">—</span></div>
+          <div class="breakdown-row"><span>Door studs</span><span id="br-doors">—</span></div>
+          <div class="breakdown-row"><span>Window studs</span><span id="br-windows">—</span></div>
+          <div class="breakdown-row"><span>Corner studs</span><span id="br-corners">—</span></div>
+          <div class="breakdown-row"><span>Intersection studs</span><span id="br-intersect">—</span></div>
+          <div class="breakdown-row total"><span>Subtotal</span><span id="br-subtotal">—</span></div>
+          <div class="breakdown-row"><span>Waste (<span id="br-waste-pct">10</span>%)</span><span id="br-waste">—</span></div>
+          <div class="breakdown-row total orange"><span>Order Total</span><span id="br-total">—</span></div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff</button>
+        <a href="../../calculators/board-foot/" class="btn btn-ghost">→ Board Foot Calculator</a>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Framing Studs</h2>
+      <p>The standard formula for stud count at 16" OC is: <strong>(wall length in feet × 0.75) + 1</strong>. At 24" OC it's: <strong>(wall length in feet × 0.5) + 1</strong>. Then add extra studs for corners, intersections, and openings.</p>
+      <h3>Standard Stud Additions</h3>
+      <ul>
+        <li><strong>Each exterior corner:</strong> 3 extra studs</li>
+        <li><strong>Each T-wall intersection:</strong> 3 extra studs</li>
+        <li><strong>Each door:</strong> 4 extra studs (2 king + 2 trimmer)</li>
+        <li><strong>Each window:</strong> 4 extra studs plus cripples above and below</li>
+        <li><strong>Waste factor:</strong> Always add 10–15% for cuts and mistakes</li>
+      </ul>
+      <h3>16" vs 24" On-Center</h3>
+      <p>16" OC is standard in most residential applications — stronger, better for tile and heavy finishes. 24" OC uses ~30% fewer studs, cutting lumber cost, and is common in energy-efficient construction where insulation fills the cavity.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Ready to quote the job?</h3>
+        <p>Take your lumber quantities into BuildQuotes to build a professional estimate.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="../../calculators/board-foot/" class="eco-link">Board Foot →</a>
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let spacing = 16, studSize = '2x4';
+
+    function setSpacing(s) {
+      spacing = s;
+      document.getElementById('sp-16').classList.toggle('active', s===16);
+      document.getElementById('sp-24').classList.toggle('active', s===24);
+      document.getElementById('spacing-hint').textContent = s===16 ? '16" on-center — standard residential framing' : '24" on-center — energy-efficient, uses fewer studs';
+      calculate();
+    }
+
+    function setSize(sz) {
+      studSize = sz;
+      document.getElementById('sz-2x4').classList.toggle('active', sz==='2x4');
+      document.getElementById('sz-2x6').classList.toggle('active', sz==='2x6');
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setR(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let lastData = {};
+
+    function calculate() {
+      const wallLength = parseFloat(document.getElementById('wallLength').value)||0;
+      const wallHeight = parseFloat(document.getElementById('wallHeight').value)||9;
+      const numDoors   = parseInt(document.getElementById('numDoors').value)||0;
+      const numWindows = parseInt(document.getElementById('numWindows').value)||0;
+      const numCorners = parseInt(document.getElementById('numCorners').value)||0;
+      const numIntersections = parseInt(document.getElementById('numIntersections').value)||0;
+      const waste      = parseFloat(document.getElementById('wastePercent').value)||0;
+      const studPrice  = parseFloat(document.getElementById('studPrice').value)||0;
+
+      // Layout studs
+      const layoutStuds  = Math.ceil(wallLength / (spacing / 12)) + 1;
+      const doorStuds    = numDoors * 4;
+      const windowStuds  = numWindows * 4;
+      const cornerStuds  = numCorners * 3;
+      const intersectStuds = numIntersections * 3;
+      const baseStuds    = layoutStuds + doorStuds + windowStuds + cornerStuds + intersectStuds;
+      const wasteStuds   = Math.ceil(baseStuds * waste / 100);
+      const totalStuds   = baseStuds + wasteStuds;
+
+      // Plates: double top plate + single bottom plate = 3× wall length
+      const platesLF = wallLength * 3;
+
+      // Stud linear footage
+      const studLF = totalStuds * wallHeight;
+
+      lastData = {wallLength, wallHeight, numDoors, numWindows, numCorners, numIntersections,
+        waste, spacing, studSize, layoutStuds, doorStuds, windowStuds, cornerStuds,
+        intersectStuds, baseStuds, wasteStuds, totalStuds, platesLF, studLF, studPrice};
+
+      setR('res-studs', totalStuds.toLocaleString());
+      setR('res-base-studs', baseStuds.toLocaleString());
+      setR('res-plates-lf', platesLF.toFixed(0) + ' LF');
+      setR('res-lf-studs', studLF.toFixed(0) + ' LF');
+      document.getElementById('res-lf-sub').textContent = totalStuds+' studs × '+wallHeight+'ft';
+
+      setR('br-layout', layoutStuds);
+      setR('br-doors', doorStuds);
+      setR('br-windows', windowStuds);
+      setR('br-corners', cornerStuds);
+      setR('br-intersect', intersectStuds);
+      setR('br-subtotal', baseStuds);
+      document.getElementById('br-waste-pct').textContent = waste;
+      setR('br-waste', '+'+wasteStuds);
+      setR('br-total', totalStuds);
+
+      if (studPrice > 0) {
+        const cost = totalStuds * studPrice;
+        document.getElementById('res-cost-row').style.display = '';
+        setR('res-cost', '$' + cost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('res-cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF() {
+      const {jsPDF} = window.jspdf; const doc = new jsPDF();
+      const d = lastData;
+      const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22); doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0); doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12); doc.setFontSize(10); doc.text('Framing Stud Calculator',14,20);
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text('BuildTakeoff.co',14,35); doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55); doc.setDrawColor(249,115,22); doc.line(14,57,196,57);
+      const inputs = [
+        ['Wall Length', d.wallLength+' ft'],['Wall Height', d.wallHeight+' ft'],
+        ['Stud Spacing', d.spacing+'" OC'],['Stud Size', d.studSize],
+        ['Doors', d.numDoors],['Windows', d.numWindows],
+        ['Corners', d.numCorners],['Intersections', d.numIntersections],
+        ['Waste Factor', d.waste+'%'],
+      ];
+      inputs.forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal'); doc.setTextColor(80,80,80); doc.setFontSize(9); doc.text(k+':',14,67+i*9);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20); doc.text(String(v),100,67+i*9);
+      });
+
+      const y2 = 67 + inputs.length*9 + 8;
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.text('RESULTS',14,y2);
+      doc.line(14,y2+2,196,y2+2);
+      const results = [
+        ['Layout Studs', d.layoutStuds],['Door Studs', d.doorStuds],
+        ['Window Studs', d.windowStuds],['Corner Studs', d.cornerStuds],
+        ['Intersection Studs', d.intersectStuds],['Subtotal', d.baseStuds],
+        ['Waste ('+d.waste+'%)', '+'+d.wasteStuds],['TOTAL STUDS', d.totalStuds],
+        ['Plate Linear Footage', d.platesLF+' LF'],['Stud Linear Footage', d.studLF.toFixed(0)+' LF'],
+      ];
+      results.forEach(([k,v],i)=>{
+        const isBold = k.startsWith('TOTAL') || k === 'Subtotal';
+        doc.setFont('helvetica', isBold ? 'bold' : 'normal');
+        doc.setTextColor(isBold ? 249 : 80, isBold ? 115 : 80, isBold ? 22 : 80);
+        doc.setFontSize(9); doc.text(k+':',14,y2+12+i*9);
+        doc.setTextColor(20,20,20); doc.setFont('helvetica','bold'); doc.text(String(v),100,y2+12+i*9);
+      });
+
+      if (d.studPrice > 0) {
+        const cost = d.totalStuds * d.studPrice;
+        const y3 = y2+12+results.length*9+4;
+        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(249,115,22);
+        doc.text('Est. Material Cost: $'+cost.toLocaleString('en-US',{minimumFractionDigits:2}),14,y3);
+      }
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('BuildTakeoff.co  ·  BuildInvoice.co',14,280);
+      doc.save('framing-studs-takeoff.pdf');
+    }
+
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
