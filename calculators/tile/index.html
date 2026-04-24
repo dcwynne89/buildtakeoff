@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tile Calculator — How Many Tiles Do I Need? | BuildTakeoff</title>
+  <meta name="description" content="Free tile calculator. Enter room dimensions and tile size to get tile count, boxes needed, grout, and thinset quantities. Adjustable waste factor. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/tile/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Tile Calculator</h1>
+      <p>Enter your room dimensions and tile size to get an exact tile count, box quantity, grout, and thinset needed — with adjustable waste factor for diagonal and complex patterns.</p>
+      <div class="tag-row">
+        <span class="tag">Tile Count</span>
+        <span class="tag">Boxes</span>
+        <span class="tag">Waste %</span>
+        <span class="tag">Grout & Thinset</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Room / Area</div>
+        <div class="field">
+          <label>Input Method</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="m-dims" onclick="setAreaMode('dims')">Length × Width</button>
+            <button class="toggle-btn" id="m-sqft" onclick="setAreaMode('sqft')">Total Sq Ft</button>
+          </div>
+        </div>
+        <div id="area-dims">
+          <div class="field">
+            <label for="roomLen">Room Length</label>
+            <div class="input-wrap"><input type="number" id="roomLen" value="12" min="1" step="0.5" oninput="calculate()" /><span class="input-unit">ft</span></div>
+          </div>
+          <div class="field">
+            <label for="roomWid">Room Width</label>
+            <div class="input-wrap"><input type="number" id="roomWid" value="10" min="1" step="0.5" oninput="calculate()" /><span class="input-unit">ft</span></div>
+          </div>
+        </div>
+        <div id="area-sqft" style="display:none;">
+          <div class="field">
+            <label for="totalSqft">Total Area</label>
+            <div class="input-wrap"><input type="number" id="totalSqft" value="120" min="1" step="1" oninput="calculate()" /><span class="input-unit">sq ft</span></div>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Tile Size</div>
+        <div class="field">
+          <label>Common Sizes</label>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.35rem;">
+            <button class="tag" style="cursor:pointer;" onclick="setTile(12,12)">12×12</button>
+            <button class="tag" style="cursor:pointer;" onclick="setTile(16,16)">16×16</button>
+            <button class="tag" style="cursor:pointer;" onclick="setTile(18,18)">18×18</button>
+            <button class="tag" style="cursor:pointer;" onclick="setTile(24,24)">24×24</button>
+            <button class="tag" style="cursor:pointer;" onclick="setTile(12,24)">12×24</button>
+            <button class="tag" style="cursor:pointer;" onclick="setTile(4,4)">4×4</button>
+            <button class="tag" style="cursor:pointer;" onclick="setTile(3,6)">3×6</button>
+            <button class="tag" style="cursor:pointer;" onclick="setTile(6,6)">6×6</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div class="field">
+            <label for="tileW">Tile Width</label>
+            <div class="input-wrap"><input type="number" id="tileW" value="12" min="1" step="0.25" oninput="calculate()" /><span class="input-unit">in</span></div>
+          </div>
+          <div class="field">
+            <label for="tileH">Tile Height</label>
+            <div class="input-wrap"><input type="number" id="tileH" value="12" min="1" step="0.25" oninput="calculate()" /><span class="input-unit">in</span></div>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Installation Details</div>
+        <div class="field">
+          <label for="groutJoint">Grout Joint Width</label>
+          <div class="input-wrap"><input type="number" id="groutJoint" value="0.125" min="0.0625" step="0.0625" oninput="calculate()" /><span class="input-unit">in</span></div>
+          <div class="field-hint">1/8" standard · 3/16" for larger tiles · 1/4" for rustic</div>
+        </div>
+        <div class="field">
+          <label>Layout Pattern</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="p-straight" onclick="setPattern('straight')">Straight</button>
+            <button class="toggle-btn" id="p-offset" onclick="setPattern('offset')">Offset (1/3)</button>
+            <button class="toggle-btn" id="p-diagonal" onclick="setPattern('diagonal')">Diagonal 45°</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="wasteP">Waste Factor</label>
+          <div class="input-wrap"><input type="number" id="wasteP" value="10" min="5" max="30" step="5" oninput="calculate()" /><span class="input-unit">%</span></div>
+          <div class="field-hint" id="waste-hint">10% standard · 15% offset · 20% diagonal cuts</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing (Optional)</div>
+        <div class="field">
+          <label for="tileBoxCoverage">Box Coverage</label>
+          <div class="input-wrap"><input type="number" id="tileBoxCoverage" value="15" min="1" step="0.5" oninput="calculate()" /><span class="input-unit">sq ft/box</span></div>
+        </div>
+        <div class="field">
+          <label for="tileBoxPrice">Price Per Box</label>
+          <div class="input-wrap"><input type="number" id="tileBoxPrice" value="" min="0" step="0.01" placeholder="Optional" oninput="calculate()" /><span class="input-unit">$</span></div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Tile Estimate</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Tiles Needed (with waste)</div>
+          <div class="result-value" id="res-tiles">—</div>
+          <div class="result-sub" id="res-tiles-sub">Order this quantity</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Net Area</div>
+          <div class="result-value" id="res-area">—</div>
+          <div class="result-sub">Total floor/wall area</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Boxes Needed</div>
+          <div class="result-value" id="res-boxes">—</div>
+          <div class="result-sub" id="res-boxes-sub">—</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Grout Needed</div>
+          <div class="result-value" id="res-grout">—</div>
+          <div class="result-sub">Approx. weight</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Thinset Needed</div>
+          <div class="result-value" id="res-thinset">—</div>
+          <div class="result-sub">50 lb bags</div>
+        </div>
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Tile Material Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Tile only, not install</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-breakdown">
+          <div class="breakdown-row"><span>Base tiles (net)</span><span id="br-base">—</span></div>
+          <div class="breakdown-row"><span>Waste tiles (<span id="br-wpct">10</span>%)</span><span id="br-waste">—</span></div>
+          <div class="breakdown-row total orange"><span>Order total</span><span id="br-total">—</span></div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff</button>
+        <a href="https://buildquotes.co" target="_blank" class="btn btn-ghost">→ BuildQuotes</a>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Tile Quantity</h2>
+      <p>To find the number of tiles needed: divide the total area by the area of one tile (including grout joint), then add a waste factor for cuts and breakage.</p>
+      <h3>Waste Factors by Pattern</h3>
+      <ul>
+        <li><strong>Straight lay:</strong> 10% — minimal cuts, most efficient</li>
+        <li><strong>Offset / brick pattern:</strong> 12–15% — more cuts at edges</li>
+        <li><strong>Diagonal 45°:</strong> 15–20% — all perimeter tiles are cut at 45°</li>
+        <li><strong>Complex pattern / herringbone:</strong> 20–25% — maximum waste</li>
+      </ul>
+      <h3>Grout & Thinset Estimates</h3>
+      <p>Grout coverage varies by joint width and tile size. A standard 50 lb bag of thinset covers approximately 40–60 sq ft depending on tile size and notch trowel used.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Quote the full tile job.</h3>
+        <p>Take your material quantities into BuildQuotes to generate a professional estimate for your client.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="../../calculators/flooring/" class="eco-link">Flooring Calc →</a>
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let areaMode = 'dims', pattern = 'straight';
+
+    function setAreaMode(m) {
+      areaMode = m;
+      document.getElementById('area-dims').style.display = m==='dims' ? '' : 'none';
+      document.getElementById('area-sqft').style.display = m==='sqft' ? '' : 'none';
+      document.getElementById('m-dims').classList.toggle('active', m==='dims');
+      document.getElementById('m-sqft').classList.toggle('active', m==='sqft');
+      calculate();
+    }
+
+    function setPattern(p) {
+      pattern = p;
+      ['straight','offset','diagonal'].forEach(id => document.getElementById('p-'+id).classList.toggle('active', id===p));
+      const waste = p==='straight' ? 10 : p==='offset' ? 15 : 20;
+      document.getElementById('wasteP').value = waste;
+      document.getElementById('waste-hint').textContent = p==='straight' ? '10% standard straight lay' : p==='offset' ? '15% for offset/brick patterns' : '20% for diagonal 45° patterns';
+      calculate();
+    }
+
+    function setTile(w, h) {
+      document.getElementById('tileW').value = w;
+      document.getElementById('tileH').value = h;
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setR(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let lastData = {};
+
+    function calculate() {
+      let area;
+      if (areaMode === 'dims') {
+        const l = parseFloat(document.getElementById('roomLen').value)||0;
+        const w = parseFloat(document.getElementById('roomWid').value)||0;
+        area = l * w;
+      } else {
+        area = parseFloat(document.getElementById('totalSqft').value)||0;
+      }
+
+      const tileW  = parseFloat(document.getElementById('tileW').value)||12;
+      const tileH  = parseFloat(document.getElementById('tileH').value)||12;
+      const grout  = parseFloat(document.getElementById('groutJoint').value)||0.125;
+      const waste  = parseFloat(document.getElementById('wasteP').value)||10;
+      const boxCov = parseFloat(document.getElementById('tileBoxCoverage').value)||15;
+      const boxPrice = parseFloat(document.getElementById('tileBoxPrice').value)||0;
+
+      const tileAreaSqFt = ((tileW + grout) * (tileH + grout)) / 144;
+      const baseTiles    = Math.ceil(area / tileAreaSqFt);
+      const wasteTiles   = Math.ceil(baseTiles * waste / 100);
+      const totalTiles   = baseTiles + wasteTiles;
+      const totalAreaWithWaste = area * (1 + waste / 100);
+      const boxes        = Math.ceil(totalAreaWithWaste / boxCov);
+
+      // Grout: approx 0.5–1.5 lbs per sq ft depending on joint
+      const groutLbs = Math.ceil(area * (grout <= 0.125 ? 0.5 : grout <= 0.1875 ? 0.75 : 1.2));
+      // Thinset: 50lb bag covers ~50 sqft
+      const thinsetBags = Math.ceil(area / 50);
+
+      lastData = {area, tileW, tileH, grout, waste, boxCov, boxPrice, baseTiles, wasteTiles, totalTiles, boxes, groutLbs, thinsetBags};
+
+      setR('res-tiles', totalTiles.toLocaleString());
+      document.getElementById('res-tiles-sub').textContent = 'Including '+waste+'% waste';
+      setR('res-area', area.toFixed(1)+' sq ft');
+      setR('res-boxes', boxes.toLocaleString());
+      document.getElementById('res-boxes-sub').textContent = boxes+' boxes × '+boxCov+' sq ft/box';
+      setR('res-grout', groutLbs+' lbs');
+      setR('res-thinset', thinsetBags+' bags');
+      setR('br-base', baseTiles.toLocaleString());
+      document.getElementById('br-wpct').textContent = waste;
+      setR('br-waste', '+'+wasteTiles.toLocaleString());
+      setR('br-total', totalTiles.toLocaleString());
+
+      if (boxPrice > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setR('res-cost','$'+(boxes*boxPrice).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF() {
+      const {jsPDF} = window.jspdf; const doc = new jsPDF();
+      const d = lastData;
+      const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22); doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0); doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12); doc.setFontSize(10); doc.text('Tile Calculator',14,20);
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text('BuildTakeoff.co',14,35); doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('RESULTS',14,55); doc.setDrawColor(249,115,22); doc.line(14,57,196,57);
+      const rows = [
+        ['Room Area', d.area.toFixed(1)+' sq ft'],
+        ['Tile Size', d.tileW+'"×'+d.tileH+'"'],
+        ['Grout Joint', d.grout+'"'],
+        ['Waste Factor', d.waste+'%'],
+        ['Base Tile Count', d.baseTiles.toLocaleString()],
+        ['Waste Tiles', '+'+d.wasteTiles.toLocaleString()],
+        ['TOTAL TILES (ORDER)', d.totalTiles.toLocaleString()],
+        ['Boxes Needed', d.boxes+' boxes ('+d.boxCov+' sq ft/box)'],
+        ['Grout Needed', d.groutLbs+' lbs'],
+        ['Thinset Needed', d.thinsetBags+' bags (50 lb)'],
+      ];
+      if (d.boxPrice > 0) rows.push(['Tile Cost', '$'+(d.boxes*d.boxPrice).toLocaleString('en-US',{minimumFractionDigits:2})]);
+      rows.forEach(([k,v],i) => {
+        const bold = k.startsWith('TOTAL');
+        doc.setFont('helvetica', bold?'bold':'normal'); doc.setTextColor(bold?249:60,bold?115:60,bold?22:60); doc.setFontSize(9);
+        doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20); doc.text(v,110,67+i*10);
+      });
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('BuildTakeoff.co  ·  BuildInvoice.co',14,280);
+      doc.save('tile-takeoff.pdf');
+    }
+
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

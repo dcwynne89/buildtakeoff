@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deck Calculator — Board Count, Joists & Material Cost | BuildTakeoff</title>
+  <meta name="description" content="Free deck calculator. Enter deck dimensions, board size, and joist spacing to get board count, linear footage, joist count, and total material cost. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/deck/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Deck Calculator</h1>
+      <p>Enter your deck dimensions, decking board size, and joist spacing to get exact board count, linear footage, joist count, and estimated material cost.</p>
+      <div class="tag-row">
+        <span class="tag">Board Count</span>
+        <span class="tag">Linear Ft</span>
+        <span class="tag">Joists</span>
+        <span class="tag">Cost</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Deck Dimensions</div>
+        <div class="field">
+          <label for="deckLength">Deck Length</label>
+          <div class="input-wrap"><input type="number" id="deckLength" value="20" min="1" step="0.5" oninput="calculate()" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">Direction boards run across</div>
+        </div>
+        <div class="field">
+          <label for="deckWidth">Deck Width</label>
+          <div class="input-wrap"><input type="number" id="deckWidth" value="12" min="1" step="0.5" oninput="calculate()" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">Direction boards span (perpendicular to joist)</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Decking Boards</div>
+        <div class="field">
+          <label>Board Size</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="b-5h" onclick="setBoardWidth(5.5,'5.5"')">2×6 (5.5")</button>
+            <button class="toggle-btn" id="b-3h" onclick="setBoardWidth(3.5,'3.5"')">2×4 (3.5")</button>
+            <button class="toggle-btn" id="b-custom" onclick="setBoardWidth(0,'custom')">Custom</button>
+          </div>
+        </div>
+        <div class="field" id="custom-width-field" style="display:none;">
+          <label for="boardWidthCustom">Actual Board Width</label>
+          <div class="input-wrap"><input type="number" id="boardWidthCustom" value="5.5" min="1" step="0.25" oninput="calculate()" /><span class="input-unit">in</span></div>
+        </div>
+        <div class="field">
+          <label for="boardLength">Board Length</label>
+          <div class="input-wrap"><input type="number" id="boardLength" value="12" min="8" step="2" oninput="calculate()" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">Standard lengths: 8, 10, 12, 16, 20 ft</div>
+        </div>
+        <div class="field">
+          <label for="gapWidth">Gap Between Boards</label>
+          <div class="input-wrap"><input type="number" id="gapWidth" value="0.25" min="0.125" max="0.5" step="0.125" oninput="calculate()" /><span class="input-unit">in</span></div>
+          <div class="field-hint">Standard: 1/4" for composite · 1/8" for hardwood</div>
+        </div>
+        <div class="field">
+          <label for="deckWaste">Waste Factor</label>
+          <div class="input-wrap"><input type="number" id="deckWaste" value="10" min="0" max="20" step="5" oninput="calculate()" /><span class="input-unit">%</span></div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Joists</div>
+        <div class="field">
+          <label>Joist Spacing</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="j-16" onclick="setJoistSpacing(16)">16" OC</button>
+            <button class="toggle-btn" id="j-12" onclick="setJoistSpacing(12)">12" OC</button>
+            <button class="toggle-btn" id="j-24" onclick="setJoistSpacing(24)">24" OC</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Joist Size</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="js-2x8" onclick="setJoistSize('2×8')">2×8</button>
+            <button class="toggle-btn" id="js-2x10" onclick="setJoistSize('2×10')">2×10</button>
+            <button class="toggle-btn" id="js-2x12" onclick="setJoistSize('2×12')">2×12</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing (Optional)</div>
+        <div class="field">
+          <label for="boardPrice">Price Per Linear Foot (decking)</label>
+          <div class="input-wrap"><input type="number" id="boardPrice" value="" min="0" step="0.01" placeholder="e.g. 2.80" oninput="calculate()" /><span class="input-unit">$/LF</span></div>
+        </div>
+        <div class="field">
+          <label for="joistPrice">Price Per Linear Foot (joist)</label>
+          <div class="input-wrap"><input type="number" id="joistPrice" value="" min="0" step="0.01" placeholder="e.g. 1.50" oninput="calculate()" /><span class="input-unit">$/LF</span></div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Deck Materials</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Deck Boards Needed</div>
+          <div class="result-value" id="res-boards">—</div>
+          <div class="result-sub" id="res-boards-sub">Including waste factor</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Deck Area</div>
+          <div class="result-value" id="res-area">—</div>
+          <div class="result-sub">Square footage</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Decking Linear Footage</div>
+          <div class="result-value" id="res-lf">—</div>
+          <div class="result-sub" id="res-lf-sub">Total LF to order</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Joists Needed</div>
+          <div class="result-value" id="res-joists">—</div>
+          <div class="result-sub" id="res-joists-sub">—</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Joist Linear Footage</div>
+          <div class="result-value" id="res-joist-lf">—</div>
+          <div class="result-sub">Total joist LF</div>
+        </div>
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Total Material Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Decking + joists</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <div class="result-breakdown">
+          <div class="breakdown-row"><span>Boards (net)</span><span id="br-base">—</span></div>
+          <div class="breakdown-row"><span>Waste (<span id="br-wpct">10</span>%)</span><span id="br-waste">—</span></div>
+          <div class="breakdown-row total orange"><span>Total boards to order</span><span id="br-total">—</span></div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff</button>
+        <a href="https://buildquotes.co" target="_blank" class="btn btn-ghost">→ BuildQuotes</a>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Deck Boards</h2>
+      <p>To find deck board count: divide the deck width by the board width plus gap, then multiply by the number of boards needed to span the length. Always add 10% for end cuts and waste.</p>
+      <h3>Common Deck Board Spacings</h3>
+      <ul>
+        <li><strong>1/4" gap (6mm):</strong> Standard for pressure treated lumber — allows for expansion</li>
+        <li><strong>1/8" gap (3mm):</strong> For composite decking or hardwoods like ipe</li>
+        <li><strong>No gap:</strong> Butt joint — common with composite hidden fastener systems</li>
+      </ul>
+      <h3>Joist Spacing Guidelines</h3>
+      <ul>
+        <li><strong>12" OC:</strong> For composite decking or spans over 12 ft — maximum rigidity</li>
+        <li><strong>16" OC:</strong> Standard residential — works for most wood and composite products</li>
+        <li><strong>24" OC:</strong> Only for specific composite brands rated for 24" spans</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Ready to quote the deck job?</h3>
+        <p>Take your material list into BuildQuotes to create a professional client proposal.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="../../calculators/fence/" class="eco-link">Fence Calc →</a>
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let boardWidthIn = 5.5, boardWidthLabel = '5.5"';
+    let joistSpacing = 16, joistSize = '2×8';
+
+    function setBoardWidth(w, label) {
+      if (w === 0) {
+        document.getElementById('custom-width-field').style.display = '';
+        boardWidthIn = parseFloat(document.getElementById('boardWidthCustom').value)||5.5;
+      } else {
+        document.getElementById('custom-width-field').style.display = 'none';
+        boardWidthIn = w; boardWidthLabel = label;
+      }
+      ['5h','3h','custom'].forEach(id => document.getElementById('b-'+id).classList.remove('active'));
+      document.getElementById(w===5.5?'b-5h':w===3.5?'b-3h':'b-custom').classList.add('active');
+      calculate();
+    }
+
+    function setJoistSpacing(s) {
+      joistSpacing = s;
+      [12,16,24].forEach(x => document.getElementById('j-'+x).classList.toggle('active', x===s));
+      calculate();
+    }
+
+    function setJoistSize(sz) {
+      joistSize = sz;
+      ['2×8','2×10','2×12'].forEach(s => document.getElementById('js-'+s).classList.toggle('active', s===sz));
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setR(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let lastData = {};
+
+    function calculate() {
+      const deckLength = parseFloat(document.getElementById('deckLength').value)||0;
+      const deckWidth  = parseFloat(document.getElementById('deckWidth').value)||0;
+      const gap        = parseFloat(document.getElementById('gapWidth').value)||0.25;
+      const waste      = parseFloat(document.getElementById('deckWaste').value)||10;
+      const boardLen   = parseFloat(document.getElementById('boardLength').value)||12;
+      if (document.getElementById('custom-width-field').style.display !== 'none') {
+        boardWidthIn = parseFloat(document.getElementById('boardWidthCustom').value)||5.5;
+      }
+      const boardPrice  = parseFloat(document.getElementById('boardPrice').value)||0;
+      const joistPrice  = parseFloat(document.getElementById('joistPrice').value)||0;
+
+      const area = deckLength * deckWidth;
+
+      // Board count: how many boards span the width
+      const boardPitch = (boardWidthIn + gap) / 12; // ft per board including gap
+      const baseBoards = Math.ceil(deckWidth / boardPitch);
+
+      // Each board spans the length — how many boards of boardLen needed
+      const boardsPerRow = Math.ceil(deckLength / boardLen);
+      const totalBaseBoards = baseBoards * boardsPerRow;
+      const wasteBoards = Math.ceil(totalBaseBoards * waste / 100);
+      const totalBoards = totalBaseBoards + wasteBoards;
+      const totalLF = totalBoards * boardLen;
+
+      // Joists: span the width, spaced joistSpacing OC along length
+      const numJoists = Math.ceil(deckLength / (joistSpacing / 12)) + 1;
+      const joistLF = numJoists * deckWidth;
+
+      let totalCost = 0;
+      const hasCost = boardPrice > 0 || joistPrice > 0;
+      if (boardPrice > 0) totalCost += totalLF * boardPrice;
+      if (joistPrice > 0) totalCost += joistLF * joistPrice;
+
+      lastData = {deckLength, deckWidth, area, gap, waste, boardLen, boardWidthIn, boardWidthLabel, joistSpacing, joistSize, baseBoards, totalBaseBoards, wasteBoards, totalBoards, totalLF, numJoists, joistLF, boardPrice, joistPrice, totalCost};
+
+      setR('res-boards', totalBoards.toLocaleString());
+      document.getElementById('res-boards-sub').textContent = `${totalBaseBoards} base + ${wasteBoards} waste`;
+      setR('res-area', area.toFixed(0)+' sq ft');
+      setR('res-lf', totalLF.toFixed(0)+' LF');
+      document.getElementById('res-lf-sub').textContent = totalBoards+' boards × '+boardLen+'ft';
+      setR('res-joists', numJoists.toLocaleString());
+      document.getElementById('res-joists-sub').textContent = joistSpacing+'" OC along '+deckLength+'ft length';
+      setR('res-joist-lf', joistLF.toFixed(0)+' LF');
+      setR('br-base', totalBaseBoards.toLocaleString());
+      document.getElementById('br-wpct').textContent = waste;
+      setR('br-waste', '+'+wasteBoards.toLocaleString());
+      setR('br-total', totalBoards.toLocaleString());
+
+      if (hasCost) {
+        document.getElementById('cost-row').style.display = '';
+        setR('res-cost','$'+totalCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF() {
+      const {jsPDF} = window.jspdf; const doc = new jsPDF();
+      const d = lastData;
+      const date = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22); doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0); doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12); doc.setFontSize(10); doc.text('Deck Calculator',14,20);
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text('BuildTakeoff.co',14,35); doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('RESULTS',14,55); doc.setDrawColor(249,115,22); doc.line(14,57,196,57);
+      const rows = [
+        ['Deck Dimensions', d.deckLength+'ft × '+d.deckWidth+'ft'],
+        ['Deck Area', d.area.toFixed(0)+' sq ft'],
+        ['Board Size', d.boardWidthIn+'" wide × '+d.boardLen+'ft long'],
+        ['Gap', d.gap+'"'],
+        ['Waste Factor', d.waste+'%'],
+        ['Base Board Count', d.totalBaseBoards.toLocaleString()],
+        ['Waste Boards', '+'+d.wasteBoards.toLocaleString()],
+        ['TOTAL BOARDS (ORDER)', d.totalBoards.toLocaleString()],
+        ['Decking Linear Footage', d.totalLF.toFixed(0)+' LF'],
+        ['Joist Spacing', d.joistSpacing+'" OC ('+d.joistSize+')'],
+        ['Joists Needed', d.numJoists.toLocaleString()],
+        ['Joist Linear Footage', d.joistLF.toFixed(0)+' LF'],
+      ];
+      if (d.boardPrice > 0 || d.joistPrice > 0) rows.push(['Total Material Cost', '$'+d.totalCost.toLocaleString('en-US',{minimumFractionDigits:2})]);
+      rows.forEach(([k,v],i) => {
+        const bold = k.startsWith('TOTAL');
+        doc.setFont('helvetica', bold?'bold':'normal'); doc.setTextColor(bold?249:60,bold?115:60,bold?22:60); doc.setFontSize(9);
+        doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20); doc.text(v,110,67+i*10);
+      });
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('BuildTakeoff.co  ·  BuildInvoice.co',14,280);
+      doc.save('deck-takeoff.pdf');
+    }
+
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>
