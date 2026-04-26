@@ -565,3 +565,65 @@ body {
   color: var(--orange); letter-spacing: -0.03em;
 }
 .summary-divider { height: 1px; background: var(--border); margin: 0.25rem 0; }
+
+/* -- Hamburger Toggle -- */
+.nav-toggle {
+  display: none;
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  z-index: 1010;
+}
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text, #f0f0f5);
+  border-radius: 2px;
+  transition: transform .3s, opacity .3s;
+  margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle { display: block; }
+  .nav-links {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw; height: 100vh; height: 100dvh;
+    background: var(--bg, #0a0c18);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+    z-index: 1000;
+  }
+  .nav-links.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav-links a {
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    color: var(--text-muted, #999) !important;
+    border: none !important;
+    padding: 0 !important;
+    background: none !important;
+  }
+  .nav-links a:hover { color: var(--accent, #f59e0b) !important; }
+  .nav-close {
+    position: absolute;
+    top: 18px; right: 20px;
+    background: none; border: none;
+    color: var(--text, #f0f0f5);
+    font-size: 2rem; cursor: pointer;
+    padding: 8px; line-height: 1;
+    opacity: .7; transition: opacity .2s;
+  }
+  .nav-close:hover { opacity: 1; }
+}
