@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Calculator Do I Need? — Quiz | BuildTakeoff</title>
+  <meta name="description" content="Not sure which construction calculator to use? Answer 2 quick questions and we'll point you to the exact calculator for your project." />
+  <link rel="canonical" href="https://buildtakeoff.co/quiz/" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    .quiz-page { max-width: 700px; margin: 0 auto; padding: 2rem; }
+    .quiz-hero { text-align: center; padding: 3rem 0 2rem; }
+    .quiz-hero h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.75rem; }
+    .quiz-hero h1 em { font-style: normal; color: var(--orange); }
+    .quiz-hero p { color: var(--text-dim); font-size: 1rem; max-width: 480px; margin: 0 auto; }
+
+    /* Steps */
+    .quiz-step { display: none; animation: quizFadeIn 0.35s ease both; }
+    .quiz-step.active { display: block; }
+    @keyframes quizFadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .step-label {
+      font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .step-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .step-question { font-size: 1.15rem; font-weight: 800; margin-bottom: 1.5rem; }
+
+    /* Progress */
+    .quiz-progress { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+    .quiz-progress-dot {
+      flex: 1; height: 4px; border-radius: 999px;
+      background: var(--border); transition: background 0.3s;
+    }
+    .quiz-progress-dot.filled { background: var(--orange); }
+    .quiz-progress-dot.current { background: var(--orange-light); }
+
+    /* Option Buttons */
+    .quiz-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.6rem; }
+    .quiz-option {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      color: var(--text-dim); font-family: inherit; font-size: 0.9rem; font-weight: 600;
+      padding: 0.85rem 1rem; cursor: pointer; transition: all 0.2s; text-align: left;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .quiz-option:hover { border-color: var(--border-hover); color: var(--text); background: var(--card-hover); }
+    .quiz-option:active { transform: scale(0.98); }
+    .quiz-option-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    /* Back button */
+    .quiz-back {
+      background: none; border: none; color: var(--text-muted); font-family: inherit;
+      font-size: 0.85rem; font-weight: 500; cursor: pointer; padding: 0.5rem 0;
+      margin-top: 1rem; transition: color 0.2s;
+    }
+    .quiz-back:hover { color: var(--orange); }
+
+    /* Result Card */
+    .quiz-result {
+      background: var(--card); border: 1px solid var(--border-hover); border-radius: var(--radius);
+      padding: 2rem; text-align: center; margin-top: 1rem;
+    }
+    .quiz-result-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .quiz-result h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .quiz-result p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6; }
+    .quiz-result .btn { max-width: 300px; margin: 0 auto 0.75rem; }
+    .quiz-restart {
+      background: none; border: none; color: var(--text-muted); font-family: inherit;
+      font-size: 0.85rem; font-weight: 500; cursor: pointer; margin-top: 1rem;
+      transition: color 0.2s;
+    }
+    .quiz-restart:hover { color: var(--orange); }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../#calculators">All Calculators</a>
+      <a href="../glossary/">Glossary</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="quiz-page">
+    <a href="../" class="back-link">← Home</a>
+
+    <div class="quiz-hero fade-up">
+      <div class="hero-badge">🧭 Calculator Finder</div>
+      <h1>What Calculator Do <em>I Need?</em></h1>
+      <p>Answer 2 quick questions and we'll point you to the right calculator for your project.</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="quiz-progress" id="quizProgress">
+      <div class="quiz-progress-dot current" id="dot-0"></div>
+      <div class="quiz-progress-dot" id="dot-1"></div>
+      <div class="quiz-progress-dot" id="dot-2"></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="quiz-step active" id="step-0">
+      <div class="step-label">Step 1 of 2</div>
+      <div class="step-question">What type of project are you working on?</div>
+      <div class="quiz-options" id="step0Options"></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="quiz-step" id="step-1">
+      <div class="step-label">Step 2 of 2</div>
+      <div class="step-question" id="step1Question">What specifically do you need to calculate?</div>
+      <div class="quiz-options" id="step1Options"></div>
+      <button class="quiz-back" onclick="goBack()">&larr; Back</button>
+    </div>
+
+    <!-- RESULT -->
+    <div class="quiz-step" id="step-2">
+      <div class="step-label">Your Calculator</div>
+      <div class="quiz-result" id="quizResult"></div>
+    </div>
+  </div>
+
+  <!-- ECOSYSTEM STRIP -->
+  <div style="max-width:700px;margin:0 auto;padding:0 2rem;">
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>The full Build ecosystem</h3>
+        <p>Every tool from takeoff to invoice — all in one suite.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice</a>
+        <a href="https://buildchangeorder.co" class="eco-link" target="_blank">BuildChangeOrder</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../">All Calculators</a>
+        <a href="../glossary/">Glossary</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    // ── QUIZ DATA ──────────────────────────────────
+    const categories = [
+      { id: 'concrete',  label: 'Concrete & Foundation', icon: '🧱' },
+      { id: 'roofing',   label: 'Roofing',               icon: '🏠' },
+      { id: 'framing',   label: 'Framing & Lumber',      icon: '🪵' },
+      { id: 'interior',  label: 'Interior Finishes',     icon: '🎨' },
+      { id: 'exterior',  label: 'Exterior & Site',       icon: '🌿' },
+      { id: 'mechanical',label: 'Mechanical (Elec/Plumb/HVAC)', icon: '⚡' },
+      { id: 'business',  label: 'Business / Pricing',    icon: '💰' },
+    ];
+
+    const subOptions = {
+      concrete: [
+        { label: 'Slab, Patio, or Driveway',     result: 'concrete-slab' },
+        { label: 'Footing or Foundation',          result: 'concrete-footing' },
+        { label: 'Column or Pier',                 result: 'concrete-column' },
+        { label: 'Retaining Wall',                 result: 'retaining-wall' },
+        { label: 'Gravel / Fill / Base Material',  result: 'gravel' },
+        { label: 'Rebar Layout',                   result: 'rebar' },
+        { label: 'Brick or Block Wall',            result: 'brick-block' },
+      ],
+      roofing: [
+        { label: 'Shingle / Material Quantities',  result: 'roofing-squares' },
+        { label: 'Roof Pitch or Angle',            result: 'roof-pitch' },
+      ],
+      framing: [
+        { label: 'Wall Studs & Plates',            result: 'framing-studs' },
+        { label: 'Board Feet (Lumber Volume)',      result: 'board-foot' },
+        { label: 'Window / Door Rough Openings',    result: 'window-door-rough-opening' },
+      ],
+      interior: [
+        { label: 'Paint (Walls & Ceilings)',        result: 'paint' },
+        { label: 'Tile (Floor or Wall)',             result: 'tile' },
+        { label: 'Flooring (Hardwood, LVP, Laminate)', result: 'flooring' },
+        { label: 'Drywall (Sheetrock)',              result: 'drywall' },
+        { label: 'Insulation',                       result: 'insulation' },
+        { label: 'Stairs (Treads & Risers)',          result: 'stair' },
+      ],
+      exterior: [
+        { label: 'Fence (Posts, Rails, Pickets)',     result: 'fence' },
+        { label: 'Deck (Boards, Joists)',             result: 'deck' },
+        { label: 'Mulch or Topsoil',                  result: 'mulch' },
+        { label: 'Siding',                            result: 'siding' },
+        { label: 'Gutters',                           result: 'gutter' },
+        { label: 'Asphalt / Paving',                  result: 'asphalt' },
+        { label: 'Landscape Fabric / Erosion',         result: 'landscape-fabric' },
+        { label: 'Excavation Volume',                  result: 'excavation' },
+        { label: 'Gravel / Crushed Stone',             result: 'gravel' },
+      ],
+      mechanical: [
+        { label: 'Electrical Wire Length',            result: 'electrical-wire' },
+        { label: 'Plumbing Pipe',                     result: 'plumbing-pipe' },
+        { label: 'HVAC Load / BTU Sizing',             result: 'hvac-load' },
+      ],
+      business: [
+        { label: 'Markup & Margin (Bid Pricing)',     result: 'markup' },
+      ],
+    };
+
+    const results = {
+      'concrete-slab': {
+        icon: '🧱',
+        name: 'Concrete Slab Calculator',
+        desc: 'Get cubic yards, 80lb bag count, and total cost for any concrete pour. Includes waste factor toggle and PDF takeoff export.',
+        url: '../calculators/concrete-slab/',
+      },
+      'concrete-footing': {
+        icon: '🧱',
+        name: 'Concrete Footing Calculator',
+        desc: 'Calculate concrete volume for continuous footings and pad footings. Get cubic yards and bag counts for any footing size.',
+        url: '../calculators/concrete-footing/',
+      },
+      'concrete-column': {
+        icon: '🧱',
+        name: 'Concrete Column Calculator',
+        desc: 'Calculate concrete volume for round or square columns and piers. Get cubic yards, bags, and Sonotube sizing.',
+        url: '../calculators/concrete-column/',
+      },
+      'retaining-wall': {
+        icon: '🧱',
+        name: 'Retaining Wall Calculator',
+        desc: 'Calculate blocks, gravel backfill, and rebar for segmental or poured retaining walls.',
+        url: '../calculators/retaining-wall/',
+      },
+      'rebar': {
+        icon: '🔩',
+        name: 'Rebar Calculator',
+        desc: 'Calculate rebar quantity, weight, and spacing for slabs, footings, and walls. Get total linear feet and number of bars.',
+        url: '../calculators/rebar/',
+      },
+      'brick-block': {
+        icon: '🧱',
+        name: 'Brick & Block Calculator',
+        desc: 'Calculate the number of bricks or concrete blocks needed for any wall, including mortar and waste.',
+        url: '../calculators/brick-block/',
+      },
+      'gravel': {
+        icon: '⛰️',
+        name: 'Gravel & Fill Calculator',
+        desc: 'Calculate cubic yards and tons of gravel, crushed stone, or fill dirt. Handles swell factor and PDF export.',
+        url: '../calculators/gravel/',
+      },
+      'roofing-squares': {
+        icon: '🏠',
+        name: 'Roofing Squares Calculator',
+        desc: 'Enter roof dimensions and pitch to get exact roofing squares, shingle bundles, and waste-adjusted totals with PDF report.',
+        url: '../calculators/roofing-squares/',
+      },
+      'roof-pitch': {
+        icon: '📐',
+        name: 'Roof Pitch Calculator',
+        desc: 'Find roof pitch, angle in degrees, rafter length, and pitch multiplier for any rise and run combination.',
+        url: '../calculators/roof-pitch/',
+      },
+      'framing-studs': {
+        icon: '🪵',
+        name: 'Framing Stud Calculator',
+        desc: 'Calculate stud count, plates, and linear footage for walls at 16" or 24" OC spacing.',
+        url: '../calculators/framing-studs/',
+      },
+      'board-foot': {
+        icon: '📏',
+        name: 'Board Foot Calculator',
+        desc: 'Convert lumber dimensions and quantity to total board feet. Price it out instantly with per-BF pricing.',
+        url: '../calculators/board-foot/',
+      },
+      'window-door-rough-opening': {
+        icon: '🪟',
+        name: 'Window & Door Rough Opening Calculator',
+        desc: 'Calculate rough opening sizes for windows and doors. Get header size, trimmer studs, and cripple counts.',
+        url: '../calculators/window-door-rough-opening/',
+      },
+      'paint': {
+        icon: '🎨',
+        name: 'Paint Calculator',
+        desc: 'Enter room dimensions and coats to get exact gallons needed, with door/window deductions and cost estimates.',
+        url: '../calculators/paint/',
+      },
+      'tile': {
+        icon: '🔲',
+        name: 'Tile Calculator',
+        desc: 'Calculate tile count and boxes needed for any room or surface. Includes adjustable waste factor.',
+        url: '../calculators/tile/',
+      },
+      'flooring': {
+        icon: '🪵',
+        name: 'Flooring Calculator',
+        desc: 'Get total square footage, square yards, and box count for hardwood, LVP, laminate, or carpet.',
+        url: '../calculators/flooring/',
+      },
+      'drywall': {
+        icon: '📋',
+        name: 'Drywall Calculator',
+        desc: 'Calculate sheet count, joint compound, tape, and screws for any room. Includes ceiling option and waste factor.',
+        url: '../calculators/drywall/',
+      },
+      'insulation': {
+        icon: '🧊',
+        name: 'Insulation Calculator',
+        desc: 'Calculate insulation batts, rolls, or blown-in coverage needed for walls, attics, and crawl spaces.',
+        url: '../calculators/insulation/',
+      },
+      'stair': {
+        icon: '🪜',
+        name: 'Stair Calculator',
+        desc: 'Calculate treads, risers, stringer length, and rise/run ratios for any staircase. Code-compliant sizing.',
+        url: '../calculators/stair/',
+      },
+      'fence': {
+        icon: '🏗️',
+        name: 'Fence Calculator',
+        desc: 'Calculate posts, rails, pickets, and concrete bags for any wood fence project.',
+        url: '../calculators/fence/',
+      },
+      'deck': {
+        icon: '🪜',
+        name: 'Deck Calculator',
+        desc: 'Get deck board count, joist spacing, and total board footage for any deck size and layout.',
+        url: '../calculators/deck/',
+      },
+      'mulch': {
+        icon: '🌿',
+        name: 'Mulch Calculator',
+        desc: 'Calculate cubic yards and bags of mulch or topsoil needed for any garden bed or landscaping area.',
+        url: '../calculators/mulch/',
+      },
+      'siding': {
+        icon: '🏠',
+        name: 'Siding Calculator',
+        desc: 'Calculate squares of siding needed for any home exterior, with window and door deductions.',
+        url: '../calculators/siding/',
+      },
+      'gutter': {
+        icon: '🏠',
+        name: 'Gutter Calculator',
+        desc: 'Calculate gutter length, downspouts, hangers, and end caps for any roofline.',
+        url: '../calculators/gutter/',
+      },
+      'asphalt': {
+        icon: '🛣️',
+        name: 'Asphalt Calculator',
+        desc: 'Calculate tons of asphalt needed for driveways, parking lots, and roads at any thickness.',
+        url: '../calculators/asphalt/',
+      },
+      'landscape-fabric': {
+        icon: '🌿',
+        name: 'Landscape Fabric Calculator',
+        desc: 'Calculate rolls and square footage of landscape fabric or weed barrier needed for any area.',
+        url: '../calculators/landscape-fabric/',
+      },
+      'excavation': {
+        icon: '⛏️',
+        name: 'Excavation Calculator',
+        desc: 'Calculate excavation volume in cubic yards, truck loads, and cost for any dig or grading project.',
+        url: '../calculators/excavation/',
+      },
+      'electrical-wire': {
+        icon: '⚡',
+        name: 'Electrical Wire Calculator',
+        desc: 'Calculate wire length, gauge requirements, and conduit sizing for residential and commercial electrical runs.',
+        url: '../calculators/electrical-wire/',
+      },
+      'plumbing-pipe': {
+        icon: '🔧',
+        name: 'Plumbing Pipe Calculator',
+        desc: 'Calculate pipe lengths, fittings, and material for any plumbing supply or drain layout.',
+        url: '../calculators/plumbing-pipe/',
+      },
+      'hvac-load': {
+        icon: '❄️',
+        name: 'HVAC Load Calculator',
+        desc: 'Calculate heating and cooling BTU requirements for any room or building based on size, insulation, and climate.',
+        url: '../calculators/hvac-load/',
+      },
+      'markup': {
+        icon: '💰',
+        name: 'Markup & Margin Calculator',
+        desc: 'Enter material and labor costs to get your bid price, gross profit, and effective margin. Know what to charge before you quote.',
+        url: '../calculators/markup/',
+      },
+    };
+
+    // ── STATE ──────────────────────────────────────
+    let currentStep = 0;
+    let selectedCategory = null;
+
+    // ── RENDER STEP 1 ──────────────────────────────
+    const step0Container = document.getElementById('step0Options');
+    categories.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.innerHTML = `<span class="quiz-option-icon">${cat.icon}</span> ${cat.label}`;
+      btn.addEventListener('click', () => selectCategory(cat.id));
+      step0Container.appendChild(btn);
+    });
+
+    function selectCategory(catId) {
+      selectedCategory = catId;
+      const subs = subOptions[catId];
+
+      // If only 1 sub-option, skip step 2
+      if (subs.length === 1) {
+        showResult(subs[0].result);
+        setStep(2);
+        return;
+      }
+
+      const step1Container = document.getElementById('step1Options');
+      step1Container.innerHTML = '';
+      subs.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option';
+        btn.innerHTML = `${opt.label}`;
+        btn.addEventListener('click', () => {
+          showResult(opt.result);
+          setStep(2);
+        });
+        step1Container.appendChild(btn);
+      });
+
+      setStep(1);
+    }
+
+    function showResult(calcId) {
+      const r = results[calcId];
+      const container = document.getElementById('quizResult');
+      container.innerHTML = `
+        <div class="quiz-result-icon">${r.icon}</div>
+        <h3>${r.name}</h3>
+        <p>${r.desc}</p>
+        <a href="${r.url}" class="btn btn-primary">→ Open ${r.name}</a>
+        <br>
+        <button class="quiz-restart" onclick="restart()">↺ Start Over</button>
+      `;
+    }
+
+    function setStep(step) {
+      currentStep = step;
+      document.querySelectorAll('.quiz-step').forEach((el, i) => {
+        el.classList.toggle('active', i === step);
+        // Re-trigger animation
+        if (i === step) {
+          el.style.animation = 'none';
+          el.offsetHeight; // force reflow
+          el.style.animation = '';
+        }
+      });
+
+      // Update progress dots
+      for (let i = 0; i < 3; i++) {
+        const dot = document.getElementById('dot-' + i);
+        dot.classList.remove('filled', 'current');
+        if (i < step) dot.classList.add('filled');
+        if (i === step) dot.classList.add('current');
+      }
+    }
+
+    function goBack() {
+      setStep(0);
+    }
+
+    function restart() {
+      selectedCategory = null;
+      setStep(0);
+    }
+
+    // Nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close'; closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;'; closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>

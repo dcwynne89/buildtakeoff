@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Price Fence Jobs Without Losing Money | BuildTakeoff</title>
+  <meta name="description" content="Fence job pricing guide for contractors. Material cost per linear foot by style, labor rates, post spacing, gate pricing, terrain adjustments, and common profit killers." />
+  <link rel="canonical" href="https://buildtakeoff.co/guides/fence-job-pricing/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .article-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .article-date { font-size: 0.83rem; color: var(--text-muted); }
+    .article-read-time { font-size: 0.83rem; color: var(--text-muted); }
+    .article-category { display: inline-block; background: var(--orange-dim); color: var(--orange-light); font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.65rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .article-body h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 2.5rem 0 0.75rem; }
+    .article-body h3 { font-size: 1.1rem; font-weight: 700; margin: 1.75rem 0 0.5rem; color: var(--text); }
+    .article-body p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.75; margin-bottom: 1rem; }
+    .article-body ul, .article-body ol { padding-left: 0; list-style: none; margin-bottom: 1rem; }
+    .article-body ul li, .article-body ol li { padding: 0.35rem 0 0.35rem 1.4rem; color: var(--text-dim); font-size: 0.95rem; line-height: 1.65; position: relative; }
+    .article-body ul li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-size: 0.85rem; }
+    .article-body ol { counter-reset: ol-counter; }
+    .article-body ol li { counter-increment: ol-counter; }
+    .article-body ol li::before { content: counter(ol-counter) '.'; position: absolute; left: 0; color: var(--orange); font-weight: 700; font-size: 0.85rem; }
+    .article-body strong { color: var(--text); font-weight: 700; }
+    .callout { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .callout.tip { border-left: 3px solid var(--orange); }
+    .callout.tip::before { content: '💡 Pro Tip'; display: block; font-size: 0.78rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .callout p { margin-bottom: 0; }
+    .cost-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    .cost-table th { text-align: left; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cost-table td { padding: 0.65rem 1rem; border: 1px solid var(--border); color: var(--text-dim); }
+    .cost-table tr:hover td { background: var(--card); }
+    .related-calc { background: var(--card); border: 1px solid var(--border-hover); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 1rem; transition: all 0.25s; }
+    .related-calc:hover { background: var(--card-hover); transform: translateY(-2px); box-shadow: var(--shadow-orange); }
+    .related-calc-icon { width: 48px; height: 48px; background: var(--orange-dim); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .related-calc-icon svg { width: 24px; height: 24px; stroke: var(--orange); stroke-width: 1.75; }
+    .related-calc-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .related-calc-text p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    .related-guides { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .related-guide-link { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+    .related-guide-link:hover { border-color: var(--border-hover); color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../../#calculators">Calculators</a>
+      <a href="../">Guides</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="article-container fade-up">
+    <a href="../" class="back-link">← Back to Guides</a>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem;">How to Price Fence Jobs Without Losing Money</h1>
+    <div class="article-meta">
+      <span class="article-date">June 2026</span>
+      <span class="article-read-time">10 min read</span>
+      <span class="article-category">Fencing</span>
+    </div>
+
+    <div class="article-body">
+      <p>Fence work looks simple on the surface — posts, rails, pickets, done. But fence jobs have more hidden cost traps than almost any other residential trade. This guide shows you how to price fence work accurately so you make money on every linear foot.</p>
+
+      <h2>Material Cost per Linear Foot by Fence Style</h2>
+      <p>Material costs vary dramatically by style. These are material-only costs (lumber, fasteners, concrete for posts):</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Fence Style</th>
+            <th>Height</th>
+            <th>Material $/LF</th>
+            <th>Installed $/LF</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Pine dog-ear privacy</td><td>6'</td><td>$8–$14</td><td>$20–$35</td></tr>
+          <tr><td>Cedar dog-ear privacy</td><td>6'</td><td>$12–$20</td><td>$28–$45</td></tr>
+          <tr><td>Cedar board-on-board</td><td>6'</td><td>$16–$25</td><td>$35–$55</td></tr>
+          <tr><td>Cedar horizontal slat</td><td>6'</td><td>$18–$30</td><td>$40–$60</td></tr>
+          <tr><td>Chain link (residential)</td><td>4'</td><td>$5–$10</td><td>$15–$25</td></tr>
+          <tr><td>Chain link (commercial)</td><td>6'</td><td>$8–$15</td><td>$20–$35</td></tr>
+          <tr><td>Vinyl privacy</td><td>6'</td><td>$15–$30</td><td>$30–$50</td></tr>
+          <tr><td>Aluminum ornamental</td><td>4'</td><td>$20–$40</td><td>$35–$60</td></tr>
+          <tr><td>Wrought iron</td><td>4'–6'</td><td>$25–$50</td><td>$40–$75</td></tr>
+          <tr><td>Composite privacy</td><td>6'</td><td>$25–$45</td><td>$45–$70</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Labor Rates</h2>
+      <p>Fence installation labor runs <strong>$10–$25 per linear foot</strong> depending on style, terrain, and market:</p>
+      <ul>
+        <li><strong>Simple privacy fence (flat ground):</strong> $10–$15/LF labor</li>
+        <li><strong>Board-on-board or horizontal:</strong> $15–$20/LF (more cuts, more fasteners)</li>
+        <li><strong>Chain link:</strong> $8–$12/LF (stretching mesh requires experience but goes fast)</li>
+        <li><strong>Vinyl panel:</strong> $10–$15/LF (panels go up quick, but posts must be exact)</li>
+        <li><strong>Ornamental aluminum/iron:</strong> $12–$20/LF (panel assembly and leveling)</li>
+      </ul>
+      <p>A two-person crew can typically install <strong>80–150 linear feet of privacy fence per day</strong> on flat ground with good access. That number drops significantly with terrain challenges.</p>
+
+      <h2>Post Depth and Spacing</h2>
+      <p>Post specifications directly affect material cost and labor time:</p>
+
+      <h3>Post Depth</h3>
+      <ul>
+        <li><strong>General rule:</strong> Bury 1/3 of total post length. For a 6' fence with 4×4 posts, use 8' posts buried 24" deep (some codes require 30–36").</li>
+        <li><strong>Frost line:</strong> In cold climates, post holes must extend below the frost line to prevent heaving. Frost line ranges from 12" (southern US) to 48"+ (northern US, Canada).</li>
+        <li><strong>Standard hole diameter:</strong> 10–12 inches for 4×4 posts. Use a 12" auger for most jobs.</li>
+        <li><strong>Concrete per post:</strong> 1–2 bags (50-lb) of fast-setting concrete per post. Budget <strong>1.5 bags average</strong>.</li>
+      </ul>
+
+      <h3>Post Spacing</h3>
+      <ul>
+        <li><strong>Standard wood fence:</strong> 8 feet on center (this matches standard rail lengths)</li>
+        <li><strong>Chain link:</strong> 10 feet on center for residential, 8 feet for commercial</li>
+        <li><strong>Vinyl:</strong> Panel width determines spacing — typically 6' or 8' panels</li>
+        <li><strong>Gate posts:</strong> Must be set independently, NOT counted as line posts. Use 4×6 or 6×6 posts for gate supports.</li>
+      </ul>
+
+      <div class="callout tip">
+        <p>Count your posts carefully. Number of posts = (fence length ÷ post spacing) + 1 for line posts, plus corner posts and gate posts. A 200 LF fence at 8' OC needs (200 ÷ 8) + 1 = 26 posts minimum — plus any extra for corners and gates.</p>
+      </div>
+
+      <h2>Gate Pricing</h2>
+      <p>Gates are where inexperienced contractors lose the most money. They take disproportionately more time and materials:</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Gate Type</th>
+            <th>Material Cost</th>
+            <th>Installed Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Standard walk gate (3'–4' wide)</td><td>$75–$150</td><td>$200–$400</td></tr>
+          <tr><td>Double drive gate (8'–10' wide)</td><td>$200–$500</td><td>$500–$1,200</td></tr>
+          <tr><td>Sliding gate (manual)</td><td>$300–$800</td><td>$800–$2,000</td></tr>
+          <tr><td>Automated gate (electric)</td><td>$800–$2,500</td><td>$2,000–$5,000+</td></tr>
+        </tbody>
+      </table>
+
+      <p>Gate hardware (hinges, latches, drop rods, cane bolts for double gates) adds <strong>$30–$100 per gate</strong>. Don't forget to include hardware in your material list.</p>
+
+      <h2>Terrain Adjustments</h2>
+      <p>Flat, open backyard with easy truck access is the base price. Every complication adds cost:</p>
+      <ul>
+        <li><strong>Sloped ground:</strong> Stepping or racking panels on slope adds 20–40% labor. Stepped fences use more materials due to the stair-step gaps at the bottom.</li>
+        <li><strong>Rocky soil:</strong> If the auger hits rock, you're hand-digging or using a jackhammer. Budget an extra $10–$20 per post hole in rocky ground.</li>
+        <li><strong>Tree roots:</strong> Roots in the post line require rerouting or root cutting, adding time and sometimes requiring arborist consultation.</li>
+        <li><strong>Narrow access:</strong> If materials can't be delivered to the backyard by truck, hand-carrying lumber adds 2–4 hours per 100 LF.</li>
+        <li><strong>Utility lines:</strong> Always call 811 before digging. If utility lines cross the fence path, you may need hand-digging near marked lines.</li>
+      </ul>
+
+      <h2>Demo and Removal Costs</h2>
+      <p>If there's an existing fence to remove, add:</p>
+      <ul>
+        <li><strong>Wood fence demo:</strong> $3–$6/LF (break apart, pull posts, haul off)</li>
+        <li><strong>Chain link demo:</strong> $2–$5/LF (faster to roll up, but posts may be set in concrete)</li>
+        <li><strong>Concrete post footings:</strong> Old post footings left in the ground may need to be dug out if they interfere with new post locations. Budget $10–$25 per old footing removal.</li>
+        <li><strong>Dumpster/haul off:</strong> A 200 LF wood fence fills roughly half a 20-yard dumpster ($350–$500 rental)</li>
+      </ul>
+
+      <h2>Permit Fees</h2>
+      <p>Most jurisdictions require a fence permit for fences over 3–4 feet tall. Typical fees:</p>
+      <ul>
+        <li><strong>Residential fence permit:</strong> $50–$150 in most cities</li>
+        <li><strong>HOA review:</strong> Many HOAs require architectural review board approval (add 2–6 weeks lead time)</li>
+        <li><strong>Survey stakes:</strong> If property lines are disputed, a survey costs $300–$800 but prevents building on the neighbor's property</li>
+      </ul>
+
+      <h2>Common Profit Killers</h2>
+      <ol>
+        <li><strong>Not charging enough for gates:</strong> Gates take 3× the labor of an equivalent length of fence line. Price them as standalone items, not per-linear-foot.</li>
+        <li><strong>Underestimating concrete:</strong> 25 post holes at 1.5 bags each = 37.5 bags of concrete. That's 1,875 lbs of material to buy, transport, and mix.</li>
+        <li><strong>Forgetting about disposal:</strong> Old fence removal creates a lot of debris. If you didn't include dumpster/dump fees, that comes out of your profit.</li>
+        <li><strong>Not walking the fence line:</strong> Bidding from a satellite photo misses slopes, roots, boulders, and access issues that double your labor.</li>
+        <li><strong>Material price creep:</strong> Fence lumber prices can change 10–15% seasonally. Spring is peak season with highest prices.</li>
+      </ol>
+
+      <div class="callout tip">
+        <p>Walk the entire fence line with a measuring wheel before you bid. Note every corner, grade change, obstacle, and gate location. Mark them on a simple sketch. This 20-minute exercise prevents most of the surprises that kill fence job profitability.</p>
+      </div>
+
+      <h2>Calculate Your Fence Materials</h2>
+      <a href="../../calculators/fence/" class="related-calc">
+        <div class="related-calc-icon"><i data-lucide="fence"></i></div>
+        <div class="related-calc-text">
+          <h4>Fence Calculator →</h4>
+          <p>Enter fence length, height, and post spacing to get posts, rails, pickets, and concrete bags.</p>
+        </div>
+      </a>
+
+      <h2>Related Guides</h2>
+      <div class="related-guides">
+        <a href="../contractor-markup-guide/" class="related-guide-link">Contractor Markup Guide →</a>
+        <a href="../takeoff-mistakes/" class="related-guide-link">7 Takeoff Mistakes That Kill Profit →</a>
+        <a href="../deck-building-guide/" class="related-guide-link">Deck Material Estimating Guide →</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;padding:0 2rem 2rem;">
+    <div class="ecosystem-strip">
+      <div>
+        <h3>Got your fence estimate? Build the proposal.</h3>
+        <p>Use BuildQuotes to turn your material and labor numbers into a professional fence bid.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../#calculators">Calculators</a>
+        <a href="../">Guides</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close';
+          closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>

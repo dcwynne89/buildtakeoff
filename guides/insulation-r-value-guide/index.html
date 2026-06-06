@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insulation R-Values by Climate Zone: What You Need | BuildTakeoff</title>
+  <meta name="description" content="Insulation R-value requirements by climate zone. Insulation types compared (fiberglass, cellulose, spray foam, rigid foam), vapor barriers, and cost per R-value analysis." />
+  <link rel="canonical" href="https://buildtakeoff.co/guides/insulation-r-value-guide/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .article-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .article-date { font-size: 0.83rem; color: var(--text-muted); }
+    .article-read-time { font-size: 0.83rem; color: var(--text-muted); }
+    .article-category { display: inline-block; background: var(--orange-dim); color: var(--orange-light); font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.65rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .article-body h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 2.5rem 0 0.75rem; }
+    .article-body h3 { font-size: 1.1rem; font-weight: 700; margin: 1.75rem 0 0.5rem; color: var(--text); }
+    .article-body p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.75; margin-bottom: 1rem; }
+    .article-body ul, .article-body ol { padding-left: 0; list-style: none; margin-bottom: 1rem; }
+    .article-body ul li, .article-body ol li { padding: 0.35rem 0 0.35rem 1.4rem; color: var(--text-dim); font-size: 0.95rem; line-height: 1.65; position: relative; }
+    .article-body ul li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-size: 0.85rem; }
+    .article-body strong { color: var(--text); font-weight: 700; }
+    .callout { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .callout.tip { border-left: 3px solid var(--orange); }
+    .callout.tip::before { content: '💡 Pro Tip'; display: block; font-size: 0.78rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .callout p { margin-bottom: 0; }
+    .cost-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    .cost-table th { text-align: left; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cost-table td { padding: 0.65rem 1rem; border: 1px solid var(--border); color: var(--text-dim); }
+    .cost-table tr:hover td { background: var(--card); }
+    .zone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; }
+    .zone-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem; text-align: center; }
+    .zone-card .zone-num { font-size: 1.8rem; font-weight: 900; color: var(--orange); }
+    .zone-card .zone-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .related-calc { background: var(--card); border: 1px solid var(--border-hover); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 1rem; transition: all 0.25s; }
+    .related-calc:hover { background: var(--card-hover); transform: translateY(-2px); box-shadow: var(--shadow-orange); }
+    .related-calc-icon { width: 48px; height: 48px; background: var(--orange-dim); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .related-calc-icon svg { width: 24px; height: 24px; stroke: var(--orange); stroke-width: 1.75; }
+    .related-calc-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .related-calc-text p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    .related-guides { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .related-guide-link { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+    .related-guide-link:hover { border-color: var(--border-hover); color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../../#calculators">Calculators</a>
+      <a href="../">Guides</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="article-container fade-up">
+    <a href="../" class="back-link">← Back to Guides</a>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem;">Insulation R-Values by Climate Zone: What You Need</h1>
+    <div class="article-meta">
+      <span class="article-date">June 2026</span>
+      <span class="article-read-time">12 min read</span>
+      <span class="article-category">Insulation</span>
+    </div>
+
+    <div class="article-body">
+      <p>Insulation is one of the most important building components for energy efficiency, comfort, and code compliance. Getting the right R-value for your climate zone isn't optional — it's code-mandated. This guide breaks down what you need and where.</p>
+
+      <h2>Understanding R-Value</h2>
+      <p><strong>R-value measures thermal resistance</strong> — the ability of a material to resist heat flow. Higher R-values mean better insulation performance. R-value is additive: two R-13 batts stacked together give you R-26.</p>
+      <p>R-value depends on three factors: the insulation material, its thickness, and its installed density. The same material installed at different densities has different R-values — this is especially important for cellulose and spray foam.</p>
+
+      <h2>IECC Climate Zones</h2>
+      <p>The International Energy Conservation Code (IECC) divides the US into 8 climate zones. Your zone determines the minimum R-values required by building code:</p>
+
+      <div class="zone-grid">
+        <div class="zone-card"><div class="zone-num">1</div><div class="zone-label">Very Hot – Humid<br>(S. Florida, Hawaii)</div></div>
+        <div class="zone-card"><div class="zone-num">2</div><div class="zone-label">Hot – Humid<br>(Gulf Coast, S. Texas)</div></div>
+        <div class="zone-card"><div class="zone-num">3</div><div class="zone-label">Warm<br>(SE States, S. California)</div></div>
+        <div class="zone-card"><div class="zone-num">4</div><div class="zone-label">Mixed<br>(Mid-Atlantic, Mid-South)</div></div>
+        <div class="zone-card"><div class="zone-num">5</div><div class="zone-label">Cool<br>(Upper Midwest, NE)</div></div>
+        <div class="zone-card"><div class="zone-num">6</div><div class="zone-label">Cold<br>(N. New England, Montana)</div></div>
+        <div class="zone-card"><div class="zone-num">7</div><div class="zone-label">Very Cold<br>(N. Minnesota, N. Maine)</div></div>
+        <div class="zone-card"><div class="zone-num">8</div><div class="zone-label">Subarctic<br>(Interior Alaska)</div></div>
+      </div>
+
+      <h2>R-Value Requirements by Climate Zone (2021 IECC)</h2>
+      <p>These are the minimum code requirements. Many builders exceed these values for better energy performance and comfort:</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Zone</th>
+            <th>Ceiling/Attic</th>
+            <th>Wood Frame Wall</th>
+            <th>Floor</th>
+            <th>Basement Wall</th>
+            <th>Slab Edge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>R-30</td><td>R-13</td><td>R-13</td><td>R-0</td><td>R-0</td></tr>
+          <tr><td><strong>2</strong></td><td>R-38</td><td>R-13</td><td>R-13</td><td>R-0</td><td>R-0</td></tr>
+          <tr><td><strong>3</strong></td><td>R-38</td><td>R-20 or R-13+5ci</td><td>R-19</td><td>R-5ci</td><td>R-0</td></tr>
+          <tr><td><strong>4</strong></td><td>R-49</td><td>R-20 or R-13+5ci</td><td>R-19</td><td>R-10ci</td><td>R-10, 2' depth</td></tr>
+          <tr><td><strong>5</strong></td><td>R-49</td><td>R-20 or R-13+5ci</td><td>R-30</td><td>R-15ci</td><td>R-10, 2' depth</td></tr>
+          <tr><td><strong>6</strong></td><td>R-49</td><td>R-20+5ci or R-13+10ci</td><td>R-30</td><td>R-15ci</td><td>R-10, 4' depth</td></tr>
+          <tr><td><strong>7–8</strong></td><td>R-49</td><td>R-20+5ci or R-13+10ci</td><td>R-38</td><td>R-15ci</td><td>R-10, 4' depth</td></tr>
+        </tbody>
+      </table>
+      <p><em>"ci" = continuous insulation (installed on the exterior of the framing without thermal bridging through studs). R-13+5ci means R-13 cavity insulation plus R-5 continuous exterior insulation.</em></p>
+
+      <div class="callout tip">
+        <p>These are code minimums, not targets. In zones 5–8, going beyond code R-values (especially in the ceiling) is one of the highest-ROI energy investments. Adding R-19 to an attic already at R-38 to reach R-49+ costs $0.50–$1.00/sq ft but saves significant heating costs for decades.</p>
+      </div>
+
+      <h2>Insulation Types Compared</h2>
+
+      <h3>Fiberglass Batts</h3>
+      <table class="cost-table">
+        <thead>
+          <tr><th>Property</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R-value per inch</td><td>R-3.1 to R-3.7</td></tr>
+          <tr><td>Cost (installed)</td><td>$0.50–$1.50/sq ft</td></tr>
+          <tr><td>Common sizes</td><td>R-13 (3.5"), R-19 (6.25"), R-30 (9.5"), R-38 (12")</td></tr>
+          <tr><td>Best for</td><td>Standard stud cavities, attic floors, budgets</td></tr>
+          <tr><td>Moisture</td><td>Not moisture resistant — retains water if wetted</td></tr>
+          <tr><td>Air sealing</td><td>Does NOT air-seal — air can pass through</td></tr>
+        </tbody>
+      </table>
+      <p>The most affordable and widely used insulation. Available in faced (with kraft paper vapor retarder) and unfaced versions. <strong>Performance depends entirely on installation quality</strong> — compressed batts, gaps, and voids dramatically reduce effective R-value. A poorly installed R-19 batt may perform like R-11.</p>
+
+      <h3>Blown Cellulose</h3>
+      <table class="cost-table">
+        <thead>
+          <tr><th>Property</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R-value per inch</td><td>R-3.2 to R-3.8</td></tr>
+          <tr><td>Cost (installed)</td><td>$0.75–$2.00/sq ft</td></tr>
+          <tr><td>Application</td><td>Blown into attics (loose-fill) or wall cavities (dense-pack)</td></tr>
+          <tr><td>Best for</td><td>Attic insulation, retrofit wall insulation</td></tr>
+          <tr><td>Fire resistance</td><td>Treated with borate — Class 1 fire rating</td></tr>
+          <tr><td>Air sealing</td><td>Better than batts when dense-packed, but not a true air barrier</td></tr>
+        </tbody>
+      </table>
+      <p>Made from recycled newspaper treated with fire-retardant borate compounds. Excellent for attic insulation because it fills irregular spaces and covers over framing members, reducing thermal bridging. <strong>Dense-pack cellulose</strong> (3.5 lbs/cu ft density) in wall cavities provides good air leakage reduction.</p>
+
+      <h3>Spray Foam — Open Cell</h3>
+      <table class="cost-table">
+        <thead>
+          <tr><th>Property</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R-value per inch</td><td>R-3.5 to R-3.7</td></tr>
+          <tr><td>Cost (installed)</td><td>$1.00–$2.50/sq ft (for 3.5" wall cavity)</td></tr>
+          <tr><td>Air sealing</td><td>Excellent — acts as air barrier at 3.5"+ thickness</td></tr>
+          <tr><td>Moisture permeability</td><td>Vapor permeable — allows drying</td></tr>
+          <tr><td>Best for</td><td>Wall cavities, unvented attic assemblies (with conditions)</td></tr>
+        </tbody>
+      </table>
+      <p>Open-cell foam expands to ~100× its liquid volume, filling every gap and crack in the cavity. It's an air barrier but remains vapor-permeable, which can be an advantage in mixed climates where drying in both directions is desirable. <strong>Must be covered with a thermal barrier (1/2" drywall) per code in all occupied spaces.</strong></p>
+
+      <h3>Spray Foam — Closed Cell</h3>
+      <table class="cost-table">
+        <thead>
+          <tr><th>Property</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>R-value per inch</td><td>R-6.0 to R-7.0</td></tr>
+          <tr><td>Cost (installed)</td><td>$2.00–$4.00/sq ft (for 2" thickness)</td></tr>
+          <tr><td>Air sealing</td><td>Excellent — air and vapor barrier</td></tr>
+          <tr><td>Structural</td><td>Adds racking strength to walls</td></tr>
+          <tr><td>Moisture</td><td>Vapor barrier at 1.5"+ thickness — also resists bulk water</td></tr>
+          <tr><td>Best for</td><td>Rim joists, crawlspaces, exterior wall cavities in cold climates</td></tr>
+        </tbody>
+      </table>
+      <p>The highest R-value per inch of any common insulation. Acts as an air barrier, vapor barrier, and moisture barrier. Also adds structural rigidity. The most expensive option but delivers the most R-value in the least thickness — ideal where cavity depth is limited.</p>
+
+      <h3>Rigid Foam Board</h3>
+      <table class="cost-table">
+        <thead>
+          <tr><th>Type</th><th>R-Value/Inch</th><th>Cost/Sq Ft (1")</th><th>Best Use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>EPS (Expanded Polystyrene)</td><td>R-3.8 to R-4.4</td><td>$0.50–$1.00</td><td>Below-grade, under slab, EIFS</td></tr>
+          <tr><td>XPS (Extruded Polystyrene)</td><td>R-5.0</td><td>$0.75–$1.50</td><td>Below-grade, foundation exterior</td></tr>
+          <tr><td>Polyiso (Polyisocyanurate)</td><td>R-5.7 to R-6.5</td><td>$0.80–$1.75</td><td>Above-grade exterior walls, roofs</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Polyiso note:</strong> Performance drops significantly in cold temperatures. At 25°F, polyiso may perform at only R-4.5/inch. For cold-climate below-grade applications, XPS or EPS is a more reliable choice.</p>
+
+      <h2>Where to Insulate</h2>
+      <ul>
+        <li><strong>Attic floor/ceiling:</strong> The single most impactful location. Heat rises — an uninsulated attic is like leaving a giant vent open.</li>
+        <li><strong>Exterior walls:</strong> Both cavity insulation and continuous exterior insulation in cold climates.</li>
+        <li><strong>Floors over unconditioned spaces:</strong> Over crawlspaces, garages, and cantilevered sections.</li>
+        <li><strong>Basement walls:</strong> Interior rigid foam or spray foam on foundation walls in conditioned basements.</li>
+        <li><strong>Rim/band joists:</strong> One of the leakiest spots in a house. 2" closed-cell spray foam is the gold standard here.</li>
+        <li><strong>Slab edges:</strong> Rigid foam on the exterior of slab-on-grade foundations in zones 4+.</li>
+        <li><strong>Around ductwork:</strong> Ducts in unconditioned spaces should be insulated to R-8 minimum.</li>
+      </ul>
+
+      <h2>Vapor Barrier Placement</h2>
+      <p>Vapor barriers (or more accurately, vapor retarders) prevent moisture from diffusing through wall and ceiling assemblies. Placement depends on climate:</p>
+      <ul>
+        <li><strong>Cold climates (zones 5–8):</strong> Vapor retarder on the <strong>warm side (interior)</strong> of the wall assembly. Kraft-faced batts or polyethylene sheeting.</li>
+        <li><strong>Hot-humid climates (zones 1–2):</strong> Vapor retarder on the <strong>exterior</strong> — or use no interior vapor barrier to allow inward drying.</li>
+        <li><strong>Mixed climates (zones 3–4):</strong> Use a "smart" vapor retarder (like MemBrain) that adjusts permeability based on humidity, or use unfaced insulation with latex-painted drywall as a Class III retarder.</li>
+      </ul>
+
+      <div class="callout tip">
+        <p>Never install two vapor barriers on opposite sides of a wall assembly. Moisture that enters the wall from either side will be trapped and can cause mold, rot, and structural damage. In mixed climates, the safest approach is often a smart vapor retarder on the interior and a vapor-permeable WRB (weather-resistant barrier) on the exterior.</p>
+      </div>
+
+      <h2>Cost per R-Value Comparison</h2>
+      <p>To compare insulation value across types, look at cost per R-value per square foot:</p>
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Insulation Type</th>
+            <th>R-Value/Inch</th>
+            <th>Installed $/Sq Ft/R-Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Fiberglass batts</td><td>R-3.2</td><td>$0.04–$0.08</td></tr>
+          <tr><td>Blown cellulose</td><td>R-3.5</td><td>$0.05–$0.09</td></tr>
+          <tr><td>Open-cell spray foam</td><td>R-3.6</td><td>$0.08–$0.15</td></tr>
+          <tr><td>EPS rigid foam</td><td>R-4.0</td><td>$0.10–$0.18</td></tr>
+          <tr><td>XPS rigid foam</td><td>R-5.0</td><td>$0.12–$0.22</td></tr>
+          <tr><td>Closed-cell spray foam</td><td>R-6.5</td><td>$0.15–$0.30</td></tr>
+          <tr><td>Polyiso rigid foam</td><td>R-6.0</td><td>$0.10–$0.20</td></tr>
+        </tbody>
+      </table>
+      <p>Fiberglass batts and blown cellulose deliver the most R-value per dollar. Spray foam costs more per R-value but provides air sealing that batts and cellulose cannot — often eliminating the need for separate air sealing work.</p>
+
+      <h2>Estimate Your Insulation Needs</h2>
+      <p>Use our framing calculator to determine wall cavity dimensions, then select the insulation type and R-value that matches your climate zone requirements:</p>
+      <a href="../../calculators/framing-studs/" class="related-calc">
+        <div class="related-calc-icon"><i data-lucide="align-justify"></i></div>
+        <div class="related-calc-text">
+          <h4>Framing Stud Calculator →</h4>
+          <p>Calculate stud count and wall dimensions to determine your insulation cavity sizes and total coverage area.</p>
+        </div>
+      </a>
+
+      <h2>Related Guides</h2>
+      <div class="related-guides">
+        <a href="../drywall-estimating/" class="related-guide-link">Drywall Estimating Guide →</a>
+        <a href="../how-to-read-plans/" class="related-guide-link">How to Read Plans for Takeoff →</a>
+        <a href="../takeoff-mistakes/" class="related-guide-link">7 Takeoff Mistakes That Kill Profit →</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;padding:0 2rem 2rem;">
+    <div class="ecosystem-strip">
+      <div>
+        <h3>Got your insulation estimate? Build the bid.</h3>
+        <p>Use BuildQuotes to create a professional insulation proposal for your customer.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../#calculators">Calculators</a>
+        <a href="../">Guides</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close';
+          closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>

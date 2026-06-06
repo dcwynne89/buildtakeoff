@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADA Ramp Calculator — Slope, Length & Materials | BuildTakeoff</title>
+  <meta name="description" content="Free ADA ramp calculator. Enter total rise to get ramp length, landings, handrail footage, and material quantities for concrete or wood ramps. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/ramp-ada/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>ADA Ramp Calculator</h1>
+      <p>Calculate ramp length, landings, handrail footage, and materials for ADA-compliant ramps. Supports concrete and wood construction with adjustable slope ratios.</p>
+      <div class="tag-row">
+        <span class="tag">ADA</span>
+        <span class="tag">Accessibility</span>
+        <span class="tag">Ramp</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Ramp Dimensions</div>
+        <div class="field">
+          <label for="ramp-rise">Total Rise</label>
+          <div class="input-wrap"><input type="number" id="ramp-rise" value="30" min="0" step="1" /><span class="input-unit">in</span></div>
+          <div class="field-hint">Vertical height difference to overcome</div>
+        </div>
+        <div class="field">
+          <label for="ramp-width">Ramp Width</label>
+          <div class="input-wrap"><input type="number" id="ramp-width" value="4" min="3" step="0.5" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">ADA minimum: 36" (3 ft) clear width</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Slope & Options</div>
+        <div class="field">
+          <label>Slope Ratio</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="slope-12" onclick="setSlope(12,'1:12')">1:12 (ADA)</button>
+            <button class="toggle-btn" id="slope-16" onclick="setSlope(16,'1:16')">1:16 (Gentle)</button>
+            <button class="toggle-btn" id="slope-8" onclick="setSlope(8,'1:8')">1:8 (Steep)</button>
+          </div>
+          <div class="field-hint">1:12 = 1" rise per 12" run (ADA standard max)</div>
+        </div>
+        <div class="field">
+          <label>Include Handrails</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="hr-yes" onclick="setHandrail(true)">Yes</button>
+            <button class="toggle-btn" id="hr-no" onclick="setHandrail(false)">No</button>
+          </div>
+          <div class="field-hint">ADA requires handrails on both sides for rises > 6"</div>
+        </div>
+        <div class="field">
+          <label>Include Landings</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="land-yes" onclick="setLandings(true)">Yes</button>
+            <button class="toggle-btn" id="land-no" onclick="setLandings(false)">No</button>
+          </div>
+          <div class="field-hint">Required every 30 ft of ramp run (ADA)</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Surface & Pricing</div>
+        <div class="field">
+          <label>Ramp Surface</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="surf-conc" onclick="setSurface('concrete')">Concrete</button>
+            <button class="toggle-btn" id="surf-wood" onclick="setSurface('wood')">Wood</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ramp-price">Material Price (optional)</label>
+          <div class="input-wrap"><input type="number" id="ramp-price" value="" min="0" step="0.01" placeholder="0.00" /><span class="input-unit" id="price-unit">$/sq ft</span></div>
+          <div class="field-hint" id="price-hint">Concrete ramp: $8–$15/sq ft · Wood ramp: $15–$35/sq ft</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Ramp Length</div>
+          <div class="result-value" id="res-length">—</div>
+          <div class="result-sub" id="res-length-sub">Ramp run only</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Landings</div>
+          <div class="result-value" id="res-landings">—</div>
+          <div class="result-sub" id="res-landings-sub">5 ft × ramp width each</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Length (Ramp + Landings)</div>
+          <div class="result-value" id="res-total-len">—</div>
+          <div class="result-sub">Full ramp system</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Handrail</div>
+          <div class="result-value" id="res-handrail">—</div>
+          <div class="result-sub" id="res-handrail-sub">Both sides + extensions</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Ramp Surface Area</div>
+          <div class="result-value" id="res-sqft">—</div>
+          <div class="result-sub" id="res-sqft-sub">Ramp + landing area</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label" id="lbl-material">Material</div>
+          <div class="result-value" id="res-material">—</div>
+          <div class="result-sub" id="res-material-sub">Concrete or lumber</div>
+        </div>
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Materials only</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your ramp construction labor rate to generate a complete job cost estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per LF</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="1" placeholder="35" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/LF</span>
+            </div>
+            <div class="field-hint">Ramp construction $20–$50/LF</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="16" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate an ADA-Compliant Ramp</h2>
+      <p>ADA (Americans with Disabilities Act) ramp requirements ensure safe, accessible routes for people using wheelchairs, walkers, and other mobility devices. Whether you're building a commercial ramp for code compliance or a residential ramp for aging-in-place, proper slope, width, and landing calculations are critical.</p>
+
+      <h3>ADA Ramp Requirements</h3>
+      <ul>
+        <li><strong>Maximum slope:</strong> 1:12 (one inch of rise per 12 inches of run, or 8.33% grade)</li>
+        <li><strong>Minimum clear width:</strong> 36 inches between handrails</li>
+        <li><strong>Maximum rise per run:</strong> 30 inches before a landing is required</li>
+        <li><strong>Level landings:</strong> Required at top, bottom, and every 30 ft of run. Minimum 60" × 60" at turns.</li>
+        <li><strong>Cross slope:</strong> Maximum 1:48 (2%)</li>
+        <li><strong>Surface:</strong> Must be firm, stable, and slip-resistant</li>
+      </ul>
+
+      <h3>Handrail Specifications (ADA/IBC)</h3>
+      <ul>
+        <li><strong>Required:</strong> Both sides of ramp when rise exceeds 6 inches</li>
+        <li><strong>Height:</strong> 34"–38" above ramp surface</li>
+        <li><strong>Extensions:</strong> 12" minimum beyond top and bottom of ramp run</li>
+        <li><strong>Graspable profile:</strong> 1.25" to 2" diameter for round handrails</li>
+        <li><strong>Edge protection:</strong> Required to prevent wheelchairs from rolling off</li>
+      </ul>
+
+      <h3>Slope Ratios Explained</h3>
+      <ul>
+        <li><strong>1:12 (8.33%):</strong> ADA maximum for new construction. Standard for most applications.</li>
+        <li><strong>1:16 (6.25%):</strong> More comfortable slope for self-propelling wheelchair users. Recommended when space allows.</li>
+        <li><strong>1:8 (12.5%):</strong> Only permitted for existing buildings/spaces where 1:12 is not feasible, and only for max 3" rise.</li>
+        <li><strong>1:20 (5%):</strong> Technically not a "ramp" under ADA — classified as a sloped walkway. No handrails required.</li>
+      </ul>
+
+      <h3>Commercial vs Residential Codes</h3>
+      <p>Commercial buildings must comply with ADA Standards for Accessible Design and the International Building Code (IBC). Residential ramps follow IRC requirements, which are generally less stringent. However, if a home receives any federal funding or is multi-family housing, ADA standards apply. Many builders follow ADA standards for residential ramps as best practice.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Ramp design finalized?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/concrete-slab/" class="eco-link">Concrete Calculator</a>
+        <a href="../../calculators/deck/" class="eco-link">Deck Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let slopeRatio=12, slopeLabel='1:12', inclHandrail=true, inclLandings=true, surface='concrete';
+
+    function setSlope(r,label){slopeRatio=r;slopeLabel=label;
+      document.getElementById('slope-12').classList.toggle('active',r===12);
+      document.getElementById('slope-16').classList.toggle('active',r===16);
+      document.getElementById('slope-8').classList.toggle('active',r===8);
+      calculate();
+    }
+    function setHandrail(v){inclHandrail=v;document.getElementById('hr-yes').classList.toggle('active',v);document.getElementById('hr-no').classList.toggle('active',!v);calculate();}
+    function setLandings(v){inclLandings=v;document.getElementById('land-yes').classList.toggle('active',v);document.getElementById('land-no').classList.toggle('active',!v);calculate();}
+    function setSurface(s){surface=s;
+      document.getElementById('surf-conc').classList.toggle('active',s==='concrete');
+      document.getElementById('surf-wood').classList.toggle('active',s==='wood');
+      document.getElementById('price-unit').textContent=s==='concrete'?'$/sq ft':'$/sq ft';
+      document.getElementById('price-hint').textContent=s==='concrete'?'Concrete ramp: $8–$15/sq ft':'Wood ramp: $15–$35/sq ft';
+      calculate();
+    }
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcTotalLen=0, calcMatCost=0;
+    function calculate(){
+      const rise=parseFloat(document.getElementById('ramp-rise').value)||0;
+      const width=parseFloat(document.getElementById('ramp-width').value)||4;
+      const price=parseFloat(document.getElementById('ramp-price').value)||0;
+      if(!rise){setResult('res-length','—');setResult('res-landings','—');setResult('res-total-len','—');setResult('res-handrail','—');setResult('res-sqft','—');setResult('res-material','—');return;}
+
+      // Ramp length in feet
+      const rampLenFt=(rise*slopeRatio)/12;
+      // Landings: required every 30 ft of ramp run
+      const landingCount=inclLandings?Math.floor(rampLenFt/30):0;
+      const landingLenFt=landingCount*5; // 5 ft per landing
+      const totalLen=rampLenFt+landingLenFt;
+      // Plus top and bottom landings (5×width each)
+      const topBottomLandingArea=2*5*width;
+      const rampArea=rampLenFt*width;
+      const landingArea=landingCount*5*width;
+      const totalSqFt=rampArea+landingArea+topBottomLandingArea;
+
+      // Handrails: both sides + 12" extensions at top and bottom of each run
+      const runs=landingCount+1;
+      const handrailLF=inclHandrail?Math.ceil(totalLen*2+(runs*2*1)):0; // 12" extension = 1ft each end each side
+
+      calcTotalLen=Math.ceil(totalLen);
+
+      setResult('res-length',rampLenFt.toFixed(1)+' ft');
+      document.getElementById('res-length-sub').textContent=slopeLabel+' slope · '+rise+'" total rise';
+
+      setResult('res-landings',(landingCount+2)+' landings');
+      document.getElementById('res-landings-sub').textContent=landingCount+' intermediate + top & bottom (5\'×'+width+'\' each)';
+
+      setResult('res-total-len',totalLen.toFixed(1)+' ft');
+      setResult('res-handrail',inclHandrail?handrailLF+' LF':'Not included');
+      document.getElementById('res-handrail-sub').textContent=inclHandrail?'Both sides + 12" extensions':'Toggle handrails to include';
+
+      setResult('res-sqft',Math.ceil(totalSqFt)+' sq ft');
+      document.getElementById('res-sqft-sub').textContent='Ramp ('+Math.ceil(rampArea)+') + landings ('+Math.ceil(landingArea+topBottomLandingArea)+' sq ft)';
+
+      // Material quantity
+      if(surface==='concrete'){
+        const thickness=4/12; // 4" thick slab
+        const cuFt=totalSqFt*thickness;
+        const cuYd=cuFt/27;
+        setResult('res-material',cuYd.toFixed(1)+' CY');
+        document.getElementById('res-material-sub').textContent='Concrete at 4" thick';
+        document.getElementById('lbl-material').textContent='Concrete';
+      } else {
+        // Wood decking: 5/4×6 boards, ~5.5" wide = 0.458 ft
+        const boardsPerFt=1/0.458;
+        const deckBoardLF=Math.ceil(totalSqFt*boardsPerFt);
+        setResult('res-material',deckBoardLF+' LF');
+        document.getElementById('res-material-sub').textContent='5/4×6 composite/pressure-treated decking';
+        document.getElementById('lbl-material').textContent='Deck Boards';
+      }
+
+      calcMatCost=price>0?totalSqFt*price:0;
+      if(price>0){document.getElementById('cost-row').style.display='';setResult('res-cost','$'+calcMatCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));}
+      else{document.getElementById('cost-row').style.display='none';}
+
+      updateLabor(calcTotalLen,calcTotalLen+' LF',calcMatCost,'LF');
+    }
+
+    // — LABOR —
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='LF';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'LF';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('ADA Ramp Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Rise',document.getElementById('ramp-rise').value+' in'],['Width',document.getElementById('ramp-width').value+' ft'],['Slope',slopeLabel],['Surface',surface==='concrete'?'Concrete':'Wood']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v+'',80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('RAMP LAYOUT',14,115);doc.line(14,117,196,117);
+      const items=[
+        ['Ramp Length',document.getElementById('res-length').textContent,true],
+        ['Total Length',document.getElementById('res-total-len').textContent,false],
+        ['Landings',document.getElementById('res-landings').textContent,false],
+        ['Handrail',document.getElementById('res-handrail').textContent,false],
+        ['Surface Area',document.getElementById('res-sqft').textContent,false],
+        ['Material',document.getElementById('res-material').textContent,false]
+      ];
+      items.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,123+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,131+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v+'',130,131+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('ada-ramp-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('ADA Ramp — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('ada-ramp-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

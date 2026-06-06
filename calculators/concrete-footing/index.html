@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Concrete Footing Calculator — Continuous &amp; Pier Footings | BuildTakeoff</title>
+  <meta name="description" content="Free concrete footing calculator for continuous and pier footings. Get cubic yards, bag count, and cost for strip footings and sonotube piers. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/concrete-footing/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Concrete Footing Calculator</h1>
+      <p>Calculate cubic yards, bag count, and cost for continuous strip footings or round pier footings. Includes waste factor option.</p>
+      <div class="tag-row">
+        <span class="tag">Concrete</span>
+        <span class="tag">Footings</span>
+        <span class="tag">Foundation</span>
+        <span class="tag">Piers</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+
+      <!-- INPUTS -->
+      <div class="panel">
+        <div class="panel-title">Footing Type</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="type-cont" onclick="setType('continuous')">Continuous</button>
+          <button class="toggle-btn" id="type-pier" onclick="setType('pier')">Pier</button>
+        </div>
+
+        <!-- Continuous fields -->
+        <div id="fields-cont">
+          <div class="panel-title" style="margin-top:1.5rem;">Continuous Footing Dimensions</div>
+          <div class="field">
+            <label for="cont-width">Width</label>
+            <div class="input-wrap">
+              <input type="number" id="cont-width" value="12" min="1" step="1" placeholder="12" />
+              <span class="input-unit">in</span>
+            </div>
+            <div class="field-hint">Typical: 12" for single-story, 16"–24" for two-story</div>
+          </div>
+          <div class="field">
+            <label for="cont-depth">Depth</label>
+            <div class="input-wrap">
+              <input type="number" id="cont-depth" value="8" min="1" step="1" placeholder="8" />
+              <span class="input-unit">in</span>
+            </div>
+            <div class="field-hint">Code minimum: 6"–8" deep for residential</div>
+          </div>
+          <div class="field">
+            <label for="cont-length">Length</label>
+            <div class="input-wrap">
+              <input type="number" id="cont-length" value="100" min="0" step="1" placeholder="100" />
+              <span class="input-unit">ft</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pier fields -->
+        <div id="fields-pier" style="display:none;">
+          <div class="panel-title" style="margin-top:1.5rem;">Pier Footing Dimensions</div>
+          <div class="field">
+            <label for="pier-dia">Diameter</label>
+            <div class="input-wrap">
+              <input type="number" id="pier-dia" value="12" min="1" step="1" placeholder="12" />
+              <span class="input-unit">in</span>
+            </div>
+            <div class="field-hint">Common sonotube sizes: 8", 10", 12", 16"</div>
+          </div>
+          <div class="field">
+            <label for="pier-depth">Depth</label>
+            <div class="input-wrap">
+              <input type="number" id="pier-depth" value="36" min="1" step="1" placeholder="36" />
+              <span class="input-unit">in</span>
+            </div>
+            <div class="field-hint">Must reach below frost line — check local codes</div>
+          </div>
+          <div class="field">
+            <label for="pier-qty">Number of Piers</label>
+            <div class="input-wrap">
+              <input type="number" id="pier-qty" value="6" min="1" step="1" placeholder="6" />
+              <span class="input-unit">piers</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:1.25rem;">
+          <label for="price">Concrete price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="price" value="" min="0" step="1" placeholder="150" />
+            <span class="input-unit">$/yd³</span>
+          </div>
+          <div class="field-hint">Current average: $140–$165/cubic yard delivered</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Waste Factor</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="waste-off" onclick="setWaste(false)">No waste</button>
+          <button class="toggle-btn" id="waste-on" onclick="setWaste(true)">+10% waste</button>
+        </div>
+        <div class="waste-notice" id="waste-notice" style="margin-top:0.75rem;">
+          ✓ 10% overage included — recommended for all pours
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Cubic Yards Needed</div>
+          <div class="result-value" id="res-yards">—</div>
+          <div class="result-sub" id="res-yards-sub">Enter dimensions above</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">80 lb Bags (Quikrete)</div>
+          <div class="result-value" id="res-bags80">—</div>
+          <div class="result-sub">Each bag = 0.60 cu ft</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">60 lb Bags (Quikrete)</div>
+          <div class="result-value" id="res-bags60">—</div>
+          <div class="result-sub">Each bag = 0.45 cu ft</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-item">
+          <div class="result-label" id="res-dim-label">Linear Footage</div>
+          <div class="result-value" id="res-dim">—</div>
+          <div class="result-sub" id="res-dim-sub">Total footing length</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Delivered ready-mix cost</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice this job? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per LF</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="5.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/LF</span>
+            </div>
+            <div class="field-hint">Footing work: typically $3–$8/LF installed</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO CONTENT -->
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Concrete for Footings</h2>
+      <p>Concrete footings transfer the weight of your structure to the ground. Getting the volume right prevents costly short pours and ensures structural integrity. The formula depends on whether you're pouring continuous strip footings or individual pier footings.</p>
+
+      <h3>Continuous Footing Formula</h3>
+      <p>Volume (cubic feet) = (Width ÷ 12) × (Depth ÷ 12) × Length. Divide by 27 to convert to cubic yards.</p>
+      <p><strong>Example:</strong> A 100 LF footing that's 12" wide × 8" deep = (12/12) × (8/12) × 100 = 66.7 cu ft ÷ 27 = <strong>2.47 cubic yards</strong>.</p>
+
+      <h3>Pier Footing Formula</h3>
+      <p>Volume per pier = π × (Diameter ÷ 24)² × (Depth ÷ 12). Multiply by the number of piers, then divide by 27 for cubic yards.</p>
+      <p><strong>Example:</strong> Six 12" diameter piers at 36" deep = π × 0.25 × 3 × 6 = 14.14 cu ft ÷ 27 = <strong>0.52 cubic yards</strong>.</p>
+
+      <h3>Continuous vs. Pier Footings</h3>
+      <ul>
+        <li><strong>Continuous (strip) footings</strong> — Run under load-bearing walls; standard for foundations, garage walls, and block walls</li>
+        <li><strong>Pier (spot) footings</strong> — Support point loads like deck posts, porch columns, and fence posts</li>
+        <li>Continuous footings must be at least twice the width of the wall they support (IRC code)</li>
+        <li>Pier footings must extend below the frost line — 36"–48" in northern states</li>
+      </ul>
+
+      <h3>Code Requirements &amp; Rebar Placement</h3>
+      <ul>
+        <li>IRC Section R403.1 requires minimum 12" wide × 6" deep footings for single-story</li>
+        <li>Two-story footings typically require 15"–24" width depending on soil bearing capacity</li>
+        <li>Two #4 rebar continuous in strip footings is standard residential practice</li>
+        <li>Pier footings often require a single #4 or #5 vertical rebar centered</li>
+        <li>Rebar must have 3" minimum cover from soil contact surfaces</li>
+        <li>Always get a soil bearing test for new construction — assumed 2,000 PSF is common but varies widely</li>
+      </ul>
+    </div>
+
+    <!-- ECOSYSTEM STRIP -->
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Got your footing quantities?</h3>
+        <p>Jump to BuildQuotes and turn these numbers into a professional proposal in minutes.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+        <a href="../../calculators/concrete-slab/" class="eco-link">Concrete Slab Calc</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let footingType = 'continuous';
+    let includeWaste = false;
+
+    function setType(t) {
+      footingType = t;
+      document.getElementById('type-cont').classList.toggle('active', t === 'continuous');
+      document.getElementById('type-pier').classList.toggle('active', t === 'pier');
+      document.getElementById('fields-cont').style.display = t === 'continuous' ? '' : 'none';
+      document.getElementById('fields-pier').style.display = t === 'pier' ? '' : 'none';
+      if (t === 'continuous') {
+        document.getElementById('res-dim-label').textContent = 'Linear Footage';
+        document.getElementById('res-dim-sub').textContent = 'Total footing length';
+      } else {
+        document.getElementById('res-dim-label').textContent = 'Number of Piers';
+        document.getElementById('res-dim-sub').textContent = 'Total pier count';
+      }
+      calculate();
+    }
+
+    function setWaste(val) {
+      includeWaste = val;
+      document.getElementById('waste-off').classList.toggle('active', !val);
+      document.getElementById('waste-on').classList.toggle('active', val);
+      document.getElementById('waste-notice').classList.toggle('show', val);
+      calculate();
+    }
+
+    function animateValue(el) {
+      el.classList.remove('updated');
+      void el.offsetWidth;
+      el.classList.add('updated');
+    }
+
+    function setResult(id, val) {
+      const el = document.getElementById(id);
+      if (el && el.textContent !== val) {
+        el.textContent = val;
+        animateValue(el);
+      }
+    }
+
+    function calculate() {
+      const P = parseFloat(document.getElementById('price').value) || 0;
+      const factor = includeWaste ? 1.10 : 1.0;
+      let volCuFt = 0;
+      let laborQtyVal = 0;
+      let laborLabel = '';
+      let laborUnitStr = 'LF';
+
+      if (footingType === 'continuous') {
+        const W = parseFloat(document.getElementById('cont-width').value) || 0;
+        const D = parseFloat(document.getElementById('cont-depth').value) || 0;
+        const L = parseFloat(document.getElementById('cont-length').value) || 0;
+        if (!W || !D || !L) { clearResults(); return; }
+        volCuFt = (W / 12) * (D / 12) * L;
+        laborQtyVal = L;
+        laborLabel = L.toLocaleString() + ' LF';
+        laborUnitStr = 'LF';
+        setResult('res-dim', L.toLocaleString() + ' LF');
+      } else {
+        const dia = parseFloat(document.getElementById('pier-dia').value) || 0;
+        const depth = parseFloat(document.getElementById('pier-depth').value) || 0;
+        const qty = parseInt(document.getElementById('pier-qty').value) || 0;
+        if (!dia || !depth || !qty) { clearResults(); return; }
+        volCuFt = Math.PI * Math.pow(dia / 24, 2) * (depth / 12) * qty;
+        laborQtyVal = qty;
+        laborLabel = qty + ' piers';
+        laborUnitStr = 'pier';
+        setResult('res-dim', qty + ' piers');
+      }
+
+      const yards = volCuFt / 27 * factor;
+      const bags80 = Math.ceil(volCuFt * factor / 0.60);
+      const bags60 = Math.ceil(volCuFt * factor / 0.45);
+
+      setResult('res-yards', yards.toFixed(2) + ' yd³');
+      setResult('res-bags80', bags80.toLocaleString() + ' bags');
+      setResult('res-bags60', bags60.toLocaleString() + ' bags');
+
+      document.getElementById('res-yards-sub').textContent =
+        includeWaste ? 'Includes 10% waste overage' : 'No waste factor applied';
+
+      const matCost = P > 0 ? yards * P : 0;
+      updateLabor(laborQtyVal, laborLabel, matCost, laborUnitStr);
+
+      if (P > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('res-cost', '$' + (yards * P).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function clearResults() {
+      setResult('res-yards', '—');
+      setResult('res-bags80', '—');
+      setResult('res-bags60', '—');
+      setResult('res-dim', '—');
+      document.getElementById('res-yards-sub').textContent = 'Enter dimensions above';
+      document.getElementById('cost-row').style.display = 'none';
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const factor = includeWaste ? 1.10 : 1.0;
+      const date = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+      let volCuFt = 0, inputRows = [];
+
+      if (footingType === 'continuous') {
+        const W = parseFloat(document.getElementById('cont-width').value) || 0;
+        const D = parseFloat(document.getElementById('cont-depth').value) || 0;
+        const L = parseFloat(document.getElementById('cont-length').value) || 0;
+        volCuFt = (W / 12) * (D / 12) * L;
+        inputRows = [['Footing Type','Continuous'],['Width',W+' in'],['Depth',D+' in'],['Length',L+' ft'],['Waste',includeWaste?'10%':'None']];
+      } else {
+        const dia = parseFloat(document.getElementById('pier-dia').value) || 0;
+        const depth = parseFloat(document.getElementById('pier-depth').value) || 0;
+        const qty = parseInt(document.getElementById('pier-qty').value) || 0;
+        volCuFt = Math.PI * Math.pow(dia / 24, 2) * (depth / 12) * qty;
+        inputRows = [['Footing Type','Pier'],['Diameter',dia+' in'],['Depth',depth+' in'],['Quantity',qty+' piers'],['Waste',includeWaste?'10%':'None']];
+      }
+
+      const yards = (volCuFt / 27 * factor).toFixed(2);
+      const bags80 = Math.ceil(volCuFt * factor / 0.60);
+      const bags60 = Math.ceil(volCuFt * factor / 0.45);
+
+      doc.setFillColor(249, 115, 22);
+      doc.rect(0, 0, 210, 28, 'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+      doc.setFontSize(18); doc.text('MATERIAL TAKEOFF REPORT', 14, 12);
+      doc.setFontSize(10); doc.text('Concrete Footing Calculator', 14, 20);
+
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
+      doc.setFontSize(9);
+      doc.text('Generated by buildtakeoff.co', 14, 35);
+      doc.text('Date: ' + date, 14, 42);
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS', 14, 55);
+      doc.setDrawColor(249,115,22); doc.line(14, 57, 196, 57);
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      inputRows.forEach(([k,v], i) => {
+        doc.setTextColor(60,60,60); doc.text(k + ':', 14, 67 + i*10);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20);
+        doc.text(v, 80, 67 + i*10);
+        doc.setFont('helvetica','normal');
+      });
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES', 14, 125);
+      doc.line(14, 127, 196, 127);
+
+      const results = [
+        ['Cubic Yards (Ready-Mix)', yards + ' yd³', true],
+        ['80 lb Bags (Quikrete)', bags80 + ' bags', false],
+        ['60 lb Bags (Quikrete)', bags60 + ' bags', false],
+      ];
+
+      results.forEach(([k,v,bold], i) => {
+        if (bold) { doc.setFillColor(255,237,213); doc.roundedRect(12, 133 + i*14, 184, 12, 2, 2, 'F'); }
+        doc.setFont('helvetica', bold ? 'bold' : 'normal');
+        doc.setTextColor(bold ? 180 : 60, bold ? 80 : 60, bold ? 0 : 60);
+        doc.text(k + ':', 16, 141 + i*14);
+        doc.setFont('helvetica','bold');
+        doc.setTextColor(bold ? 180 : 20, bold ? 80 : 20, bold ? 0 : 20);
+        doc.text(v, 130, 141 + i*14);
+      });
+
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co', 14, 280);
+      doc.save('concrete-footing-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='LF';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'LF';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      if(laborMethod==='unit') document.getElementById('labor-rate-unit').textContent='$/'+laborUnit;
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      const typeLabel = footingType === 'continuous' ? 'Continuous Footing' : 'Pier Footing';
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Concrete Footing — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Type:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(typeLabel,80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('concrete-footing-estimate.pdf');
+    }
+
+    // Live calc
+    document.querySelectorAll('input').forEach(el => {
+      el.addEventListener('input', calculate);
+    });
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

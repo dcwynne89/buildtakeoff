@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gutter Calculator — Gutters, Downspouts &amp; Hangers | BuildTakeoff</title>
+  <meta name="description" content="Free gutter calculator. Enter gutter run to get sections, downspout pieces, hangers, elbows, corners, end caps, and sealant. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/gutter/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Gutter Calculator</h1>
+      <p>Calculate gutter sections, downspout pieces, hangers, elbows, corners, end caps, and sealant for residential gutter installations.</p>
+      <div class="tag-row">
+        <span class="tag">Gutters</span>
+        <span class="tag">Downspouts</span>
+        <span class="tag">Rain Gutters</span>
+        <span class="tag">Exterior</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Gutter Run</div>
+        <div class="field">
+          <label for="gr">Total Gutter Run</label>
+          <div class="input-wrap">
+            <input type="number" id="gr" value="120" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Total length of all gutter runs combined</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Gutter Style</div>
+        <div class="field">
+          <label>Profile</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="style-k" onclick="setStyle('k')">K-Style</button>
+            <button class="toggle-btn" id="style-hr" onclick="setStyle('hr')">Half-Round</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Gutter Size</div>
+        <div class="field">
+          <label>Width</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="size-5" onclick="setSize('5')">5 inch</button>
+            <button class="toggle-btn" id="size-6" onclick="setSize('6')">6 inch</button>
+          </div>
+          <div class="field-hint">5" standard residential · 6" for heavy rainfall</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Downspouts</div>
+        <div class="field">
+          <label for="gds">Number of Downspouts</label>
+          <div class="input-wrap">
+            <input type="number" id="gds" value="4" min="0" step="1" />
+            <span class="input-unit"># downspouts</span>
+          </div>
+          <div class="field-hint">1 downspout per 30–40 ft of gutter run</div>
+        </div>
+        <div class="field">
+          <label for="gdsl">Downspout Length (each)</label>
+          <div class="input-wrap">
+            <input type="number" id="gdsl" value="10" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Fittings</div>
+        <div class="field">
+          <label for="gic">Inside Corners</label>
+          <div class="input-wrap">
+            <input type="number" id="gic" value="2" min="0" step="1" />
+            <span class="input-unit"># corners</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="goc">Outside Corners</label>
+          <div class="input-wrap">
+            <input type="number" id="goc" value="2" min="0" step="1" />
+            <span class="input-unit"># corners</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="gec">End Caps</label>
+          <div class="input-wrap">
+            <input type="number" id="gec" value="4" min="0" step="1" />
+            <span class="input-unit"># caps</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing</div>
+        <div class="field">
+          <label for="gpg">Gutter Price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="gpg" value="" min="0" step="0.25" placeholder="4.50" />
+            <span class="input-unit">$/LF</span>
+          </div>
+          <div class="field-hint">Aluminum gutter: $3–$6/LF · Copper: $15–$25/LF</div>
+        </div>
+        <div class="field">
+          <label for="gpd">Downspout Price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="gpd" value="" min="0" step="0.25" placeholder="3.50" />
+            <span class="input-unit">$/LF</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Gutter Sections</div>
+          <div class="result-value" id="r-gsec">—</div>
+          <div class="result-sub" id="r-gsec-sub">10 ft sections</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Downspout Pieces</div>
+          <div class="result-value" id="r-dsec">—</div>
+          <div class="result-sub" id="r-dsec-sub">10 ft sections</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Hangers</div>
+          <div class="result-value" id="r-hangers">—</div>
+          <div class="result-sub">Spaced every 2 ft</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Elbows</div>
+          <div class="result-value" id="r-elbows">—</div>
+          <div class="result-sub">3 per downspout (2 top + 1 bottom)</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Sealant Tubes</div>
+          <div class="result-value" id="r-sealant">—</div>
+          <div class="result-sub">1 tube per ~40 ft of gutter</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Corners &amp; End Caps</div>
+          <div class="result-value" id="r-fittings">—</div>
+          <div class="result-sub" id="r-fittings-sub">Inside, outside corners, end caps</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="r-cost">—</div>
+          <div class="result-sub">Gutter + downspout material</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per LF</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="8.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/LF</span>
+            </div>
+            <div class="field-hint">Gutter installation: typically $5–$12/LF</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="6" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Gutter Materials</h2>
+      <p>Accurate gutter takeoffs prevent mid-job supply runs and wasted material. This calculator accounts for gutter sections, downspouts, hangers, elbows, sealant, corners, and end caps — everything you need for a complete installation.</p>
+
+      <h3>K-Style vs. Half-Round Gutters</h3>
+      <ul>
+        <li><strong>K-style gutters</strong> — most common residential profile, flat back mounts flush to fascia, holds more water per inch, available in 5" and 6" widths</li>
+        <li><strong>Half-round gutters</strong> — traditional U-shaped profile, common on historic homes, requires special brackets, less capacity than K-style at same width</li>
+        <li>K-style handles ~20% more water volume than half-round at the same width</li>
+      </ul>
+
+      <h3>Sizing for Rainfall</h3>
+      <ul>
+        <li><strong>5" K-style</strong> — handles up to 5,520 sq ft of roof per downspout in moderate rainfall areas</li>
+        <li><strong>6" K-style</strong> — handles up to 7,960 sq ft, required for steep roofs or high-rainfall regions</li>
+        <li>Use 6" gutters for roof areas over 1,500 sq ft or regions with 4+ inches/hour rain intensity</li>
+        <li>When in doubt, upsize — oversized gutters cost only 10–15% more but handle extreme storms</li>
+      </ul>
+
+      <h3>Downspout Placement Rules</h3>
+      <p>Place one downspout every 30–40 linear feet of gutter. Each downspout needs 3 elbows: 2 at the top (to offset from the soffit to the wall) and 1 at the bottom (to direct water away from the foundation). Extend downspouts at least 4 feet from the foundation.</p>
+
+      <h3>Seamless vs. Sectional</h3>
+      <ul>
+        <li><strong>Sectional gutters</strong> — sold in 10 ft pieces, seams every 10 ft need sealant, DIY-friendly</li>
+        <li><strong>Seamless gutters</strong> — formed on-site to exact length, no seams = fewer leaks, requires professional equipment</li>
+        <li>Seamless gutters cost 30–50% more installed but last longer with less maintenance</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Gutter quantities locked in?</h3>
+        <p>Build your gutter installation quote in BuildQuotes or jump straight to invoicing.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/roofing-squares/" class="eco-link">Roofing Calc</a>
+        <a href="../../calculators/roof-pitch/" class="eco-link">Roof Pitch Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let gutterStyle = 'k';
+    let gutterSize = '5';
+
+    function setStyle(s) {
+      gutterStyle = s;
+      document.getElementById('style-k').classList.toggle('active', s==='k');
+      document.getElementById('style-hr').classList.toggle('active', s==='hr');
+      calculate();
+    }
+    function setSize(s) {
+      gutterSize = s;
+      document.getElementById('size-5').classList.toggle('active', s==='5');
+      document.getElementById('size-6').classList.toggle('active', s==='6');
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate() {
+      const run = parseFloat(document.getElementById('gr').value) || 0;
+      const dsCount = parseInt(document.getElementById('gds').value) || 0;
+      const dsLen = parseFloat(document.getElementById('gdsl').value) || 0;
+      const ic = parseInt(document.getElementById('gic').value) || 0;
+      const oc = parseInt(document.getElementById('goc').value) || 0;
+      const ec = parseInt(document.getElementById('gec').value) || 0;
+      const priceG = parseFloat(document.getElementById('gpg').value) || 0;
+      const priceD = parseFloat(document.getElementById('gpd').value) || 0;
+
+      if (!run) { setResult('r-gsec','—'); setResult('r-dsec','—'); setResult('r-hangers','—'); return; }
+
+      const gutterSections = Math.ceil(run / 10);
+      const totalDsLen = dsCount * dsLen;
+      const dsSections = Math.ceil(totalDsLen / 10);
+      const hangers = Math.ceil(run / 2);
+      const elbows = dsCount * 3;
+      const sealant = Math.ceil(run / 40);
+
+      const styleLabel = gutterStyle === 'k' ? 'K-Style' : 'Half-Round';
+
+      setResult('r-gsec', gutterSections + ' pieces');
+      document.getElementById('r-gsec-sub').textContent = gutterSections + ' × 10 ft ' + gutterSize + '" ' + styleLabel;
+      setResult('r-dsec', dsSections + ' pieces');
+      document.getElementById('r-dsec-sub').textContent = dsCount + ' downspouts × ' + dsLen + ' ft each';
+      setResult('r-hangers', hangers + ' hangers');
+      setResult('r-elbows', elbows + ' elbows');
+      setResult('r-sealant', sealant + ' tube' + (sealant !== 1 ? 's' : ''));
+      setResult('r-fittings', (ic + oc + ec) + ' pieces');
+      document.getElementById('r-fittings-sub').textContent = ic + ' inside, ' + oc + ' outside, ' + ec + ' end caps';
+
+      const matCost = (priceG > 0 ? run * priceG : 0) + (priceD > 0 ? totalDsLen * priceD : 0);
+      updateLabor(run, run + ' LF of gutter', matCost, 'LF');
+
+      if (priceG > 0 || priceD > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('r-cost', '$' + matCost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const run=parseFloat(document.getElementById('gr').value)||0;
+      const dsCount=parseInt(document.getElementById('gds').value)||0;
+      const dsLen=parseFloat(document.getElementById('gdsl').value)||0;
+      const ic=parseInt(document.getElementById('gic').value)||0;
+      const oc=parseInt(document.getElementById('goc').value)||0;
+      const ec=parseInt(document.getElementById('gec').value)||0;
+      const priceG=parseFloat(document.getElementById('gpg').value)||0;
+      const priceD=parseFloat(document.getElementById('gpd').value)||0;
+      const gutterSections=Math.ceil(run/10);
+      const dsSections=Math.ceil(dsCount*dsLen/10);
+      const hangers=Math.ceil(run/2);
+      const elbows=dsCount*3;
+      const sealant=Math.ceil(run/40);
+      const styleLabel=gutterStyle==='k'?'K-Style':'Half-Round';
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Gutter Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Gutter Run',run+' ft'],['Style',gutterSize+'" '+styleLabel],['Downspouts',dsCount+' × '+dsLen+' ft'],['Inside Corners',ic+''],['Outside Corners',oc+''],['End Caps',ec+'']];
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);
+        doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');
+      });
+      let qy=135;
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,qy);doc.line(14,qy+2,196,qy+2);
+      const results=[['Gutter Sections',gutterSections+' pcs (10 ft)',true],['Downspout Sections',dsSections+' pcs (10 ft)',false],['Hangers',hangers+'',false],['Elbows',elbows+'',false],['Sealant Tubes',sealant+'',false],['Corners + Caps',(ic+oc+ec)+' pieces',false]];
+      const matCost=(priceG>0?run*priceG:0)+(priceD>0?dsCount*dsLen*priceD:0);
+      if(matCost>0) results.push(['Estimated Cost','$'+matCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),false]);
+      results.forEach(([k,v,bold],i)=>{
+        const y=qy+9+i*12;
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,y-5,184,10,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,y+3);doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,y+3);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('gutter-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='LF';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'LF';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const run=parseFloat(document.getElementById('gr').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const styleLabel=gutterStyle==='k'?'K-Style':'Half-Round';
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Gutters ('+gutterSize+'" '+styleLabel+') — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Run:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(run+' LF of '+gutterSize+'" '+styleLabel+' gutter',80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('gutter-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

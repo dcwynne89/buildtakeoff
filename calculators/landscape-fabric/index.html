@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Landscape Fabric &amp; Edging Calculator | BuildTakeoff</title>
+  <meta name="description" content="Free landscape fabric and edging calculator. Enter area dimensions to get fabric rolls, staples, edging, and stakes. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/landscape-fabric/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Landscape Fabric &amp; Edging Calculator</h1>
+      <p>Calculate rolls of landscape fabric, staples, edging, and stakes for garden beds, paths, and weed barrier installations.</p>
+      <div class="tag-row">
+        <span class="tag">Landscape Fabric</span>
+        <span class="tag">Weed Barrier</span>
+        <span class="tag">Edging</span>
+        <span class="tag">Landscaping</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Area Dimensions</div>
+        <div class="field">
+          <label for="fl">Length</label>
+          <div class="input-wrap">
+            <input type="number" id="fl" value="40" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fw">Width</label>
+          <div class="input-wrap">
+            <input type="number" id="fw" value="12" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Fabric Roll Width</div>
+        <div class="field">
+          <label>Roll Width</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="rw-3" onclick="setRollWidth(3)">3 ft</button>
+            <button class="toggle-btn active" id="rw-4" onclick="setRollWidth(4)">4 ft</button>
+            <button class="toggle-btn" id="rw-6" onclick="setRollWidth(6)">6 ft</button>
+          </div>
+          <div class="field-hint">Standard rolls: 3'×50', 4'×100', 6'×100'</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Overlap</div>
+        <div class="field">
+          <label for="fov">Seam Overlap</label>
+          <div class="input-wrap">
+            <input type="number" id="fov" value="6" min="0" max="12" step="1" />
+            <span class="input-unit">in</span>
+          </div>
+          <div class="field-hint">6" minimum overlap recommended at seams</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Edging</div>
+        <div class="field">
+          <label>Include Edging?</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="edge-no" onclick="setEdging(false)">No edging</button>
+            <button class="toggle-btn" id="edge-yes" onclick="setEdging(true)">+ Edging</button>
+          </div>
+        </div>
+        <div id="edging-fields" style="display:none;">
+          <div class="field">
+            <label for="fep">Edging Perimeter</label>
+            <div class="input-wrap">
+              <input type="number" id="fep" value="104" min="0" step="1" />
+              <span class="input-unit">ft</span>
+            </div>
+            <div class="field-hint">Perimeter of area to edge (auto-filled)</div>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing</div>
+        <div class="field">
+          <label for="fpf">Fabric Price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="fpf" value="" min="0" step="1" placeholder="25" />
+            <span class="input-unit">$/roll</span>
+          </div>
+          <div class="field-hint">Woven: $25–$50/roll · Non-woven: $15–$30/roll</div>
+        </div>
+        <div class="field">
+          <label for="fps">Staple Price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="fps" value="" min="0" step="1" placeholder="8" />
+            <span class="input-unit">$/box of 100</span>
+          </div>
+        </div>
+        <div class="field" id="edging-price-field" style="display:none;">
+          <label for="fpe">Edging Price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="fpe" value="" min="0" step="0.25" placeholder="1.50" />
+            <span class="input-unit">$/ft</span>
+          </div>
+          <div class="field-hint">Steel edging: $1–$3/ft · Plastic: $0.50–$1.50/ft</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Fabric Rolls</div>
+          <div class="result-value" id="r-rolls">—</div>
+          <div class="result-sub" id="r-rolls-sub">Including overlap</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Fabric Area</div>
+          <div class="result-value" id="r-area">—</div>
+          <div class="result-sub">Total fabric needed with overlap</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Landscape Staples</div>
+          <div class="result-value" id="r-staples">—</div>
+          <div class="result-sub" id="r-staples-sub">1 per 2 sq ft + overlap seams</div>
+        </div>
+
+        <div class="result-item" id="edging-row" style="display:none;">
+          <div class="result-label">Edging</div>
+          <div class="result-value" id="r-edging">—</div>
+          <div class="result-sub">Linear feet of edging</div>
+        </div>
+
+        <div class="result-item" id="stakes-row" style="display:none;">
+          <div class="result-label">Edging Stakes</div>
+          <div class="result-value" id="r-stakes">—</div>
+          <div class="result-sub">1 stake every 4 ft</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="r-cost">—</div>
+          <div class="result-sub">Fabric + staples + edging</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="2.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Fabric + mulch installation: typically $1.50–$3.00/sq ft</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="4" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Landscape Fabric &amp; Edging</h2>
+      <p>Landscape fabric prevents weeds from growing through mulch or gravel beds while allowing water to pass through to the soil. Proper calculation accounts for roll width, overlap at seams, and staple density to keep the fabric secure over time.</p>
+
+      <h3>The Formula</h3>
+      <p>Number of fabric strips = Area Width ÷ (Roll Width – Overlap). Fabric length needed = Number of strips × Area Length. Rolls = Total fabric area ÷ Roll coverage area. Staples = 1 per 2 sq ft of fabric + extra along every seam.</p>
+
+      <h3>Woven vs. Non-Woven Fabric</h3>
+      <ul>
+        <li><strong>Woven landscape fabric</strong> — stronger, more durable, best under gravel or rock where permanence matters. Allows less water penetration.</li>
+        <li><strong>Non-woven landscape fabric</strong> — softer, better water flow, ideal under mulch in garden beds. Easier to cut and install.</li>
+        <li><strong>Woven polypropylene</strong> — heaviest duty, used for erosion control, slopes, and commercial applications.</li>
+        <li>Both types require UV stabilization for longevity — cheap fabric degrades in 1–2 seasons.</li>
+      </ul>
+
+      <h3>When to Use Landscape Fabric</h3>
+      <ul>
+        <li><strong>Under gravel paths and driveways</strong> — prevents gravel from sinking into soil</li>
+        <li><strong>Under decorative rock beds</strong> — blocks weeds, keeps rock clean</li>
+        <li><strong>Under mulch in perennial beds</strong> — reduces weeding but allow planting holes</li>
+        <li><strong>NOT recommended</strong> under vegetable gardens or annual flower beds (restricts root growth and soil amendment)</li>
+      </ul>
+
+      <h3>Staple Spacing</h3>
+      <p>Use U-shaped landscape staples every 2 feet along edges and seams. Add staples every 3–4 feet across the interior of each fabric strip. On slopes, double the staple density. Budget 1 staple per 2 sq ft of fabric as a minimum.</p>
+
+      <h3>Edging Types</h3>
+      <ul>
+        <li><strong>Steel edging</strong> — $1.50–$3/ft, cleanest look, lasts 20+ years, great for straight or gentle curves</li>
+        <li><strong>Aluminum edging</strong> — $2–$4/ft, lightweight, won't rust, best for tight curves</li>
+        <li><strong>Plastic edging</strong> — $0.50–$1.50/ft, most affordable, flexes easily, pops up over time in frost areas</li>
+        <li><strong>Stone/brick edging</strong> — $5–$15/ft, most decorative, requires mortar or compacted base</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Fabric quantities locked in?</h3>
+        <p>Build your landscaping quote in BuildQuotes or jump straight to invoicing.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/mulch/" class="eco-link">Mulch Calc</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let rollWidth = 4;
+    let includeEdging = false;
+    const rollLengths = { 3: 50, 4: 100, 6: 100 }; // standard roll lengths in ft
+
+    function setRollWidth(w) {
+      rollWidth = w;
+      [3,4,6].forEach(v => document.getElementById('rw-'+v).classList.toggle('active', v===w));
+      calculate();
+    }
+    function setEdging(v) {
+      includeEdging = v;
+      document.getElementById('edge-no').classList.toggle('active', !v);
+      document.getElementById('edge-yes').classList.toggle('active', v);
+      document.getElementById('edging-fields').style.display = v ? '' : 'none';
+      document.getElementById('edging-price-field').style.display = v ? '' : 'none';
+      document.getElementById('edging-row').style.display = v ? '' : 'none';
+      document.getElementById('stakes-row').style.display = v ? '' : 'none';
+      // Auto-fill perimeter
+      const L = parseFloat(document.getElementById('fl').value) || 0;
+      const W = parseFloat(document.getElementById('fw').value) || 0;
+      if (v && L && W) document.getElementById('fep').value = 2 * (L + W);
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('fl').value) || 0;
+      const W = parseFloat(document.getElementById('fw').value) || 0;
+      const overlap = parseFloat(document.getElementById('fov').value) || 0;
+      const overlapFt = overlap / 12;
+      const priceFabric = parseFloat(document.getElementById('fpf').value) || 0;
+      const priceStaple = parseFloat(document.getElementById('fps').value) || 0;
+      const priceEdge = parseFloat(document.getElementById('fpe').value) || 0;
+
+      if (!L || !W) { setResult('r-rolls','—'); setResult('r-area','—'); setResult('r-staples','—'); return; }
+
+      const sqft = L * W;
+      // Number of strips needed across the width
+      const effectiveWidth = rollWidth - overlapFt;
+      const numStrips = Math.ceil(W / effectiveWidth);
+      const totalFabricArea = numStrips * rollWidth * L;
+      const rollLen = rollLengths[rollWidth] || 100;
+      const rollArea = rollWidth * rollLen;
+      const rolls = Math.ceil(totalFabricArea / rollArea);
+
+      // Staples: 1 per 2 sq ft of fabric + overlap seams
+      const overlapSeams = Math.max(0, numStrips - 1);
+      const seamStaples = overlapSeams * Math.ceil(L / 2); // every 2 ft along each seam
+      const areaStaples = Math.ceil(totalFabricArea / 2);
+      const totalStaples = areaStaples + seamStaples;
+      const stapleBoxes = Math.ceil(totalStaples / 100);
+
+      setResult('r-rolls', rolls + ' roll' + (rolls !== 1 ? 's' : ''));
+      document.getElementById('r-rolls-sub').textContent = rollWidth + "' × " + rollLen + "' rolls";
+      setResult('r-area', Math.ceil(totalFabricArea).toLocaleString() + ' sq ft');
+      setResult('r-staples', totalStaples + ' staples (' + stapleBoxes + ' box' + (stapleBoxes !== 1 ? 'es' : '') + ')');
+      document.getElementById('r-staples-sub').textContent = numStrips > 1 ? (numStrips - 1) + ' overlap seam' + (numStrips > 2 ? 's' : '') : 'No overlap seams';
+
+      // Edging
+      let edgingLF = 0, edgingStakes = 0;
+      if (includeEdging) {
+        edgingLF = parseFloat(document.getElementById('fep').value) || 0;
+        edgingStakes = Math.ceil(edgingLF / 4); // 1 stake every 4 ft
+        setResult('r-edging', edgingLF + ' LF');
+        setResult('r-stakes', edgingStakes + ' stakes');
+      }
+
+      // Cost
+      let matCost = 0;
+      if (priceFabric > 0) matCost += rolls * priceFabric;
+      if (priceStaple > 0) matCost += stapleBoxes * priceStaple;
+      if (includeEdging && priceEdge > 0) matCost += edgingLF * priceEdge;
+
+      updateLabor(sqft, sqft.toLocaleString() + ' sq ft', matCost, 'sq ft');
+
+      if (matCost > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('r-cost', '$' + matCost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('fl').value)||0;
+      const W=parseFloat(document.getElementById('fw').value)||0;
+      const overlap=parseFloat(document.getElementById('fov').value)||0;
+      const overlapFt=overlap/12;
+      const effectiveWidth=rollWidth-overlapFt;
+      const numStrips=Math.ceil(W/effectiveWidth);
+      const totalFabricArea=numStrips*rollWidth*L;
+      const rollLen=rollLengths[rollWidth]||100;
+      const rolls=Math.ceil(totalFabricArea/(rollWidth*rollLen));
+      const totalStaples=Math.ceil(totalFabricArea/2)+Math.max(0,numStrips-1)*Math.ceil(L/2);
+      const stapleBoxes=Math.ceil(totalStaples/100);
+      const edgingLF=includeEdging?(parseFloat(document.getElementById('fep').value)||0):0;
+      const edgingStakes=Math.ceil(edgingLF/4);
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Landscape Fabric & Edging Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Length',L+' ft'],['Width',W+' ft'],['Roll Width',rollWidth+' ft × '+rollLen+' ft'],['Overlap',overlap+' inches'],['Edging',includeEdging?edgingLF+' ft':'None']];
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);
+        doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');
+      });
+      let qy=125;
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,qy);doc.line(14,qy+2,196,qy+2);
+      const results=[['Fabric Rolls',rolls+' roll'+(rolls!==1?'s':''),true],['Fabric Area',Math.ceil(totalFabricArea)+' sq ft',false],['Staples',totalStaples+' ('+stapleBoxes+' boxes)',false]];
+      if(includeEdging){results.push(['Edging',edgingLF+' LF',false]);results.push(['Stakes',edgingStakes+'',false]);}
+      results.forEach(([k,v,bold],i)=>{
+        const y=qy+9+i*14;
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,y-5,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,y+3);doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,y+3);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('landscape-fabric-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('fl').value)||0;
+      const W=parseFloat(document.getElementById('fw').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Landscape Fabric & Edging — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Area:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft ('+L*W+' sq ft)',80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('landscape-fabric-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

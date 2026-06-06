@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solar Panel Calculator — Panel Count & System Size | BuildTakeoff</title>
+  <meta name="description" content="Free solar panel calculator. Enter roof area and electric usage to get system size, panel count, annual production, and estimated savings. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/solar-panel/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Solar Panel Calculator</h1>
+      <p>Calculate system size, panel count, roof area needed, annual production, and estimated savings based on your electric usage and available roof space.</p>
+      <div class="tag-row">
+        <span class="tag">Solar</span>
+        <span class="tag">Renewable</span>
+        <span class="tag">Energy</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Energy Usage</div>
+        <div class="field">
+          <label>Input Method</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="im-bill" onclick="setInputMethod('bill')">Monthly Bill ($)</button>
+            <button class="toggle-btn" id="im-kwh" onclick="setInputMethod('kwh')">Monthly kWh</button>
+          </div>
+        </div>
+        <div class="field" id="f-bill">
+          <label for="sol-bill">Monthly Electric Bill</label>
+          <div class="input-wrap"><input type="number" id="sol-bill" value="150" min="0" step="5" /><span class="input-unit">$/mo</span></div>
+        </div>
+        <div class="field" id="f-kwh" style="display:none;">
+          <label for="sol-kwh">Monthly kWh Usage</label>
+          <div class="input-wrap"><input type="number" id="sol-kwh" value="1000" min="0" step="50" /><span class="input-unit">kWh</span></div>
+        </div>
+        <div class="field">
+          <label for="sol-rate">Electric Rate</label>
+          <div class="input-wrap"><input type="number" id="sol-rate" value="0.13" min="0" step="0.01" /><span class="input-unit">$/kWh</span></div>
+          <div class="field-hint">US average: $0.13/kWh (varies by state)</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">System Configuration</div>
+        <div class="field">
+          <label for="sol-roof">Available Roof Area</label>
+          <div class="input-wrap"><input type="number" id="sol-roof" value="600" min="0" step="10" /><span class="input-unit">sq ft</span></div>
+          <div class="field-hint">Usable, unshaded south-facing area</div>
+        </div>
+        <div class="field">
+          <label>Panel Wattage</label>
+          <div class="toggle-group" style="flex-wrap:wrap;">
+            <button class="toggle-btn" id="pw-300" onclick="setPanelW(300)">300W</button>
+            <button class="toggle-btn" id="pw-350" onclick="setPanelW(350)">350W</button>
+            <button class="toggle-btn active" id="pw-400" onclick="setPanelW(400)">400W</button>
+            <button class="toggle-btn" id="pw-450" onclick="setPanelW(450)">450W</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="sol-sun">Peak Sun Hours Per Day</label>
+          <div class="input-wrap"><input type="number" id="sol-sun" value="5" min="1" max="10" step="0.5" /><span class="input-unit">hrs</span></div>
+          <div class="field-hint">US range: 3–7 hrs (check PVWatts for your area)</div>
+        </div>
+        <div class="field">
+          <label>System Losses</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="loss-10" onclick="setLoss(10)">10%</button>
+            <button class="toggle-btn active" id="loss-15" onclick="setLoss(15)">15%</button>
+            <button class="toggle-btn" id="loss-20" onclick="setLoss(20)">20%</button>
+          </div>
+          <div class="field-hint">Inverter, wiring, shading, soiling, temperature losses</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">System Size</div>
+          <div class="result-value" id="res-kw">—</div>
+          <div class="result-sub" id="res-kw-sub">DC nameplate capacity</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Panels Needed</div>
+          <div class="result-value" id="res-panels">—</div>
+          <div class="result-sub" id="res-panels-sub">Panel count</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Roof Area Required</div>
+          <div class="result-value" id="res-roof-need">—</div>
+          <div class="result-sub" id="res-roof-sub">~17.5 sq ft per panel</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Annual Production</div>
+          <div class="result-value" id="res-annual">—</div>
+          <div class="result-sub" id="res-annual-sub">Estimated yearly output</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Estimated Annual Savings</div>
+          <div class="result-value" id="res-savings">—</div>
+          <div class="result-sub" id="res-savings-sub">At current electric rate</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Offset Percentage</div>
+          <div class="result-value" id="res-offset">—</div>
+          <div class="result-sub">Portion of usage covered by solar</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your solar installation cost to generate a complete job estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per watt</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.1" placeholder="3.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/watt</span>
+            </div>
+            <div class="field-hint">Solar install $2.50–$4.50/watt (before incentives)</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="24" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter details above to see your system size</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Equipment</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Equipment + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Size a Residential Solar Panel System</h2>
+      <p>A properly sized solar system should offset most or all of your electricity usage without significantly overproducing. Oversized systems may not provide additional savings if your utility doesn't offer favorable net metering. Undersized systems miss potential savings. The goal is to match production to consumption.</p>
+
+      <h3>Panel Sizing Methodology</h3>
+      <ul>
+        <li><strong>Step 1:</strong> Determine monthly kWh usage (from bill or utility account)</li>
+        <li><strong>Step 2:</strong> Calculate daily need: monthly kWh ÷ 30</li>
+        <li><strong>Step 3:</strong> Account for sun hours and losses: daily kWh ÷ sun hours ÷ (1 – loss%) = system kW</li>
+        <li><strong>Step 4:</strong> Panel count: system watts ÷ panel wattage</li>
+        <li><strong>Step 5:</strong> Verify roof area: panels × 17.5 sq ft ≤ available area</li>
+      </ul>
+
+      <h3>Net Metering</h3>
+      <p>Net metering allows you to send excess solar production back to the grid and receive credit on your bill. Policies vary by state and utility — some offer full retail rate credits, others offer wholesale or avoided cost rates. Check your utility's net metering policy before sizing your system, as it directly affects ROI.</p>
+
+      <h3>Roof Orientation Impact</h3>
+      <ul>
+        <li><strong>South-facing (ideal):</strong> 100% of optimal production</li>
+        <li><strong>Southwest/Southeast:</strong> ~90–95% of optimal</li>
+        <li><strong>West/East:</strong> ~75–85% of optimal (good for afternoon/morning peak)</li>
+        <li><strong>North-facing:</strong> ~50–65% of optimal (not recommended)</li>
+        <li><strong>Flat roof:</strong> ~85–90% with tilt-mount racking</li>
+      </ul>
+
+      <h3>ROI Calculation Basics</h3>
+      <ul>
+        <li><strong>Average US system cost:</strong> $3.00/watt before incentives (~$18,000 for 6kW system)</li>
+        <li><strong>Federal ITC:</strong> 30% tax credit through 2032 (reduces $18,000 to $12,600)</li>
+        <li><strong>State incentives:</strong> Vary widely — SRECs, rebates, property tax exemptions</li>
+        <li><strong>Typical payback period:</strong> 7–12 years in most markets</li>
+        <li><strong>System lifespan:</strong> 25–30+ years with panel warranties</li>
+        <li><strong>Degradation:</strong> ~0.5% per year — panels still produce ~87% at year 25</li>
+      </ul>
+
+      <h3>Peak Sun Hours by Region</h3>
+      <ul>
+        <li><strong>Southwest (AZ, NV, NM):</strong> 6–7 hours</li>
+        <li><strong>Southeast (FL, TX, GA):</strong> 5–6 hours</li>
+        <li><strong>Midwest (IL, OH, MI):</strong> 4–5 hours</li>
+        <li><strong>Northeast (NY, MA, PA):</strong> 3.5–4.5 hours</li>
+        <li><strong>Pacific NW (WA, OR):</strong> 3–4 hours</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Solar system sized?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/roof-pitch/" class="eco-link">Roof Pitch Calculator</a>
+        <a href="../../calculators/roofing-squares/" class="eco-link">Roofing Squares Calculator</a>
+        <a href="../../calculators/electrical-wire/" class="eco-link">Electrical Wire Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let inputMethod='bill', panelW=400, lossPercent=15;
+    const sqftPerPanel=17.5;
+
+    function setInputMethod(m){
+      inputMethod=m;
+      document.getElementById('im-bill').classList.toggle('active',m==='bill');
+      document.getElementById('im-kwh').classList.toggle('active',m==='kwh');
+      document.getElementById('f-bill').style.display=m==='bill'?'':'none';
+      document.getElementById('f-kwh').style.display=m==='kwh'?'':'none';
+      calculate();
+    }
+    function setPanelW(w){panelW=w;[300,350,400,450].forEach(v=>document.getElementById('pw-'+v).classList.toggle('active',v===w));calculate();}
+    function setLoss(l){lossPercent=l;[10,15,20].forEach(v=>document.getElementById('loss-'+v).classList.toggle('active',v===l));calculate();}
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcWatts=0, calcMatCost=0;
+    function calculate(){
+      const bill=parseFloat(document.getElementById('sol-bill').value)||0;
+      const kwhInput=parseFloat(document.getElementById('sol-kwh').value)||0;
+      const rate=parseFloat(document.getElementById('sol-rate').value)||0.13;
+      const roofArea=parseFloat(document.getElementById('sol-roof').value)||0;
+      const sunHours=parseFloat(document.getElementById('sol-sun').value)||5;
+
+      // Get monthly kWh
+      let monthlyKWh=0;
+      if(inputMethod==='bill'){
+        if(!bill||!rate){clearResults();return;}
+        monthlyKWh=bill/rate;
+      } else {
+        if(!kwhInput){clearResults();return;}
+        monthlyKWh=kwhInput;
+      }
+
+      const dailyKWh=monthlyKWh/30;
+      const lossFactor=1-(lossPercent/100);
+      const systemKW=dailyKWh/sunHours/lossFactor;
+      const systemWatts=systemKW*1000;
+      const panels=Math.ceil(systemWatts/panelW);
+      const roofNeeded=panels*sqftPerPanel;
+      const annualProduction=Math.round(systemKW*sunHours*365*lossFactor);
+      const annualSavings=annualProduction*rate;
+      const annualUsage=monthlyKWh*12;
+      const offset=Math.min(100,Math.round((annualProduction/annualUsage)*100));
+
+      // Check roof constraint
+      const maxPanelsByRoof=Math.floor(roofArea/sqftPerPanel);
+      const constrained=panels>maxPanelsByRoof&&roofArea>0;
+
+      calcWatts=Math.round(systemWatts);
+
+      setResult('res-kw',systemKW.toFixed(1)+' kW');
+      document.getElementById('res-kw-sub').textContent=systemWatts.toLocaleString()+' watts DC nameplate';
+
+      setResult('res-panels',panels+' panels');
+      document.getElementById('res-panels-sub').textContent=panelW+'W panels'+(constrained?' · ⚠ exceeds roof area':'');
+
+      setResult('res-roof-need',Math.ceil(roofNeeded).toLocaleString()+' sq ft');
+      document.getElementById('res-roof-sub').textContent=constrained?'⚠ Need '+Math.ceil(roofNeeded)+' but only '+roofArea+' available':'Fits within '+roofArea+' sq ft available';
+      document.getElementById('res-roof-sub').style.color=constrained?'#EF4444':'';
+
+      setResult('res-annual',annualProduction.toLocaleString()+' kWh');
+      document.getElementById('res-annual-sub').textContent=sunHours+' sun hrs/day · '+lossPercent+'% losses';
+
+      setResult('res-savings','$'+annualSavings.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})+'/yr');
+      document.getElementById('res-savings-sub').textContent='At $'+rate+'/kWh';
+
+      setResult('res-offset',offset+'%');
+
+      updateLabor(calcWatts,systemKW.toFixed(1)+' kW ('+calcWatts.toLocaleString()+'W)',0,'watt');
+    }
+
+    function clearResults(){setResult('res-kw','—');setResult('res-panels','—');setResult('res-roof-need','—');setResult('res-annual','—');setResult('res-savings','—');setResult('res-offset','—');}
+
+    // — LABOR —
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='watt';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'watt';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter details above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('Solar Panel Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const rate=document.getElementById('sol-rate').value;
+      const usage=inputMethod==='bill'?('$'+document.getElementById('sol-bill').value+'/mo'):(document.getElementById('sol-kwh').value+' kWh/mo');
+      [['Usage',usage],['Rate','$'+rate+'/kWh'],['Roof',document.getElementById('sol-roof').value+' sq ft'],['Panel',panelW+'W'],['Sun Hours',document.getElementById('sol-sun').value+' hrs/day'],['Losses',lossPercent+'%']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v+'',80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('SOLAR SYSTEM',14,135);doc.line(14,137,196,137);
+      const items=[
+        ['System Size',document.getElementById('res-kw').textContent,true],
+        ['Panels',document.getElementById('res-panels').textContent,false],
+        ['Roof Area',document.getElementById('res-roof-need').textContent,false],
+        ['Annual Production',document.getElementById('res-annual').textContent,false],
+        ['Annual Savings',document.getElementById('res-savings').textContent,false],
+        ['Offset',document.getElementById('res-offset').textContent,false]
+      ];
+      items.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,143+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,151+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v+'',130,151+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('solar-panel-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rateVal=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rateVal:laborMethod==='hour'?hrs*rateVal:rateVal;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Solar — Equipment + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Equipment',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('solar-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to Read a Set of Plans for Takeoff | BuildTakeoff</title>
+  <meta name="description" content="Learn to read construction plans for material takeoff. Scale explained, plan sheet types, common symbols, dimension reading, and where quantities hide in a set of drawings." />
+  <link rel="canonical" href="https://buildtakeoff.co/guides/how-to-read-plans/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .article-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .article-date { font-size: 0.83rem; color: var(--text-muted); }
+    .article-read-time { font-size: 0.83rem; color: var(--text-muted); }
+    .article-category { display: inline-block; background: var(--orange-dim); color: var(--orange-light); font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.65rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .article-body h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 2.5rem 0 0.75rem; }
+    .article-body h3 { font-size: 1.1rem; font-weight: 700; margin: 1.75rem 0 0.5rem; color: var(--text); }
+    .article-body p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.75; margin-bottom: 1rem; }
+    .article-body ul, .article-body ol { padding-left: 0; list-style: none; margin-bottom: 1rem; }
+    .article-body ul li, .article-body ol li { padding: 0.35rem 0 0.35rem 1.4rem; color: var(--text-dim); font-size: 0.95rem; line-height: 1.65; position: relative; }
+    .article-body ul li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-size: 0.85rem; }
+    .article-body ol { counter-reset: ol-counter; }
+    .article-body ol li { counter-increment: ol-counter; }
+    .article-body ol li::before { content: counter(ol-counter) '.'; position: absolute; left: 0; color: var(--orange); font-weight: 700; font-size: 0.85rem; }
+    .article-body strong { color: var(--text); font-weight: 700; }
+    .callout { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .callout.tip { border-left: 3px solid var(--orange); }
+    .callout.tip::before { content: '💡 Pro Tip'; display: block; font-size: 0.78rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .callout p { margin-bottom: 0; }
+    .cost-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    .cost-table th { text-align: left; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cost-table td { padding: 0.65rem 1rem; border: 1px solid var(--border); color: var(--text-dim); }
+    .cost-table tr:hover td { background: var(--card); }
+    .related-calc { background: var(--card); border: 1px solid var(--border-hover); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 1rem; transition: all 0.25s; }
+    .related-calc:hover { background: var(--card-hover); transform: translateY(-2px); box-shadow: var(--shadow-orange); }
+    .related-calc-icon { width: 48px; height: 48px; background: var(--orange-dim); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .related-calc-icon svg { width: 24px; height: 24px; stroke: var(--orange); stroke-width: 1.75; }
+    .related-calc-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .related-calc-text p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    .related-guides { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .related-guide-link { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+    .related-guide-link:hover { border-color: var(--border-hover); color: var(--orange); }
+    .calc-links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; margin: 1.5rem 0; }
+    .calc-link-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.9rem 1.1rem; text-decoration: none; color: var(--text); font-size: 0.85rem; font-weight: 600; transition: all 0.2s; text-align: center; }
+    .calc-link-card:hover { border-color: var(--border-hover); color: var(--orange); background: var(--card-hover); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../../#calculators">Calculators</a>
+      <a href="../">Guides</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="article-container fade-up">
+    <a href="../" class="back-link">← Back to Guides</a>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem;">How to Read a Set of Plans for Takeoff</h1>
+    <div class="article-meta">
+      <span class="article-date">June 2026</span>
+      <span class="article-read-time">13 min read</span>
+      <span class="article-category">Estimating</span>
+    </div>
+
+    <div class="article-body">
+      <p>Reading construction plans is a skill that separates guessing from estimating. Whether you're a new contractor learning the trade or a seasoned sub looking to tighten your takeoffs, understanding what's in a set of plans — and where the quantities hide — is essential.</p>
+
+      <h2>Understanding Scale</h2>
+      <p>Every plan sheet includes a scale that tells you the relationship between distances on paper and real-world dimensions. The most common scales in residential construction:</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Scale</th>
+            <th>Meaning</th>
+            <th>Typical Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1/4" = 1'-0"</td><td>1/4 inch on paper = 1 foot in real life</td><td>Floor plans, elevations</td></tr>
+          <tr><td>1/8" = 1'-0"</td><td>1/8 inch on paper = 1 foot in real life</td><td>Site plans, large buildings</td></tr>
+          <tr><td>3/8" = 1'-0"</td><td>3/8 inch = 1 foot</td><td>Larger detail of floor plans</td></tr>
+          <tr><td>1/2" = 1'-0"</td><td>1/2 inch = 1 foot</td><td>Wall sections, cabinetry</td></tr>
+          <tr><td>3/4" = 1'-0"</td><td>3/4 inch = 1 foot</td><td>Details, connections</td></tr>
+          <tr><td>1-1/2" = 1'-0"</td><td>1.5 inches = 1 foot</td><td>Large-scale details</td></tr>
+          <tr><td>3" = 1'-0"</td><td>3 inches = 1 foot</td><td>Very detailed connections</td></tr>
+          <tr><td>1" = 10'</td><td>1 inch = 10 feet</td><td>Civil/site plans</td></tr>
+          <tr><td>1" = 20'</td><td>1 inch = 20 feet</td><td>Civil/site plans</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <p>Never rely on scaling a printed plan with a ruler unless you've verified the print scale. Many plans get reduced when printed or copied. Always look for the graphic scale bar — if the 1" bar on the graphic scale measures 1" with your ruler, the print is at correct scale. If not, calculate the ratio and adjust all measurements.</p>
+      </div>
+
+      <h2>Plan Sheet Types</h2>
+      <p>A complete set of plans is organized by discipline. Each sheet type uses a letter prefix:</p>
+
+      <h3>C — Civil / Site Plans</h3>
+      <p>These show the property from above: lot boundaries, building footprint location, driveways, utilities, grading contours, drainage, and setbacks. This is where you find <strong>excavation quantities, grading requirements, and site access</strong>.</p>
+
+      <h3>A — Architectural Plans</h3>
+      <p>The core of the set. Includes:</p>
+      <ul>
+        <li><strong>A1 — Floor Plans:</strong> Room layouts, wall locations, door/window schedules, dimensions. This is where most interior material quantities come from.</li>
+        <li><strong>A2 — Elevations:</strong> Exterior views of each side of the building showing height, materials, roof pitch, window/door locations.</li>
+        <li><strong>A3 — Sections:</strong> Cut-through views showing wall assemblies, foundation details, floor-to-ceiling heights, and roof structure.</li>
+        <li><strong>A4 — Details:</strong> Enlarged views of specific connections, flashing details, trim profiles, and critical assemblies.</li>
+        <li><strong>A5+ — Schedules:</strong> Door schedules, window schedules, finish schedules (which room gets what flooring, paint, etc.).</li>
+      </ul>
+
+      <h3>S — Structural Plans</h3>
+      <p>Foundation plans, framing plans, beam sizes, column locations, connection details, and load paths. This is where you find <strong>concrete quantities, rebar schedules, lumber sizes, and steel requirements</strong>.</p>
+
+      <h3>M — Mechanical (HVAC)</h3>
+      <p>Ductwork layouts, equipment locations, and mechanical schedules. Important for coordinating framing and ceiling heights.</p>
+
+      <h3>E — Electrical</h3>
+      <p>Panel schedules, circuit layouts, receptacle/switch locations, and lighting plans.</p>
+
+      <h3>P — Plumbing</h3>
+      <p>Fixture locations, pipe sizing, drainage routing, and water supply layouts.</p>
+
+      <h2>Reading Dimensions</h2>
+      <p>Dimensions on construction plans follow specific conventions:</p>
+      <ul>
+        <li><strong>Feet and inches:</strong> Written as 12'-6" (twelve feet, six inches). The dash separates feet from inches.</li>
+        <li><strong>Dimension strings:</strong> A series of dimensions along a line that should add up to the overall dimension. Always verify — if the parts don't add up to the total, there's an error in the plans.</li>
+        <li><strong>Framing vs finish dimensions:</strong> Floor plans typically show dimensions to the face of framing (rough opening), not finished wall surface. This matters for flooring, tile, and cabinet measurements.</li>
+        <li><strong>Centerline dimensions:</strong> Shown with a CL symbol (℄). Used for structural members, plumbing fixtures, and window/door centerlines.</li>
+      </ul>
+
+      <h3>Where Dimensions Hide</h3>
+      <p>Not every dimension is on the floor plan. Check:</p>
+      <ul>
+        <li><strong>Elevations</strong> for wall heights, window sill heights, and plate heights</li>
+        <li><strong>Sections</strong> for floor-to-floor height, foundation depth, and ceiling heights</li>
+        <li><strong>Details</strong> for thickness of assemblies (wall depth, slab edge thickness)</li>
+        <li><strong>Door/window schedules</strong> for rough opening sizes (not just the finished unit size)</li>
+        <li><strong>General notes</strong> on Sheet A1 or the cover sheet for default assumptions (e.g., "all interior walls 2x4 at 16" OC unless noted otherwise")</li>
+      </ul>
+
+      <h2>Common Plan Symbols</h2>
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th>Meaning</th>
+            <th>Where to Find</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Circle with number</td><td>Section cut reference</td><td>Floor plans</td></tr>
+          <tr><td>Triangle with number</td><td>Detail reference</td><td>Plans, sections</td></tr>
+          <tr><td>Arrow with number</td><td>Elevation reference</td><td>Floor plans</td></tr>
+          <tr><td>Dashed lines</td><td>Elements above (cabinets, beams, soffits)</td><td>Floor plans</td></tr>
+          <tr><td>Centerline (℄)</td><td>Center of element</td><td>Structural, plumbing</td></tr>
+          <tr><td>Break line (zigzag)</td><td>Shortened view (continues beyond)</td><td>Sections, details</td></tr>
+          <tr><td>Door swing arc</td><td>Door type and swing direction</td><td>Floor plans</td></tr>
+          <tr><td>North arrow</td><td>Plan orientation</td><td>Site plan, floor plan</td></tr>
+          <tr><td>Revision triangle (△)</td><td>Area modified in revision</td><td>All sheets</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Notes and Callouts: Don't Skip Them</h2>
+      <p>The notes section of a plan set is where specifications live. General notes on the first architectural and structural sheets often contain critical information that affects your quantities:</p>
+      <ul>
+        <li><strong>"All concrete to be 4,000 PSI"</strong> — This affects your concrete mix cost</li>
+        <li><strong>"Vapor barrier under all slabs on grade"</strong> — You need to price 6-mil poly</li>
+        <li><strong>"R-38 ceiling insulation throughout"</strong> — Specifies insulation requirements</li>
+        <li><strong>"Fire-rated assembly required at garage common wall"</strong> — 5/8" Type X drywall, not standard 1/2"</li>
+        <li><strong>"All exterior penetrations to be sealed per manufacturer spec"</strong> — Flashing, caulking, tape</li>
+      </ul>
+
+      <div class="callout tip">
+        <p>Read the general notes before you start your takeoff. They contain default assumptions that apply everywhere unless a specific detail says otherwise. Missing a general note can blow up your entire estimate — for example, "all walls to receive two layers of drywall" doubles your drywall quantity on every wall.</p>
+      </div>
+
+      <h2>Where Material Quantities Hide</h2>
+      <p>The biggest takeoff mistakes happen when quantities are implied but not explicitly dimensioned:</p>
+      <ol>
+        <li><strong>Schedules:</strong> Door schedules specify hardware (hinges, locksets, closers). Window schedules specify flashing requirements. Don't forget accessories.</li>
+        <li><strong>Typical details:</strong> A note saying "typ." means that detail applies everywhere that condition occurs. Count all occurrences.</li>
+        <li><strong>Specifications (spec book):</strong> On larger projects, the spec book is separate from the plans and contains product requirements, testing, and installation standards. Spec sections often require specific products that cost more than generic alternatives.</li>
+        <li><strong>Addenda:</strong> Changes issued after the original plans but before bidding. Always check for addenda — they can add or remove entire scope items.</li>
+        <li><strong>Finish schedules:</strong> Which rooms get tile vs carpet vs LVP? Which paint in which rooms? The finish schedule is your map.</li>
+      </ol>
+
+      <h2>Run Your Numbers with Our Calculators</h2>
+      <p>Once you've pulled dimensions from the plans, use our free calculators to get exact material quantities:</p>
+      <div class="calc-links-grid">
+        <a href="../../calculators/concrete-slab/" class="calc-link-card">Concrete Slab →</a>
+        <a href="../../calculators/roofing-squares/" class="calc-link-card">Roofing Squares →</a>
+        <a href="../../calculators/framing-studs/" class="calc-link-card">Framing Studs →</a>
+        <a href="../../calculators/drywall/" class="calc-link-card">Drywall →</a>
+        <a href="../../calculators/paint/" class="calc-link-card">Paint →</a>
+        <a href="../../calculators/flooring/" class="calc-link-card">Flooring →</a>
+        <a href="../../calculators/tile/" class="calc-link-card">Tile →</a>
+        <a href="../../calculators/deck/" class="calc-link-card">Deck →</a>
+        <a href="../../calculators/fence/" class="calc-link-card">Fence →</a>
+        <a href="../../calculators/markup/" class="calc-link-card">Markup & Margin →</a>
+      </div>
+
+      <h2>Related Guides</h2>
+      <div class="related-guides">
+        <a href="../takeoff-mistakes/" class="related-guide-link">7 Takeoff Mistakes That Kill Profit →</a>
+        <a href="../contractor-markup-guide/" class="related-guide-link">Contractor Markup Guide →</a>
+        <a href="../drywall-estimating/" class="related-guide-link">Drywall Estimating Guide →</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;padding:0 2rem 2rem;">
+    <div class="ecosystem-strip">
+      <div>
+        <h3>From plans to invoice in one workflow.</h3>
+        <p>Use BuildTakeoff calculators for quantities, then BuildQuotes and BuildInvoice for the paperwork.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../#calculators">Calculators</a>
+        <a href="../">Guides</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close';
+          closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>

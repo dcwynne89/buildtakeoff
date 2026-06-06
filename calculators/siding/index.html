@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Siding Calculator — Squares &amp; Materials | BuildTakeoff</title>
+  <meta name="description" content="Free siding calculator. Enter wall dimensions, gable ends, and openings to get squares of siding, starter strips, J-channel, and corners. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/siding/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Siding Calculator</h1>
+      <p>Calculate squares of siding, starter strips, J-channel, and corner trim for vinyl, Hardie board, or wood siding installations.</p>
+      <div class="tag-row">
+        <span class="tag">Vinyl Siding</span>
+        <span class="tag">Hardie Board</span>
+        <span class="tag">Wood Siding</span>
+        <span class="tag">Exterior</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Wall Dimensions</div>
+        <div class="field">
+          <label for="sh">Wall Height</label>
+          <div class="input-wrap">
+            <input type="number" id="sh" value="9" min="0" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="sp">Total Perimeter (wall length)</label>
+          <div class="input-wrap">
+            <input type="number" id="sp" value="160" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Add all exterior wall lengths together</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Gable Ends</div>
+        <div class="field">
+          <label for="sgn">Number of Gable Ends</label>
+          <div class="input-wrap">
+            <input type="number" id="sgn" value="2" min="0" step="1" />
+            <span class="input-unit">gables</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="sgw">Gable Width</label>
+          <div class="input-wrap">
+            <input type="number" id="sgw" value="30" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="sgh">Gable Peak Height</label>
+          <div class="input-wrap">
+            <input type="number" id="sgh" value="5" min="0" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Height from eave to ridge peak</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Openings</div>
+        <div class="field">
+          <label for="sdoors">Doors</label>
+          <div class="input-wrap">
+            <input type="number" id="sdoors" value="2" min="0" step="1" />
+            <span class="input-unit"># doors</span>
+          </div>
+          <div class="field-hint">Counted at 21 sq ft each (3'×7')</div>
+        </div>
+        <div class="field">
+          <label for="swindows">Windows</label>
+          <div class="input-wrap">
+            <input type="number" id="swindows" value="8" min="0" step="1" />
+            <span class="input-unit"># windows</span>
+          </div>
+          <div class="field-hint">Counted at 15 sq ft each (3'×5')</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Siding Type</div>
+        <div class="field">
+          <label>Material</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="type-vinyl" onclick="setSidingType('vinyl')">Vinyl</button>
+            <button class="toggle-btn" id="type-hardie" onclick="setSidingType('hardie')">Hardie</button>
+            <button class="toggle-btn" id="type-wood" onclick="setSidingType('wood')">Wood</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing</div>
+        <div class="field">
+          <label for="sprice">Siding price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="sprice" value="" min="0" step="0.25" placeholder="3.50" />
+            <span class="input-unit">$/sq ft</span>
+          </div>
+          <div class="field-hint" id="price-hint">Vinyl: $2–$4/sf · Hardie: $4–$9/sf · Wood: $5–$12/sf</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Waste Factor</div>
+        <div class="field">
+          <label for="swaste">Waste</label>
+          <div class="input-wrap">
+            <input type="number" id="swaste" value="10" min="0" max="25" step="1" />
+            <span class="input-unit">%</span>
+          </div>
+          <div class="field-hint">10% standard · 15% for complex facades</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item">
+          <div class="result-label">Total Wall Area</div>
+          <div class="result-value" id="r-gross">—</div>
+          <div class="result-sub">Before deductions</div>
+        </div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Net Siding Area</div>
+          <div class="result-value" id="r-net">—</div>
+          <div class="result-sub" id="r-net-sub">After opening deductions + waste</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Squares of Siding</div>
+          <div class="result-value" id="r-squares">—</div>
+          <div class="result-sub">1 square = 100 sq ft</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Starter Strip</div>
+          <div class="result-value" id="r-starter">—</div>
+          <div class="result-sub">Linear feet around base</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">J-Channel</div>
+          <div class="result-value" id="r-jchannel">—</div>
+          <div class="result-sub">Perimeter of all openings</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Corners</div>
+          <div class="result-value" id="r-corners">—</div>
+          <div class="result-sub" id="r-corners-sub">Inside &amp; outside corner trim</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="r-cost">—</div>
+          <div class="result-sub">Siding material only</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="4.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Siding installation: typically $2–$8/sq ft</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="16" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Siding Quantities</h2>
+      <p>Siding is measured in "squares" — each square covers 100 sq ft of wall area. Accurate takeoffs require measuring total wall area, adding gable triangles, subtracting doors and windows, and then adding waste factor for cuts and fitting.</p>
+
+      <h3>The Formula</h3>
+      <p>Gross wall area = Perimeter × Wall Height + Gable area (½ × width × peak height × number of gables). Net area = Gross area – Door openings (21 sq ft each) – Window openings (15 sq ft each). Squares = Net area with waste ÷ 100.</p>
+
+      <h3>Vinyl vs. Hardie Board</h3>
+      <ul>
+        <li><strong>Vinyl siding</strong> — $2–$4/sq ft material, lightweight, easy to install, 20–40 year lifespan, minimal maintenance</li>
+        <li><strong>Hardie (fiber cement)</strong> — $4–$9/sq ft material, fire-resistant, termite-proof, 30–50 year lifespan, needs painting every 10–15 years</li>
+        <li><strong>Wood siding</strong> — $5–$12/sq ft material, natural aesthetic, requires staining/painting every 3–7 years, susceptible to moisture and insects</li>
+        <li>Hardie board costs more upfront but may save money long-term due to lower maintenance costs</li>
+      </ul>
+
+      <h3>What Is a "Square" of Siding?</h3>
+      <p>One square = 100 square feet of siding coverage. Manufacturers package siding by the square, so this is the standard ordering unit. Always round up to the next full square when ordering.</p>
+
+      <h3>Trim &amp; Accessories</h3>
+      <ul>
+        <li><strong>Starter strip</strong> — runs along the bottom of all walls (total perimeter length)</li>
+        <li><strong>J-channel</strong> — frames all doors, windows, and where siding meets soffit. Calculate the perimeter of each opening.</li>
+        <li><strong>Inside corners</strong> — one piece per inside corner, height of wall</li>
+        <li><strong>Outside corners</strong> — one piece per outside corner, height of wall</li>
+        <li>Don't forget utility trim, undersill trim, and F-channel at the soffit line</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Siding quantities locked in?</h3>
+        <p>Build your siding quote in BuildQuotes or jump straight to invoicing.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/paint/" class="eco-link">Paint Calc</a>
+        <a href="../../calculators/drywall/" class="eco-link">Drywall Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let sidingType = 'vinyl';
+    function setSidingType(t) {
+      sidingType = t;
+      ['vinyl','hardie','wood'].forEach(m => document.getElementById('type-'+m).classList.toggle('active', m===t));
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate() {
+      const H = parseFloat(document.getElementById('sh').value) || 0;
+      const P = parseFloat(document.getElementById('sp').value) || 0;
+      const gN = parseInt(document.getElementById('sgn').value) || 0;
+      const gW = parseFloat(document.getElementById('sgw').value) || 0;
+      const gH = parseFloat(document.getElementById('sgh').value) || 0;
+      const doors = parseInt(document.getElementById('sdoors').value) || 0;
+      const windows = parseInt(document.getElementById('swindows').value) || 0;
+      const price = parseFloat(document.getElementById('sprice').value) || 0;
+      const waste = parseFloat(document.getElementById('swaste').value) || 0;
+
+      if (!H || !P) { setResult('r-gross','—'); setResult('r-net','—'); setResult('r-squares','—'); return; }
+
+      const wallArea = P * H;
+      const gableArea = gN * 0.5 * gW * gH;
+      const grossArea = wallArea + gableArea;
+      const doorDeduction = doors * 21; // 3x7 = 21 sq ft
+      const windowDeduction = windows * 15; // 3x5 = 15 sq ft
+      const netArea = grossArea - doorDeduction - windowDeduction;
+      const factor = 1 + waste / 100;
+      const netWithWaste = netArea * factor;
+      const squares = netWithWaste / 100;
+
+      // Starter strip = perimeter
+      const starterLF = P;
+
+      // J-channel = perimeter of all openings
+      // Door perimeter: 3+7+3+7=20 LF each, Window: 3+5+3+5=16 LF each
+      const jChannelLF = (doors * 20) + (windows * 16);
+
+      // Corners: assume 4 outside corners for typical house at wall height
+      const outsideCorners = 4;
+      const insideCorners = 0; // typical, user can adjust
+      const cornerLF = (outsideCorners + insideCorners) * H;
+
+      setResult('r-gross', grossArea.toLocaleString() + ' sq ft');
+      setResult('r-net', Math.ceil(netWithWaste).toLocaleString() + ' sq ft');
+      document.getElementById('r-net-sub').textContent = 'After ' + (doorDeduction + windowDeduction) + ' sq ft deductions' + (waste > 0 ? ' + ' + waste + '% waste' : '');
+      setResult('r-squares', squares.toFixed(1) + ' squares');
+      setResult('r-starter', starterLF.toLocaleString() + ' LF');
+      setResult('r-jchannel', jChannelLF.toLocaleString() + ' LF');
+      setResult('r-corners', cornerLF.toLocaleString() + ' LF');
+      document.getElementById('r-corners-sub').textContent = outsideCorners + ' outside corners × ' + H + ' ft';
+
+      const matCost = price > 0 ? netWithWaste * price : 0;
+      updateLabor(netWithWaste, Math.ceil(netWithWaste).toLocaleString() + ' sq ft', matCost, 'sq ft');
+
+      if (price > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('r-cost', '$' + matCost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const H=parseFloat(document.getElementById('sh').value)||0;
+      const P=parseFloat(document.getElementById('sp').value)||0;
+      const gN=parseInt(document.getElementById('sgn').value)||0;
+      const gW=parseFloat(document.getElementById('sgw').value)||0;
+      const gH=parseFloat(document.getElementById('sgh').value)||0;
+      const doors=parseInt(document.getElementById('sdoors').value)||0;
+      const windows=parseInt(document.getElementById('swindows').value)||0;
+      const price=parseFloat(document.getElementById('sprice').value)||0;
+      const waste=parseFloat(document.getElementById('swaste').value)||0;
+      const factor=1+waste/100;
+      const grossArea=P*H+gN*0.5*gW*gH;
+      const netArea=(grossArea-doors*21-windows*15)*factor;
+      const squares=netArea/100;
+      const jCh=doors*20+windows*16;
+      const typeLabel=sidingType==='vinyl'?'Vinyl':sidingType==='hardie'?'Hardie Board':'Wood';
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Siding Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Wall Height',H+' ft'],['Perimeter',P+' ft'],['Gable Ends',gN+' ('+gW+'x'+gH+' ft)'],['Doors',doors+''],['Windows',windows+''],['Siding Type',typeLabel],['Waste',waste+'%']];
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);
+        doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');
+      });
+      let qy=145;
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,qy);doc.line(14,qy+2,196,qy+2);
+      const results=[['Net Siding Area',Math.ceil(netArea)+' sq ft',true],['Squares',squares.toFixed(1)+' squares',false],['Starter Strip',P+' LF',false],['J-Channel',jCh+' LF',false],['Corner Trim',(4*H)+' LF (4 outside)',false]];
+      if(price>0) results.push(['Estimated Cost','$'+(netArea*price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),false]);
+      results.forEach(([k,v,bold],i)=>{
+        const y=qy+9+i*14;
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,y-5,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,y+3);doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,y+3);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('siding-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const H=parseFloat(document.getElementById('sh').value)||0;
+      const P=parseFloat(document.getElementById('sp').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const typeLabel=sidingType==='vinyl'?'Vinyl':sidingType==='hardie'?'Hardie Board':'Wood';
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Siding ('+typeLabel+') — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Walls:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(P+' ft perimeter × '+H+' ft height / '+typeLabel,80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('siding-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

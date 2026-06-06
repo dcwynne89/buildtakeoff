@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stair Calculator — Rise, Run & Stringer Length | BuildTakeoff</title>
+  <meta name="description" content="Free stair calculator. Enter total rise to get riser count, tread depth, stringer length, and lumber needed. IRC code compliance check included. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/stair/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Stair Calculator</h1>
+      <p>Calculate riser count, tread dimensions, stringer length, and lumber needed for any staircase. Includes IRC code compliance checks.</p>
+      <div class="tag-row">
+        <span class="tag">Stairs</span>
+        <span class="tag">Framing</span>
+        <span class="tag">Code Check</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Stair Dimensions</div>
+        <div class="field">
+          <label for="st-rise-ft">Total Rise — Feet</label>
+          <div class="input-wrap"><input type="number" id="st-rise-ft" value="9" min="0" step="1" /><span class="input-unit">ft</span></div>
+        </div>
+        <div class="field">
+          <label for="st-rise-in">Total Rise — Inches</label>
+          <div class="input-wrap"><input type="number" id="st-rise-in" value="0" min="0" max="11" step="0.5" /><span class="input-unit">in</span></div>
+          <div class="field-hint">Floor-to-floor height including finish floor</div>
+        </div>
+        <div class="field">
+          <label for="st-riser">Desired Riser Height</label>
+          <div class="input-wrap"><input type="number" id="st-riser" value="7.5" min="4" max="10" step="0.125" /><span class="input-unit">in</span></div>
+          <div class="field-hint">IRC max 7.75", typical 7"–7.5"</div>
+        </div>
+        <div class="field">
+          <label for="st-tread">Tread Depth</label>
+          <div class="input-wrap"><input type="number" id="st-tread" value="10" min="6" max="16" step="0.25" /><span class="input-unit">in</span></div>
+          <div class="field-hint">IRC min 10", typical 10"–11"</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Lumber & Pricing</div>
+        <div class="field">
+          <label for="st-width">Stair Width</label>
+          <div class="input-wrap"><input type="number" id="st-width" value="3" min="1" max="8" step="0.5" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">IRC min 36" for residential</div>
+        </div>
+        <div class="field">
+          <label for="st-stringers">Number of Stringers</label>
+          <div class="input-wrap"><input type="number" id="st-stringers" value="3" min="2" max="6" step="1" /><span class="input-unit">pcs</span></div>
+          <div class="field-hint">3 typical: one each side + center</div>
+        </div>
+        <div class="field">
+          <label for="st-price">Lumber Price (optional)</label>
+          <div class="input-wrap"><input type="number" id="st-price" value="" min="0" step="0.01" placeholder="2.50" /><span class="input-unit">$/LF</span></div>
+          <div class="field-hint">2×12 framing lumber: $1.50–$3.50/LF</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Number of Risers</div>
+          <div class="result-value" id="res-risers">—</div>
+          <div class="result-sub" id="res-risers-sub">Steps up</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Actual Riser Height</div>
+          <div class="result-value" id="res-actual-riser">—</div>
+          <div class="result-sub" id="res-code-riser">Code check</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Number of Treads</div>
+          <div class="result-value" id="res-treads">—</div>
+          <div class="result-sub" id="res-code-tread">Risers minus 1</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Run (Horizontal)</div>
+          <div class="result-value" id="res-run">—</div>
+          <div class="result-sub">Horizontal distance</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Stringer Length</div>
+          <div class="result-value" id="res-stringer">—</div>
+          <div class="result-sub" id="res-stringer-sub">Diagonal measurement</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Tread Lumber</div>
+          <div class="result-value" id="res-tread-lf">—</div>
+          <div class="result-sub">2× tread boards</div>
+        </div>
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Lumber Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Stringers + treads</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your stair framing labor rate to generate a complete job cost estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per riser</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="1" placeholder="35" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/riser</span>
+            </div>
+            <div class="field-hint">Stair framing $25–$50/riser</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Stairs — Rise, Run & Stringer Layout</h2>
+      <p>Building code-compliant stairs starts with accurate rise and run calculations. The total rise (floor-to-floor height) determines how many risers you need, and each riser must fall within code limits. Getting this wrong means tearing out framing and starting over — or worse, a dangerous staircase.</p>
+
+      <h3>IRC Stair Code Requirements (R311.7)</h3>
+      <ul>
+        <li><strong>Maximum riser height:</strong> 7-3/4" (196 mm)</li>
+        <li><strong>Minimum tread depth:</strong> 10" (254 mm)</li>
+        <li><strong>Minimum width:</strong> 36" clear above handrails</li>
+        <li><strong>Maximum variation:</strong> 3/8" between largest and smallest riser/tread</li>
+        <li><strong>Headroom:</strong> Minimum 6'-8" measured vertically from stair nosing</li>
+        <li><strong>Nosing:</strong> 3/4" to 1-1/4" projection, uniform throughout</li>
+      </ul>
+
+      <h3>Rise & Run Relationship</h3>
+      <p>The classic comfort formula is: <strong>Riser + Tread = 17" to 18"</strong>. A 7.5" riser with a 10" tread (17.5" total) is the most common residential configuration. Steeper stairs save horizontal space but are harder to climb. Shallower stairs are more comfortable but require more floor space.</p>
+
+      <h3>Stringer Cutting Technique</h3>
+      <ul>
+        <li><strong>Step 1:</strong> Calculate the stringer length: √(total rise² + total run²)</li>
+        <li><strong>Step 2:</strong> Use a framing square with stair gauges set to your riser and tread dimensions</li>
+        <li><strong>Step 3:</strong> Mark and cut notches from a 2×12 (minimum 3.5" of wood must remain below the cut)</li>
+        <li><strong>Step 4:</strong> Drop the stringer by subtracting one tread thickness from the bottom riser</li>
+        <li><strong>Step 5:</strong> Use the first stringer as a template for remaining stringers</li>
+      </ul>
+
+      <h3>Stringer Board Sizing</h3>
+      <p>Most residential stairs use 2×12 stringers. After cutting the notches, you must maintain at least 3.5" of solid wood below the notch throat. For spans over 6 feet without intermediate support, verify that your stringer board meets structural requirements. Engineered LVL stringers are available for longer spans or heavy-duty applications.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Stair framing figured out?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/deck/" class="eco-link">Deck Calculator</a>
+        <a href="../../calculators/framing-studs/" class="eco-link">Framing Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcRisers=0, calcMatCost=0;
+    function calculate(){
+      const riseFt=parseFloat(document.getElementById('st-rise-ft').value)||0;
+      const riseIn=parseFloat(document.getElementById('st-rise-in').value)||0;
+      const totalRise=riseFt*12+riseIn;
+      const desiredRiser=parseFloat(document.getElementById('st-riser').value)||7.5;
+      const treadDepth=parseFloat(document.getElementById('st-tread').value)||10;
+      const width=parseFloat(document.getElementById('st-width').value)||3;
+      const stringerCount=parseInt(document.getElementById('st-stringers').value)||3;
+      const price=parseFloat(document.getElementById('st-price').value)||0;
+
+      if(!totalRise){setResult('res-risers','—');setResult('res-actual-riser','—');setResult('res-treads','—');setResult('res-run','—');setResult('res-stringer','—');setResult('res-tread-lf','—');return;}
+
+      const risers=Math.ceil(totalRise/desiredRiser);
+      const actualRiser=totalRise/risers;
+      const treads=risers-1;
+      const totalRun=treads*treadDepth;
+      const stringerLen=Math.sqrt(totalRise*totalRise+totalRun*totalRun);
+      const stringerLenFt=stringerLen/12;
+
+      // Tread lumber: each tread = stair width in LF (using 2× stock)
+      const treadLF=treads*width;
+      // Stringer LF
+      const stringerLF=stringerCount*Math.ceil(stringerLenFt);
+      const totalLF=treadLF+stringerLF;
+
+      calcRisers=risers;
+
+      setResult('res-risers',risers+' risers');
+      document.getElementById('res-risers-sub').textContent=treads+' treads (risers − 1)';
+
+      const riserStr=actualRiser.toFixed(3);
+      setResult('res-actual-riser',riserStr+'"');
+      const codeOK=actualRiser>=7&&actualRiser<=7.75;
+      document.getElementById('res-code-riser').textContent=codeOK?'✓ Within IRC code (7"–7.75")':'⚠ Outside IRC code (7"–7.75")';
+      document.getElementById('res-code-riser').style.color=codeOK?'#22C55E':'#EF4444';
+
+      setResult('res-treads',treads+' treads');
+      const treadOK=treadDepth>=10;
+      document.getElementById('res-code-tread').textContent=treadOK?'✓ Tread ≥ 10" (IRC compliant)':'⚠ Tread < 10" (IRC requires ≥ 10")';
+      document.getElementById('res-code-tread').style.color=treadOK?'#22C55E':'#EF4444';
+
+      const runFt=totalRun/12;
+      setResult('res-run',(runFt).toFixed(1)+' ft');
+
+      setResult('res-stringer',stringerLenFt.toFixed(1)+' ft');
+      // Recommend board size
+      const boardSizes=['2×10','2×12','2×14'];
+      const boardSize=stringerLenFt<=10?'2×12 (10\')':stringerLenFt<=12?'2×12 (12\')':'2×12 (14\' or longer)';
+      document.getElementById('res-stringer-sub').textContent=stringerCount+' stringers · '+boardSize+' recommended';
+
+      setResult('res-tread-lf',Math.ceil(totalLF)+' LF');
+
+      calcMatCost=price>0?totalLF*price:0;
+      if(price>0){document.getElementById('cost-row').style.display='';setResult('res-cost','$'+calcMatCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));}
+      else{document.getElementById('cost-row').style.display='none';}
+
+      updateLabor(risers,risers+' risers',calcMatCost,'riser');
+    }
+
+    // — LABOR —
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='riser';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'riser';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const riseFt=parseFloat(document.getElementById('st-rise-ft').value)||0;
+      const riseIn=parseFloat(document.getElementById('st-rise-in').value)||0;
+      const totalRise=riseFt*12+riseIn;
+      const desiredRiser=parseFloat(document.getElementById('st-riser').value)||7.5;
+      const treadDepth=parseFloat(document.getElementById('st-tread').value)||10;
+      const risers=Math.ceil(totalRise/desiredRiser);
+      const actualRiser=totalRise/risers;
+      const treads=risers-1;
+      const totalRun=treads*treadDepth;
+      const stringerLen=Math.sqrt(totalRise*totalRise+totalRun*totalRun)/12;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('Stair Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Total Rise',riseFt+'\''+riseIn+'" ('+totalRise+' in)'],['Desired Riser',desiredRiser+'"'],['Tread Depth',treadDepth+'"']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('STAIR LAYOUT',14,105);doc.line(14,107,196,107);
+      const items=[['Risers',risers+'',true],['Actual Riser',actualRiser.toFixed(3)+'"',false],['Treads',treads+'',false],['Total Run',(totalRun/12).toFixed(1)+' ft',false],['Stringer Length',stringerLen.toFixed(1)+' ft',false]];
+      items.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,113+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,121+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,121+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('stair-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Stairs — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('stair-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

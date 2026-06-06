@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HVAC Load Calculator — Tonnage & BTU Estimate | BuildTakeoff</title>
+  <meta name="description" content="Free HVAC load calculator. Enter square footage, climate zone, and insulation quality to estimate cooling/heating BTU, tonnage, and system size. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/hvac-load/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>HVAC Load Calculator</h1>
+      <p>Estimate cooling and heating BTU requirements, tonnage, and recommended system size. Adjust for climate zone, insulation, windows, and sun exposure.</p>
+      <div class="tag-row">
+        <span class="tag">HVAC</span>
+        <span class="tag">BTU</span>
+        <span class="tag">Tonnage</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Building Details</div>
+        <div class="field">
+          <label for="hv-sqft">Total Square Footage</label>
+          <div class="input-wrap"><input type="number" id="hv-sqft" value="2000" min="0" step="50" /><span class="input-unit">sq ft</span></div>
+        </div>
+        <div class="field">
+          <label for="hv-ceiling">Ceiling Height</label>
+          <div class="input-wrap"><input type="number" id="hv-ceiling" value="8" min="6" max="20" step="0.5" /><span class="input-unit">ft</span></div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Climate & Insulation</div>
+        <div class="field">
+          <label>Climate Zone</label>
+          <div class="toggle-group" style="flex-wrap:wrap;">
+            <button class="toggle-btn" id="cz-hot" onclick="setClimate('hot',1.3,0.7)">Hot (1-2)</button>
+            <button class="toggle-btn active" id="cz-mod" onclick="setClimate('mod',1.0,1.0)">Moderate (3-4)</button>
+            <button class="toggle-btn" id="cz-cold" onclick="setClimate('cold',0.8,1.3)">Cold (5-7)</button>
+          </div>
+          <div class="field-hint">IECC climate zones</div>
+        </div>
+        <div class="field">
+          <label>Insulation Quality</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="ins-poor" onclick="setInsulation('poor',1.2)">Poor</button>
+            <button class="toggle-btn active" id="ins-avg" onclick="setInsulation('avg',1.0)">Average</button>
+            <button class="toggle-btn" id="ins-good" onclick="setInsulation('good',0.9)">Good</button>
+            <button class="toggle-btn" id="ins-exc" onclick="setInsulation('exc',0.8)">Excellent</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Windows & Occupants</div>
+        <div class="field">
+          <label for="hv-windows">Number of Windows</label>
+          <div class="input-wrap"><input type="number" id="hv-windows" value="10" min="0" step="1" /><span class="input-unit">windows</span></div>
+        </div>
+        <div class="field">
+          <label>Window Type</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="win-single" onclick="setWindowType('single',1.3)">Single Pane</button>
+            <button class="toggle-btn active" id="win-double" onclick="setWindowType('double',1.1)">Double Pane</button>
+            <button class="toggle-btn" id="win-triple" onclick="setWindowType('triple',1.0)">Triple Pane</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="hv-occupants">Number of Occupants</label>
+          <div class="input-wrap"><input type="number" id="hv-occupants" value="4" min="1" step="1" /><span class="input-unit">people</span></div>
+          <div class="field-hint">Each person adds ~600 BTU of body heat</div>
+        </div>
+        <div class="field">
+          <label>Sun Exposure</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="sun-heavy" onclick="setSun('heavy',1.15)">Heavy</button>
+            <button class="toggle-btn active" id="sun-mod" onclick="setSun('mod',1.0)">Moderate</button>
+            <button class="toggle-btn" id="sun-light" onclick="setSun('light',0.9)">Light</button>
+          </div>
+          <div class="field-hint">Heavy = south/west facing, large windows, minimal shade</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Cooling Capacity</div>
+          <div class="result-value" id="res-cool-btu">—</div>
+          <div class="result-sub" id="res-cool-sub">BTU/hr needed</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Tonnage</div>
+          <div class="result-value" id="res-tons">—</div>
+          <div class="result-sub" id="res-tons-sub">1 ton = 12,000 BTU</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Heating BTU</div>
+          <div class="result-value" id="res-heat-btu">—</div>
+          <div class="result-sub" id="res-heat-sub">Heating load estimate</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Recommended Unit Size</div>
+          <div class="result-value" id="res-unit">—</div>
+          <div class="result-sub">Standard equipment sizing</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">CFM Airflow</div>
+          <div class="result-value" id="res-cfm">—</div>
+          <div class="result-sub">400 CFM per ton (standard)</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your HVAC installation cost to generate a complete job estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per ton</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="100" placeholder="2500" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/ton</span>
+            </div>
+            <div class="field-hint">HVAC system install $3,000–$12,000 total typical</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="16" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter details above to see your load</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Equipment</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Equipment + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Estimate HVAC Load — Simplified Manual J</h2>
+      <p>A proper HVAC load calculation (Manual J) considers dozens of factors including wall construction, roof type, window orientation, duct losses, infiltration rates, and internal heat gains. This calculator provides a simplified estimate based on the most impactful variables — useful for initial budgeting and right-sizing.</p>
+
+      <h3>Why Right-Sizing Matters</h3>
+      <ul>
+        <li><strong>Oversized systems:</strong> Short-cycle (turn on/off frequently), waste energy, fail to dehumidify, cause hot/cold spots, and wear out faster</li>
+        <li><strong>Undersized systems:</strong> Run constantly, can't reach setpoint on extreme days, higher energy bills</li>
+        <li><strong>Right-sized:</strong> Runs longer cycles, better dehumidification, even temperatures, lower operating costs</li>
+      </ul>
+
+      <h3>Climate Zone Impact</h3>
+      <ul>
+        <li><strong>Zones 1–2 (Hot):</strong> Cooling-dominant. Size primarily for cooling load. Heating is minimal.</li>
+        <li><strong>Zones 3–4 (Moderate):</strong> Balanced heating and cooling needs. Most common residential scenario.</li>
+        <li><strong>Zones 5–7 (Cold):</strong> Heating-dominant. Heating load typically exceeds cooling load significantly. Consider heat pumps with auxiliary heat.</li>
+      </ul>
+
+      <h3>SEER Ratings & Efficiency</h3>
+      <p>SEER (Seasonal Energy Efficiency Ratio) measures cooling efficiency. As of January 2023, the minimum SEER rating is 14 in northern states and 15 in southern states. Higher SEER ratings (16–25+) cost more upfront but save on operating costs. A 16 SEER unit uses about 12% less energy than a 14 SEER unit.</p>
+
+      <h3>Standard Equipment Sizes</h3>
+      <ul>
+        <li><strong>1.5 ton (18,000 BTU):</strong> 600–900 sq ft</li>
+        <li><strong>2 ton (24,000 BTU):</strong> 901–1,200 sq ft</li>
+        <li><strong>2.5 ton (30,000 BTU):</strong> 1,201–1,500 sq ft</li>
+        <li><strong>3 ton (36,000 BTU):</strong> 1,501–1,800 sq ft</li>
+        <li><strong>3.5 ton (42,000 BTU):</strong> 1,801–2,100 sq ft</li>
+        <li><strong>4 ton (48,000 BTU):</strong> 2,101–2,400 sq ft</li>
+        <li><strong>5 ton (60,000 BTU):</strong> 2,401–3,000 sq ft</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>HVAC load calculated?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/insulation/" class="eco-link">Insulation Calculator</a>
+        <a href="../../calculators/electrical-wire/" class="eco-link">Electrical Wire Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let climateCoolFactor=1.0, climateHeatFactor=1.0, climateLabel='Moderate (3-4)';
+    let insulationFactor=1.0, insulationLabel='Average';
+    let windowFactor=1.1, windowLabel='Double Pane';
+    let sunFactor=1.0, sunLabel='Moderate';
+
+    function setClimate(id,cool,heat){
+      climateCoolFactor=cool;climateHeatFactor=heat;
+      const labels={hot:'Hot (1-2)',mod:'Moderate (3-4)',cold:'Cold (5-7)'};
+      climateLabel=labels[id];
+      ['hot','mod','cold'].forEach(v=>document.getElementById('cz-'+v).classList.toggle('active',v===id));
+      calculate();
+    }
+    function setInsulation(id,factor){
+      insulationFactor=factor;
+      const labels={poor:'Poor',avg:'Average',good:'Good',exc:'Excellent'};
+      insulationLabel=labels[id];
+      ['poor','avg','good','exc'].forEach(v=>document.getElementById('ins-'+v).classList.toggle('active',v===id));
+      calculate();
+    }
+    function setWindowType(id,factor){
+      windowFactor=factor;
+      const labels={single:'Single Pane',double:'Double Pane',triple:'Triple Pane'};
+      windowLabel=labels[id];
+      ['single','double','triple'].forEach(v=>document.getElementById('win-'+v).classList.toggle('active',v===id));
+      calculate();
+    }
+    function setSun(id,factor){
+      sunFactor=factor;
+      const labels={heavy:'Heavy',mod:'Moderate',light:'Light'};
+      sunLabel=labels[id];
+      ['heavy','mod','light'].forEach(v=>document.getElementById('sun-'+v).classList.toggle('active',v===id));
+      calculate();
+    }
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcTons=0, calcMatCost=0;
+    function calculate(){
+      const sqft=parseFloat(document.getElementById('hv-sqft').value)||0;
+      const ceilingHt=parseFloat(document.getElementById('hv-ceiling').value)||8;
+      const windows=parseInt(document.getElementById('hv-windows').value)||0;
+      const occupants=parseInt(document.getElementById('hv-occupants').value)||2;
+
+      if(!sqft){setResult('res-cool-btu','—');setResult('res-tons','—');setResult('res-heat-btu','—');setResult('res-unit','—');setResult('res-cfm','—');return;}
+
+      // Base cooling: 25 BTU per sq ft (rule of thumb for 8ft ceilings)
+      const ceilingAdj=ceilingHt/8; // scale for non-standard ceiling
+      let coolBTU=sqft*25*ceilingAdj;
+      coolBTU*=climateCoolFactor;
+      coolBTU*=insulationFactor;
+      // Window adjustment
+      const windowAdj=1+(windows*0.01*(windowFactor-0.9));
+      coolBTU*=windowAdj;
+      // Occupant heat gain
+      coolBTU+=(Math.max(0,occupants-2)*600);
+      // Sun exposure
+      coolBTU*=sunFactor;
+
+      coolBTU=Math.round(coolBTU);
+
+      // Heating BTU: different base, affected by climate
+      let heatBTU=sqft*30*ceilingAdj;
+      heatBTU*=climateHeatFactor;
+      heatBTU*=insulationFactor;
+      heatBTU=Math.round(heatBTU);
+
+      const tons=coolBTU/12000;
+      calcTons=tons;
+
+      // Round to nearest standard size
+      const stdSizes=[1.5,2,2.5,3,3.5,4,5];
+      let recSize=stdSizes[stdSizes.length-1];
+      for(const s of stdSizes){if(s>=tons){recSize=s;break;}}
+
+      const cfm=Math.round(recSize*400);
+
+      setResult('res-cool-btu',coolBTU.toLocaleString()+' BTU/hr');
+      document.getElementById('res-cool-sub').textContent='Climate: '+climateLabel+' · Insulation: '+insulationLabel;
+
+      setResult('res-tons',tons.toFixed(1)+' tons');
+      document.getElementById('res-tons-sub').textContent=coolBTU.toLocaleString()+' BTU ÷ 12,000';
+
+      setResult('res-heat-btu',heatBTU.toLocaleString()+' BTU/hr');
+      document.getElementById('res-heat-sub').textContent='Heating load estimate';
+
+      setResult('res-unit',recSize+' ton');
+      setResult('res-cfm',cfm.toLocaleString()+' CFM');
+
+      updateLabor(parseFloat(recSize.toFixed(1)),recSize+' ton system',0,'ton');
+    }
+
+    // — LABOR —
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='ton';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'ton';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter details above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('HVAC Load Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const sqft=document.getElementById('hv-sqft').value;
+      [['Sq Ft',sqft],['Climate',climateLabel],['Insulation',insulationLabel],['Windows',document.getElementById('hv-windows').value+' ('+windowLabel+')'],['Sun',sunLabel]].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v+'',80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('HVAC LOAD RESULTS',14,125);doc.line(14,127,196,127);
+      const items=[
+        ['Cooling',document.getElementById('res-cool-btu').textContent,true],
+        ['Tonnage',document.getElementById('res-tons').textContent,false],
+        ['Heating',document.getElementById('res-heat-btu').textContent,false],
+        ['Recommended',document.getElementById('res-unit').textContent+' system',false],
+        ['Airflow',document.getElementById('res-cfm').textContent,false]
+      ];
+      items.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,133+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,141+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v+'',130,141+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('hvac-load-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('HVAC — Equipment + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Equipment',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('hvac-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

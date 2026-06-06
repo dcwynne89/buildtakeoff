@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insulation Calculator — R-Value, Batts & Coverage | BuildTakeoff</title>
+  <meta name="description" content="Free insulation calculator. Choose fiberglass batt, blown-in, or spray foam. Get batt/bag count, coverage, thickness, and cost by R-value. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/insulation/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Insulation Calculator</h1>
+      <p>Calculate batt count, bags of blown-in, or board feet of spray foam for any wall, attic, or crawl space. Select your R-value target and get exact coverage with waste.</p>
+      <div class="tag-row">
+        <span class="tag">Insulation</span>
+        <span class="tag">R-Value</span>
+        <span class="tag">Energy</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Area to Insulate</div>
+        <div class="field">
+          <label for="ins-area">Total Area</label>
+          <div class="input-wrap"><input type="number" id="ins-area" value="500" min="0" step="1" /><span class="input-unit">sq ft</span></div>
+          <div class="field-hint">Or calculate from wall length × height below</div>
+        </div>
+        <div class="field">
+          <label for="ins-len">Wall Length (optional)</label>
+          <div class="input-wrap"><input type="number" id="ins-len" value="" min="0" step="0.5" placeholder="e.g. 40" /><span class="input-unit">ft</span></div>
+        </div>
+        <div class="field">
+          <label for="ins-ht">Wall Height (optional)</label>
+          <div class="input-wrap"><input type="number" id="ins-ht" value="" min="0" step="0.5" placeholder="e.g. 8" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">If both are entered, area = length × height</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Insulation Type</div>
+        <div class="field">
+          <label>Type</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="type-batt" onclick="setType('batt')">Fiberglass Batt</button>
+            <button class="toggle-btn" id="type-blown" onclick="setType('blown')">Blown-In</button>
+            <button class="toggle-btn" id="type-spray" onclick="setType('spray')">Spray Foam</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>R-Value Target</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="rv-13" onclick="setR(13)">R-13</button>
+            <button class="toggle-btn active" id="rv-19" onclick="setR(19)">R-19</button>
+            <button class="toggle-btn" id="rv-30" onclick="setR(30)">R-30</button>
+            <button class="toggle-btn" id="rv-38" onclick="setR(38)">R-38</button>
+            <button class="toggle-btn" id="rv-49" onclick="setR(49)">R-49</button>
+          </div>
+        </div>
+        <div class="field" id="depth-field" style="display:none;">
+          <label for="ins-depth">Cavity Depth</label>
+          <div class="input-wrap"><input type="number" id="ins-depth" value="3.5" min="0" step="0.5" /><span class="input-unit">in</span></div>
+          <div class="field-hint">For blown-in: depth of cavity to fill</div>
+        </div>
+        <div class="field">
+          <label for="ins-price">Price per Unit (optional)</label>
+          <div class="input-wrap"><input type="number" id="ins-price" value="" min="0" step="0.01" placeholder="0.00" /><span class="input-unit" id="price-unit">$/bag</span></div>
+          <div class="field-hint" id="price-hint">Fiberglass batts: $30–$60 per bag</div>
+        </div>
+        <div class="field">
+          <label>Waste Factor</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="wf-10" onclick="setWaste(10)">+10%</button>
+            <button class="toggle-btn" id="wf-15" onclick="setWaste(15)">+15%</button>
+            <button class="toggle-btn" id="wf-20" onclick="setWaste(20)">+20%</button>
+          </div>
+          <div class="field-hint">15–20% for irregular cavities or many obstructions</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Units Needed</div>
+          <div class="result-value" id="res-units">—</div>
+          <div class="result-sub" id="res-units-sub">Bags / rolls</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Coverage</div>
+          <div class="result-value" id="res-coverage">—</div>
+          <div class="result-sub" id="res-coverage-sub">sq ft with waste</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Thickness Required</div>
+          <div class="result-value" id="res-thickness">—</div>
+          <div class="result-sub" id="res-thickness-sub">Inches of insulation</div>
+        </div>
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Material Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Insulation only</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your insulation installation labor rate to generate a complete job cost estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="1.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Batt insulation $0.50–$1.50/sq ft, spray foam $1–$3/sq ft</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Insulation for Walls, Attics & Crawl Spaces</h2>
+      <p>Proper insulation is one of the best investments you can make in a home. The right R-value keeps heating and cooling costs low, improves comfort, and can even reduce noise. Whether you're insulating new construction stud bays, blowing insulation into an attic, or spraying closed-cell foam in a crawl space, accurate material takeoffs prevent waste and extra trips to the supply house.</p>
+
+      <h3>R-Value Recommendations by Climate Zone</h3>
+      <ul>
+        <li><strong>Zones 1–2 (Hot/Humid — FL, TX coast):</strong> Walls R-13, Attic R-30 to R-38</li>
+        <li><strong>Zone 3 (Warm — SE states):</strong> Walls R-13 to R-15, Attic R-30 to R-38</li>
+        <li><strong>Zone 4 (Mixed — Mid-Atlantic):</strong> Walls R-13 to R-15, Attic R-38 to R-49</li>
+        <li><strong>Zones 5–7 (Cold — Northern US):</strong> Walls R-19 to R-21, Attic R-49 to R-60</li>
+      </ul>
+
+      <h3>Insulation Types Compared</h3>
+      <ul>
+        <li><strong>Fiberglass batts:</strong> Most common, easy to install, R-3.2 per inch. Comes in pre-cut widths (15" or 23") to fit standard stud spacing.</li>
+        <li><strong>Blown-in (cellulose or fiberglass):</strong> Great for attics and retrofits. R-3.5 per inch for cellulose. Fills gaps better than batts.</li>
+        <li><strong>Spray foam (closed-cell):</strong> R-6.5 per inch, doubles as air/moisture barrier. Higher cost but superior performance.</li>
+        <li><strong>Spray foam (open-cell):</strong> R-3.7 per inch, good for sound and air sealing. Less expensive than closed-cell.</li>
+      </ul>
+
+      <h3>Vapor Barriers & Code Minimums</h3>
+      <p>Most building codes require a vapor retarder on the warm side of insulation in cold climates. Kraft-faced batts include an integrated vapor retarder. In hot/humid climates, the vapor barrier goes on the exterior side. Always check your local building code for minimum R-value requirements — the 2021 IECC has significantly increased minimums in most climate zones.</p>
+
+      <h3>Coverage Per Bag (Common Products)</h3>
+      <ul>
+        <li><strong>R-13 fiberglass batt (15" wide):</strong> ~88.6 sq ft per bag</li>
+        <li><strong>R-19 fiberglass batt (15" wide):</strong> ~75.1 sq ft per bag</li>
+        <li><strong>R-30 fiberglass batt (16" wide):</strong> ~58.7 sq ft per bag</li>
+        <li><strong>R-38 fiberglass batt (24" wide):</strong> ~48 sq ft per bag</li>
+        <li><strong>Blown-in cellulose:</strong> ~40 sq ft per bag at R-30 (varies by depth)</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Insulation takeoff ready?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/drywall/" class="eco-link">Drywall Calculator</a>
+        <a href="../../calculators/framing-studs/" class="eco-link">Framing Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let insType='batt', rVal=19, waste=10;
+
+    // Coverage per bag by R-value (fiberglass batt, sq ft)
+    const battCoverage={13:88.6, 19:75.1, 30:58.7, 38:48, 49:40};
+    // Thickness by R-value (inches)
+    const battThickness={13:3.5, 19:6.25, 30:9.5, 38:12, 49:15.5};
+    // Blown-in: coverage per bag at various R-values (sq ft per bag, cellulose at standard density)
+    const blownCoverage={13:55, 19:37, 30:22, 38:17, 49:13};
+    const blownThickness={13:3.7, 19:5.4, 30:8.6, 38:10.9, 49:14};
+    // Spray foam: board feet per kit (200 bdft typical small kit), R per inch = 6.5 closed cell
+    const sprayRperInch=6.5;
+
+    function setType(t){
+      insType=t;
+      ['batt','blown','spray'].forEach(id=>document.getElementById('type-'+id).classList.toggle('active',id===t));
+      document.getElementById('depth-field').style.display=t==='blown'?'':'none';
+      const pu=document.getElementById('price-unit');
+      const ph=document.getElementById('price-hint');
+      if(t==='batt'){pu.textContent='$/bag';ph.textContent='Fiberglass batts: $30–$60 per bag';}
+      else if(t==='blown'){pu.textContent='$/bag';ph.textContent='Blown-in cellulose: $10–$18 per bag';}
+      else{pu.textContent='$/bdft';ph.textContent='Closed-cell spray foam: $1.25–$2.50 per board foot';}
+      calculate();
+    }
+    function setR(r){rVal=r;[13,19,30,38,49].forEach(v=>document.getElementById('rv-'+v).classList.toggle('active',v===r));calculate();}
+    function setWaste(n){waste=n;[10,15,20].forEach(v=>document.getElementById('wf-'+v).classList.toggle('active',v===n));calculate();}
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcArea=0, calcMatCost=0, calcUnits=0;
+    function calculate(){
+      const len=parseFloat(document.getElementById('ins-len').value)||0;
+      const ht=parseFloat(document.getElementById('ins-ht').value)||0;
+      let area=parseFloat(document.getElementById('ins-area').value)||0;
+      if(len>0&&ht>0) area=len*ht;
+      const price=parseFloat(document.getElementById('ins-price').value)||0;
+      if(!area){setResult('res-units','—');setResult('res-coverage','—');setResult('res-thickness','—');return;}
+
+      const totalArea=area*(1+waste/100);
+      let units=0, thickness=0, unitLabel='bags';
+
+      if(insType==='batt'){
+        const cov=battCoverage[rVal]||75.1;
+        thickness=battThickness[rVal]||6.25;
+        units=Math.ceil(totalArea/cov);
+        unitLabel='bags';
+      } else if(insType==='blown'){
+        const cov=blownCoverage[rVal]||37;
+        thickness=blownThickness[rVal]||5.4;
+        units=Math.ceil(totalArea/cov);
+        unitLabel='bags';
+      } else {
+        thickness=rVal/sprayRperInch;
+        const boardFeet=totalArea*thickness;
+        units=Math.ceil(boardFeet);
+        unitLabel='board feet';
+      }
+
+      calcArea=Math.round(area);
+      calcUnits=units;
+      setResult('res-units',units.toLocaleString()+' '+unitLabel);
+      document.getElementById('res-units-sub').textContent=insType==='batt'?'Fiberglass batt bags':insType==='blown'?'Blown-in bags':'Spray foam board feet';
+      setResult('res-coverage',Math.round(totalArea).toLocaleString()+' sq ft');
+      document.getElementById('res-coverage-sub').textContent='Includes '+waste+'% waste ('+Math.round(area).toLocaleString()+' sq ft net)';
+      setResult('res-thickness',thickness.toFixed(1)+' in');
+      document.getElementById('res-thickness-sub').textContent='R-'+rVal+' target';
+
+      calcMatCost=price>0?units*price:0;
+      if(price>0){document.getElementById('cost-row').style.display='';setResult('res-cost','$'+calcMatCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));}
+      else{document.getElementById('cost-row').style.display='none';}
+      updateLabor(calcArea,calcArea.toLocaleString()+' sq ft',calcMatCost,'sq ft');
+    }
+
+    // — LABOR —
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const area=calcArea;const units=calcUnits;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('Insulation Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const typeNames={batt:'Fiberglass Batt',blown:'Blown-In',spray:'Spray Foam'};
+      [['Area',area+' sq ft'],['Type',typeNames[insType]],['R-Value','R-'+rVal],['Waste',waste+'%']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,115);doc.line(14,117,196,117);
+      const unitLabel=insType==='spray'?'board feet':'bags';
+      const items=[['Units Needed',units.toLocaleString()+' '+unitLabel,true],['Coverage',Math.round(area*(1+waste/100)).toLocaleString()+' sq ft',false],['Thickness',document.getElementById('res-thickness').textContent,false]];
+      if(calcMatCost>0) items.push(['Cost',fmt(calcMatCost),false]);
+      items.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,123+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,131+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,131+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('insulation-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Insulation — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('insulation-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

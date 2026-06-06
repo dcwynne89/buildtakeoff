@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mulch & Topsoil Calculator — Cubic Yards & Bags | BuildTakeoff</title>
+  <meta name="description" content="Free mulch and topsoil calculator. Enter area dimensions and depth to get cubic yards, bag count, and tons. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/mulch/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Mulch &amp; Topsoil Calculator</h1>
+      <p>Calculate cubic yards, bags, and tons of mulch, topsoil, or compost for landscaping beds, gardens, and lawns.</p>
+      <div class="tag-row">
+        <span class="tag">Mulch</span>
+        <span class="tag">Topsoil</span>
+        <span class="tag">Compost</span>
+        <span class="tag">Landscaping</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Material Type</div>
+        <div class="field">
+          <label>Material</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="mat-mulch" onclick="setMaterial('mulch')">Mulch</button>
+            <button class="toggle-btn" id="mat-topsoil" onclick="setMaterial('topsoil')">Topsoil</button>
+            <button class="toggle-btn" id="mat-compost" onclick="setMaterial('compost')">Compost</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Area Dimensions</div>
+        <div class="field">
+          <label for="ml">Length</label>
+          <div class="input-wrap">
+            <input type="number" id="ml" value="20" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="mw">Width</label>
+          <div class="input-wrap">
+            <input type="number" id="mw" value="10" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="md">Depth</label>
+          <div class="input-wrap">
+            <input type="number" id="md" value="3" min="0.5" step="0.5" />
+            <span class="input-unit">in</span>
+          </div>
+          <div class="field-hint" id="depth-hint">Mulch: 2"–4" recommended for beds</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing</div>
+        <div class="field">
+          <label for="mp">Price per cubic yard (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="mp" value="" min="0" step="1" placeholder="35" />
+            <span class="input-unit">$/cu yd</span>
+          </div>
+          <div class="field-hint">Bulk mulch: $25–$45/yd³ · Topsoil: $20–$35/yd³</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Waste Factor</div>
+        <div class="field">
+          <label for="mwaste">Waste</label>
+          <div class="input-wrap">
+            <input type="number" id="mwaste" value="5" min="0" max="25" step="1" />
+            <span class="input-unit">%</span>
+          </div>
+          <div class="field-hint">5–10% typical for irregular bed shapes</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Cubic Yards</div>
+          <div class="result-value" id="r-yards">—</div>
+          <div class="result-sub" id="r-yards-sub">Total volume needed</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">2 Cu Ft Bags</div>
+          <div class="result-value" id="r-bags">—</div>
+          <div class="result-sub">Standard retail bags</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Weight</div>
+          <div class="result-value" id="r-tons">—</div>
+          <div class="result-sub" id="r-tons-sub">Based on selected material</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Coverage Area</div>
+          <div class="result-value" id="r-sqft">—</div>
+          <div class="result-sub">Total area covered</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="r-cost">—</div>
+          <div class="result-sub">Bulk material cost</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per cu yd</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="45" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/cu yd</span>
+            </div>
+            <div class="field-hint">Mulch installation: typically $30–$65/cu yd</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="4" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Mulch &amp; Topsoil Quantities</h2>
+      <p>Whether you're refreshing landscape beds, amending garden soil, or establishing a new lawn, knowing exactly how much material to order saves money and multiple trips. This calculator converts your area and desired depth into cubic yards, bags, and weight so you can order from any supplier.</p>
+
+      <h3>The Formula</h3>
+      <p>Volume (cubic yards) = Length (ft) × Width (ft) × Depth (in) ÷ 12 ÷ 27. For bagged material, multiply cubic yards by 27 to get cubic feet, then divide by the bag size (typically 2 cu ft per bag).</p>
+
+      <h3>Recommended Depths</h3>
+      <ul>
+        <li><strong>Mulch for garden beds</strong> — 2"–3" for weed suppression and moisture retention</li>
+        <li><strong>Mulch for playgrounds</strong> — 6"–12" for fall protection (CPSC guidelines)</li>
+        <li><strong>Topsoil for new lawns</strong> — 4"–6" of quality topsoil for grass establishment</li>
+        <li><strong>Topsoil for gardens</strong> — 6"–12" blended with existing soil</li>
+        <li><strong>Compost topdressing</strong> — 1"–2" spread over existing lawn or beds</li>
+      </ul>
+
+      <h3>Topsoil vs. Compost</h3>
+      <p>Topsoil is native soil screened for debris — it provides structure and volume. Compost is decomposed organic matter rich in nutrients. For best results, blend 60% topsoil with 40% compost when filling raised beds or amending poor soil.</p>
+
+      <h3>Bulk vs. Bagged: Cost Comparison</h3>
+      <ul>
+        <li><strong>Bulk mulch</strong> costs $25–$45 per cubic yard (delivered) — best for 3+ cubic yards</li>
+        <li><strong>Bagged mulch</strong> costs $4–$6 per 2 cu ft bag — roughly $55–$80 per cubic yard</li>
+        <li>Bulk is 30–50% cheaper per yard but requires delivery and wheelbarrowing</li>
+        <li>Bagged is convenient for small jobs under 2 cubic yards</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Mulch quantities locked in?</h3>
+        <p>Build your landscaping quote in BuildQuotes or jump straight to invoicing.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/landscape-fabric/" class="eco-link">Landscape Fabric Calc</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let currentMaterial = 'mulch';
+    const materialData = {
+      mulch:    { density: 400,  defaultDepth: 3, label: 'Mulch',   hint: 'Mulch: 2"–4" recommended for beds' },
+      topsoil:  { density: 2200, defaultDepth: 6, label: 'Topsoil', hint: 'Topsoil: 4"–6" for new lawns' },
+      compost:  { density: 1000, defaultDepth: 2, label: 'Compost', hint: 'Compost: 1"–2" as topdressing' }
+    };
+
+    function setMaterial(mat) {
+      currentMaterial = mat;
+      ['mulch','topsoil','compost'].forEach(m => document.getElementById('mat-'+m).classList.toggle('active', m===mat));
+      document.getElementById('md').value = materialData[mat].defaultDepth;
+      document.getElementById('depth-hint').textContent = materialData[mat].hint;
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('ml').value) || 0;
+      const W = parseFloat(document.getElementById('mw').value) || 0;
+      const D = parseFloat(document.getElementById('md').value) || 0;
+      const price = parseFloat(document.getElementById('mp').value) || 0;
+      const waste = parseFloat(document.getElementById('mwaste').value) || 0;
+
+      if (!L || !W || !D) { setResult('r-yards','—'); setResult('r-bags','—'); setResult('r-tons','—'); setResult('r-sqft','—'); return; }
+
+      const sqft = L * W;
+      const factor = 1 + waste / 100;
+      const cuFt = L * W * (D / 12);
+      const yards = (cuFt / 27) * factor;
+      const densityLb = materialData[currentMaterial].density;
+      const tons = (yards * densityLb) / 2000;
+      const bags = Math.ceil((yards * 27) / 2);  // 2 cu ft bags
+
+      setResult('r-yards', yards.toFixed(2) + ' yd³');
+      setResult('r-bags', bags.toLocaleString() + ' bags');
+      setResult('r-tons', tons.toFixed(2) + ' tons');
+      setResult('r-sqft', sqft.toLocaleString() + ' sq ft');
+      document.getElementById('r-yards-sub').textContent = waste > 0 ? 'Includes ' + waste + '% waste' : 'No waste factor';
+      document.getElementById('r-tons-sub').textContent = materialData[currentMaterial].label + ' @ ' + densityLb + ' lb/yd³';
+
+      const matCost = price > 0 ? yards * price : 0;
+      updateLabor(yards, yards.toFixed(2) + ' cu yd', matCost, 'cu yd');
+
+      if (price > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('r-cost', '$' + matCost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('ml').value)||0;
+      const W=parseFloat(document.getElementById('mw').value)||0;
+      const D=parseFloat(document.getElementById('md').value)||0;
+      const waste=parseFloat(document.getElementById('mwaste').value)||0;
+      const price=parseFloat(document.getElementById('mp').value)||0;
+      const factor=1+waste/100;
+      const yards=(L*W*(D/12)/27)*factor;
+      const densityLb=materialData[currentMaterial].density;
+      const tons=(yards*densityLb)/2000;
+      const bags=Math.ceil((yards*27)/2);
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Mulch & Topsoil Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Material',materialData[currentMaterial].label],['Length',L+' ft'],['Width',W+' ft'],['Depth',D+' inches'],['Waste',waste+'%']];
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);
+        doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,125);doc.line(14,127,196,127);
+      const results=[['Cubic Yards',yards.toFixed(2)+' yd³',true],['2 Cu Ft Bags',bags+' bags',false],['Weight',tons.toFixed(2)+' tons',false],['Coverage Area',(L*W).toLocaleString()+' sq ft',false]];
+      if(price>0) results.push(['Estimated Cost','$'+(yards*price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),false]);
+      results.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,133+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,141+i*14);doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,141+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('mulch-topsoil-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='cu yd';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'cu yd';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('ml').value)||0;
+      const W=parseFloat(document.getElementById('mw').value)||0;
+      const D=parseFloat(document.getElementById('md').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Mulch & Topsoil — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Area:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft @ '+D+'" depth / '+materialData[currentMaterial].label,80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('mulch-topsoil-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

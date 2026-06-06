@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rebar Calculator — Spacing Grid &amp; Weight | BuildTakeoff</title>
+  <meta name="description" content="Free rebar calculator. Enter slab or wall dimensions, bar size, and spacing to get total bars, linear feet, weight, tie wire, and cost. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/rebar/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Rebar Calculator</h1>
+      <p>Calculate total bars, linear feet, weight, and tie wire for rebar grid layouts. Supports #3 through #6 bar sizes with configurable spacing.</p>
+      <div class="tag-row">
+        <span class="tag">Rebar</span>
+        <span class="tag">Concrete</span>
+        <span class="tag">Reinforcement</span>
+        <span class="tag">Steel</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+
+      <!-- INPUTS -->
+      <div class="panel">
+        <div class="panel-title">Slab / Wall Dimensions</div>
+
+        <div class="field">
+          <label for="dim-length">Length</label>
+          <div class="input-wrap">
+            <input type="number" id="dim-length" value="20" min="0" step="1" placeholder="20" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="dim-width">Width / Height</label>
+          <div class="input-wrap">
+            <input type="number" id="dim-width" value="20" min="0" step="1" placeholder="20" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Bar Size</div>
+        <div class="toggle-group">
+          <button class="toggle-btn" id="bar-3" onclick="setBarSize(3)">#3</button>
+          <button class="toggle-btn active" id="bar-4" onclick="setBarSize(4)">#4</button>
+          <button class="toggle-btn" id="bar-5" onclick="setBarSize(5)">#5</button>
+          <button class="toggle-btn" id="bar-6" onclick="setBarSize(6)">#6</button>
+        </div>
+        <div class="field-hint" id="bar-hint" style="margin-top:0.4rem;">#4 bar — ½" dia, 0.668 lb/ft — Most common for residential slabs</div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Spacing</div>
+        <div class="toggle-group" style="flex-wrap:wrap;">
+          <button class="toggle-btn" id="sp-6" onclick="setSpacing(6)">6"</button>
+          <button class="toggle-btn" id="sp-8" onclick="setSpacing(8)">8"</button>
+          <button class="toggle-btn active" id="sp-12" onclick="setSpacing(12)">12"</button>
+          <button class="toggle-btn" id="sp-16" onclick="setSpacing(16)">16"</button>
+          <button class="toggle-btn" id="sp-18" onclick="setSpacing(18)">18"</button>
+          <button class="toggle-btn" id="sp-24" onclick="setSpacing(24)">24"</button>
+        </div>
+        <div class="field-hint" id="sp-hint" style="margin-top:0.4rem;">12" OC — Standard residential slab reinforcement</div>
+
+        <div class="field" style="margin-top:1.25rem;">
+          <label for="lap-splice">Lap Splice Length</label>
+          <div class="input-wrap">
+            <input type="number" id="lap-splice" value="24" min="0" step="1" placeholder="24" />
+            <span class="input-unit">in</span>
+          </div>
+          <div class="field-hint">Standard lap: 24"–30" for #4 bar (40× bar diameter)</div>
+        </div>
+
+        <div class="field">
+          <label for="rebar-price">Rebar price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="rebar-price" value="" min="0" step="0.01" placeholder="0.75" />
+            <span class="input-unit">$/LF</span>
+          </div>
+          <div class="field-hint">#4 rebar: typically $0.50–$1.00/LF</div>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item">
+          <div class="result-label">Bars Along Length</div>
+          <div class="result-value" id="res-bars-l">—</div>
+          <div class="result-sub">Running the width direction</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Bars Along Width</div>
+          <div class="result-value" id="res-bars-w">—</div>
+          <div class="result-sub">Running the length direction</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Total Linear Feet</div>
+          <div class="result-value" id="res-lf">—</div>
+          <div class="result-sub" id="res-lf-sub">Enter dimensions above</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Total Weight</div>
+          <div class="result-value" id="res-weight">—</div>
+          <div class="result-sub" id="res-weight-sub">Based on bar size</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Tie Wire Rolls</div>
+          <div class="result-value" id="res-wire">—</div>
+          <div class="result-sub">1 roll per ~200 intersections (3.5 lb roll)</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Material Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Rebar material only</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice this job? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per LF</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.05" placeholder="0.50" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/LF</span>
+            </div>
+            <div class="field-hint">Rebar installation: typically $0.30–$0.80/LF</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="6" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO CONTENT -->
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Rebar for a Concrete Slab or Wall</h2>
+      <p>Rebar (reinforcing bar) dramatically increases the tensile strength of concrete. Calculating the right amount means counting bars in both directions, accounting for overlap at splices, and knowing the weight for ordering and transport.</p>
+
+      <h3>The Rebar Grid Formula</h3>
+      <p>Bars in each direction = (Dimension in inches ÷ Spacing) + 1. The total linear footage is: (Bars along length × Width) + (Bars along width × Length). Add lap splice length at each joint where bars overlap.</p>
+      <p><strong>Example:</strong> A 20×20 ft slab with #4 rebar at 12" OC = 21 bars each way × 20 ft = 840 total linear feet.</p>
+
+      <h3>Rebar Sizes &amp; Weights</h3>
+      <ul>
+        <li><strong>#3 (⅜" dia)</strong> — 0.376 lb/ft — Temperature/shrinkage reinforcement, light slabs</li>
+        <li><strong>#4 (½" dia)</strong> — 0.668 lb/ft — Most common residential bar, slabs, footings</li>
+        <li><strong>#5 (⅝" dia)</strong> — 1.043 lb/ft — Driveways, heavier residential, light commercial</li>
+        <li><strong>#6 (¾" dia)</strong> — 1.502 lb/ft — Commercial slabs, retaining walls, foundations</li>
+        <li>Standard 20 ft lengths are most common; #3 and #4 also available in 10 ft lengths</li>
+      </ul>
+
+      <h3>When to Use Each Size</h3>
+      <ul>
+        <li><strong>#3 at 18"–24" OC</strong> — Minimum temperature steel for slabs that don't carry structural loads</li>
+        <li><strong>#4 at 12" OC</strong> — Standard residential slab reinforcement (patios, garages, driveways)</li>
+        <li><strong>#4 at 16" OC</strong> — Standard wall reinforcement, both horizontal and vertical</li>
+        <li><strong>#5 at 12" OC</strong> — Heavy-duty residential, commercial slabs, elevated decks</li>
+        <li><strong>#6 at 12" OC</strong> — Commercial and industrial applications, retaining walls</li>
+      </ul>
+
+      <h3>ACI Requirements &amp; Best Practices</h3>
+      <ul>
+        <li>ACI 318 requires minimum ¾" clear cover for concrete cast against soil, 1½" for formed surfaces</li>
+        <li>Lap splice length: minimum 40× bar diameter (#4 = 20", #5 = 25") per ACI 318</li>
+        <li>Use rebar chairs or dobies to maintain proper cover — never lay rebar directly on grade</li>
+        <li>Tie wire every intersection is ideal; at minimum, tie alternating intersections in a checkerboard pattern</li>
+        <li>One 3.5 lb roll of tie wire covers approximately 200 intersections</li>
+      </ul>
+    </div>
+
+    <!-- ECOSYSTEM STRIP -->
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Rebar quantities ready?</h3>
+        <p>Pair this with the concrete slab calculator for a complete takeoff.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/concrete-slab/" class="eco-link">Concrete Slab Calc</a>
+        <a href="../../calculators/concrete-footing/" class="eco-link">Footing Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let barSize = 4;
+    let spacing = 12;
+    const barWeights = { 3: 0.376, 4: 0.668, 5: 1.043, 6: 1.502 };
+    const barDia = { 3: '⅜"', 4: '½"', 5: '⅝"', 6: '¾"' };
+    const barLabels = { 3: '#3 bar — ⅜" dia, 0.376 lb/ft — Temperature & shrinkage steel', 4: '#4 bar — ½" dia, 0.668 lb/ft — Most common for residential slabs', 5: '#5 bar — ⅝" dia, 1.043 lb/ft — Driveways & heavier residential', 6: '#6 bar — ¾" dia, 1.502 lb/ft — Commercial & retaining walls' };
+    const spLabels = { 6: '6" OC — Heavy reinforcement, commercial', 8: '8" OC — Moderate-heavy reinforcement', 12: '12" OC — Standard residential slab reinforcement', 16: '16" OC — Standard wall reinforcement', 18: '18" OC — Light reinforcement', 24: '24" OC — Minimum temperature steel' };
+
+    function setBarSize(s) {
+      barSize = s;
+      [3,4,5,6].forEach(n => document.getElementById('bar-' + n).classList.toggle('active', n === s));
+      document.getElementById('bar-hint').textContent = barLabels[s];
+      calculate();
+    }
+
+    function setSpacing(s) {
+      spacing = s;
+      [6,8,12,16,18,24].forEach(n => document.getElementById('sp-' + n).classList.toggle('active', n === s));
+      document.getElementById('sp-hint').textContent = spLabels[s];
+      calculate();
+    }
+
+    function animateValue(el) { el.classList.remove('updated'); void el.offsetWidth; el.classList.add('updated'); }
+    function setResult(id, val) { const el = document.getElementById(id); if (el && el.textContent !== val) { el.textContent = val; animateValue(el); } }
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('dim-length').value) || 0;
+      const W = parseFloat(document.getElementById('dim-width').value) || 0;
+      const price = parseFloat(document.getElementById('rebar-price').value) || 0;
+
+      if (!L || !W) {
+        setResult('res-bars-l', '—'); setResult('res-bars-w', '—');
+        setResult('res-lf', '—'); setResult('res-weight', '—'); setResult('res-wire', '—');
+        document.getElementById('res-lf-sub').textContent = 'Enter dimensions above';
+        document.getElementById('cost-row').style.display = 'none';
+        return;
+      }
+
+      // Bars along length direction (running across width): spaced along the length
+      const barsL = Math.floor((L * 12) / spacing) + 1;
+      // Bars along width direction (running across length): spaced along the width
+      const barsW = Math.floor((W * 12) / spacing) + 1;
+
+      // Each bar along length runs the width dimension; each bar along width runs the length dimension
+      const totalLF = (barsL * W) + (barsW * L);
+      const totalWeight = totalLF * barWeights[barSize];
+      const intersections = barsL * barsW;
+      const wireRolls = Math.ceil(intersections / 200);
+
+      setResult('res-bars-l', barsL + ' bars');
+      setResult('res-bars-w', barsW + ' bars');
+      setResult('res-lf', totalLF.toLocaleString() + ' LF');
+      setResult('res-weight', totalWeight.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' lbs');
+      setResult('res-wire', wireRolls + (wireRolls === 1 ? ' roll' : ' rolls'));
+
+      document.getElementById('res-lf-sub').textContent = '#' + barSize + ' at ' + spacing + '" OC both ways';
+      document.getElementById('res-weight-sub').textContent = barWeights[barSize] + ' lb/ft × ' + totalLF.toLocaleString() + ' LF';
+
+      const matCost = price > 0 ? totalLF * price : 0;
+      updateLabor(totalLF, totalLF.toLocaleString() + ' LF', matCost, 'LF');
+
+      if (price > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('res-cost', '$' + matCost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const L = parseFloat(document.getElementById('dim-length').value) || 0;
+      const W = parseFloat(document.getElementById('dim-width').value) || 0;
+      const lap = parseFloat(document.getElementById('lap-splice').value) || 24;
+      const barsL = Math.floor((L * 12) / spacing) + 1;
+      const barsW = Math.floor((W * 12) / spacing) + 1;
+      const totalLF = (barsL * W) + (barsW * L);
+      const totalWeight = totalLF * barWeights[barSize];
+      const wireRolls = Math.ceil((barsL * barsW) / 200);
+      const date = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22); doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+      doc.setFontSize(18); doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10); doc.text('Rebar Calculator',14,20);
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
+      doc.setFontSize(9); doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55); doc.setDrawColor(249,115,22); doc.line(14,57,196,57);
+      const inputs = [['Length',L+' ft'],['Width/Height',W+' ft'],['Bar Size','#'+barSize+' ('+barDia[barSize]+')'],['Spacing',spacing+'" OC'],['Lap Splice',lap+' in']];
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60); doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20);
+        doc.text(v,80,67+i*10); doc.setFont('helvetica','normal');
+      });
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,125); doc.line(14,127,196,127);
+      const results = [
+        ['Total Linear Feet',totalLF.toLocaleString()+' LF',true],
+        ['Total Bars',barsL+' + '+barsW+' = '+(barsL+barsW)+' bars',false],
+        ['Total Weight',Math.round(totalWeight).toLocaleString()+' lbs',false],
+        ['Tie Wire Rolls',wireRolls+' rolls',false],
+      ];
+      results.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,133+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');
+        doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,141+i*14);
+        doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);
+        doc.text(v,130,141+i*14);
+      });
+
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('rebar-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='LF';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'LF';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      if(laborMethod==='unit') document.getElementById('labor-rate-unit').textContent='$/'+laborUnit;
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('dim-length').value)||0;
+      const W=parseFloat(document.getElementById('dim-width').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Rebar — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Area:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft, #'+barSize+' @ '+spacing+'" OC',80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('rebar-estimate.pdf');
+    }
+
+    document.querySelectorAll('input').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

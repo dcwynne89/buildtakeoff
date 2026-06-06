@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pool Volume Calculator — Gallons & Chemical Dosing | BuildTakeoff</title>
+  <meta name="description" content="Free pool volume calculator. Enter pool shape and dimensions to get gallons, fill time, water weight, and initial chemical dosing. Supports rectangular, circular, oval, and kidney shapes." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/pool-volume/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Pool Volume Calculator</h1>
+      <p>Calculate pool volume in gallons, fill time, water weight, and initial chlorine dosing for any pool shape. Supports rectangular, circular, oval, and kidney shapes.</p>
+      <div class="tag-row">
+        <span class="tag">Pool</span>
+        <span class="tag">Volume</span>
+        <span class="tag">Gallons</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Pool Shape & Dimensions</div>
+        <div class="field">
+          <label>Pool Shape</label>
+          <div class="toggle-group" style="flex-wrap:wrap;">
+            <button class="toggle-btn active" id="sh-rect" onclick="setShape('rect')">Rectangular</button>
+            <button class="toggle-btn" id="sh-circle" onclick="setShape('circle')">Circular</button>
+            <button class="toggle-btn" id="sh-oval" onclick="setShape('oval')">Oval</button>
+            <button class="toggle-btn" id="sh-kidney" onclick="setShape('kidney')">Kidney</button>
+          </div>
+        </div>
+        <div class="field" id="f-length">
+          <label for="pool-len">Length</label>
+          <div class="input-wrap"><input type="number" id="pool-len" value="30" min="0" step="0.5" /><span class="input-unit">ft</span></div>
+        </div>
+        <div class="field" id="f-width">
+          <label for="pool-wid">Width</label>
+          <div class="input-wrap"><input type="number" id="pool-wid" value="15" min="0" step="0.5" /><span class="input-unit">ft</span></div>
+        </div>
+        <div class="field" id="f-diameter" style="display:none;">
+          <label for="pool-dia">Diameter</label>
+          <div class="input-wrap"><input type="number" id="pool-dia" value="18" min="0" step="0.5" /><span class="input-unit">ft</span></div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Depth</div>
+        <div class="field">
+          <label for="pool-shallow">Shallow End</label>
+          <div class="input-wrap"><input type="number" id="pool-shallow" value="3.5" min="0" step="0.5" /><span class="input-unit">ft</span></div>
+        </div>
+        <div class="field">
+          <label for="pool-deep">Deep End</label>
+          <div class="input-wrap"><input type="number" id="pool-deep" value="8" min="0" step="0.5" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">Average depth = (shallow + deep) / 2</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Wall Type</div>
+        <div class="field">
+          <label>Construction</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="wall-gunite" onclick="setWall('gunite')">Gunite</button>
+            <button class="toggle-btn" id="wall-vinyl" onclick="setWall('vinyl')">Vinyl</button>
+            <button class="toggle-btn" id="wall-fiber" onclick="setWall('fiberglass')">Fiberglass</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Pool Volume</div>
+          <div class="result-value" id="res-gallons">—</div>
+          <div class="result-sub" id="res-gallons-sub">US gallons</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Volume (Cubic Feet)</div>
+          <div class="result-value" id="res-cuft">—</div>
+          <div class="result-sub">7.48 gal per cubic foot</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Fill Time</div>
+          <div class="result-value" id="res-fill">—</div>
+          <div class="result-sub">At ~540 gal/hr (standard garden hose)</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Water Weight</div>
+          <div class="result-value" id="res-weight">—</div>
+          <div class="result-sub">8.34 lbs per gallon</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Initial Chlorine</div>
+          <div class="result-value" id="res-chlorine">—</div>
+          <div class="result-sub">Granular chlorine for initial treatment</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Estimated Fill Cost</div>
+          <div class="result-value" id="res-fillcost">—</div>
+          <div class="result-sub">At ~$0.005/gal average US water rate</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your pool installation cost to generate a complete job estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="5" placeholder="25000" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Pool installation varies widely $15,000–$50,000+</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="100" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Pool Volume by Shape</h2>
+      <p>Knowing your exact pool volume is essential for chemical dosing, equipment sizing (pumps, filters, heaters), and estimating fill costs. An over- or under-estimated volume leads to incorrect chemical levels, which can damage the pool surface or create unhealthy water conditions.</p>
+
+      <h3>Pool Volume Formulas</h3>
+      <ul>
+        <li><strong>Rectangular:</strong> Length × Width × Average Depth × 7.48 = Gallons</li>
+        <li><strong>Circular:</strong> π × Radius² × Average Depth × 7.48 = Gallons</li>
+        <li><strong>Oval:</strong> π × (Length/2) × (Width/2) × Average Depth × 7.48 = Gallons</li>
+        <li><strong>Kidney/Freeform:</strong> 0.45 × (A + B) × Length × Average Depth × 7.48 (where A and B are widths at widest points). Simplified: ~85% of the bounding rectangle.</li>
+      </ul>
+
+      <h3>Chemical Dosing by Volume</h3>
+      <ul>
+        <li><strong>Chlorine (initial shock):</strong> 1 lb granular per 10,000 gallons to achieve ~10 ppm</li>
+        <li><strong>Maintenance chlorine:</strong> Target 1–3 ppm free chlorine</li>
+        <li><strong>pH adjustment:</strong> 1.5 lbs soda ash per 10,000 gal to raise pH by 0.2</li>
+        <li><strong>Stabilizer (CYA):</strong> 1 lb per 3,000 gal to raise CYA by 10 ppm</li>
+        <li><strong>Salt (for SWG):</strong> ~50 lbs per 1,000 gal to reach 3,200 ppm</li>
+      </ul>
+
+      <h3>Fill Time & Water Costs</h3>
+      <p>A standard garden hose flows about 540 gallons per hour (9 gal/min). A 20,000-gallon pool takes roughly 37 hours to fill. Many municipalities charge $3–$8 per 1,000 gallons. Some areas offer pool fill discounts by waiving sewer charges since the water doesn't enter the sewer system. Call your water utility before filling to check for discounts or restrictions.</p>
+
+      <h3>Pool Construction Types</h3>
+      <ul>
+        <li><strong>Gunite/Shotcrete:</strong> Most customizable, most expensive ($35,000–$65,000+). Sprayed concrete over rebar frame, then plastered. Lasts 50+ years.</li>
+        <li><strong>Vinyl liner:</strong> Steel or polymer wall panels with a vinyl liner. Most affordable ($25,000–$45,000). Liner replacement every 7–15 years (~$4,000–$7,000).</li>
+        <li><strong>Fiberglass:</strong> Pre-formed shell set into excavated hole ($25,000–$55,000). Fastest install (1–2 weeks). Limited shapes and sizes.</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Pool volume calculated?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/concrete-slab/" class="eco-link">Concrete Calculator</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let poolShape='rect', wallType='gunite';
+
+    function setShape(s){
+      poolShape=s;
+      ['rect','circle','oval','kidney'].forEach(v=>document.getElementById('sh-'+v).classList.toggle('active',v===s));
+      document.getElementById('f-length').style.display=(s==='circle')?'none':'';
+      document.getElementById('f-width').style.display=(s==='circle')?'none':'';
+      document.getElementById('f-diameter').style.display=(s==='circle')?'':'none';
+      if(s==='circle'){document.querySelector('#f-length label').textContent='Length';}
+      calculate();
+    }
+    function setWall(w){
+      wallType=w;
+      ['gunite','vinyl','fiber'].forEach(v=>document.getElementById('wall-'+v).classList.toggle('active',v===(w==='fiberglass'?'fiber':w)));
+      calculate();
+    }
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcSqFt=0, calcMatCost=0;
+    function calculate(){
+      const len=parseFloat(document.getElementById('pool-len').value)||0;
+      const wid=parseFloat(document.getElementById('pool-wid').value)||0;
+      const dia=parseFloat(document.getElementById('pool-dia').value)||0;
+      const shallow=parseFloat(document.getElementById('pool-shallow').value)||0;
+      const deep=parseFloat(document.getElementById('pool-deep').value)||0;
+      const avgDepth=(shallow+deep)/2;
+
+      let cuFt=0;
+      if(poolShape==='rect'){
+        if(!len||!wid||!avgDepth){clearResults();return;}
+        cuFt=len*wid*avgDepth;
+        calcSqFt=Math.round(len*wid);
+      } else if(poolShape==='circle'){
+        if(!dia||!avgDepth){clearResults();return;}
+        const r=dia/2;
+        cuFt=Math.PI*r*r*avgDepth;
+        calcSqFt=Math.round(Math.PI*r*r);
+      } else if(poolShape==='oval'){
+        if(!len||!wid||!avgDepth){clearResults();return;}
+        cuFt=Math.PI*(len/2)*(wid/2)*avgDepth;
+        calcSqFt=Math.round(Math.PI*(len/2)*(wid/2));
+      } else { // kidney
+        if(!len||!wid||!avgDepth){clearResults();return;}
+        cuFt=0.85*len*wid*avgDepth; // kidney ≈ 85% of bounding rect
+        calcSqFt=Math.round(0.85*len*wid);
+      }
+
+      const gallons=Math.round(cuFt*7.48);
+      const fillHrs=gallons/540;
+      const weight=Math.round(gallons*8.34);
+      const chlorineLbs=(gallons/10000); // 1 lb per 10,000 gal
+      const fillCost=gallons*0.005;
+
+      setResult('res-gallons',gallons.toLocaleString()+' gal');
+      const shapeNames={rect:'Rectangular',circle:'Circular',oval:'Oval',kidney:'Kidney'};
+      document.getElementById('res-gallons-sub').textContent=shapeNames[poolShape]+' · Avg depth '+(avgDepth).toFixed(1)+' ft';
+
+      setResult('res-cuft',Math.round(cuFt).toLocaleString()+' cu ft');
+      setResult('res-fill',fillHrs.toFixed(1)+' hours');
+      setResult('res-weight',weight.toLocaleString()+' lbs');
+      setResult('res-chlorine',chlorineLbs.toFixed(1)+' lbs');
+      setResult('res-fillcost','$'+fillCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
+
+      updateLabor(calcSqFt,calcSqFt.toLocaleString()+' sq ft',0,'sq ft');
+    }
+
+    function clearResults(){setResult('res-gallons','—');setResult('res-cuft','—');setResult('res-fill','—');setResult('res-weight','—');setResult('res-chlorine','—');setResult('res-fillcost','—');}
+
+    // — LABOR —
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('Pool Volume Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const shapeNames={rect:'Rectangular',circle:'Circular',oval:'Oval',kidney:'Kidney'};
+      const shallow=document.getElementById('pool-shallow').value;
+      const deep=document.getElementById('pool-deep').value;
+      const inputs=[['Shape',shapeNames[poolShape]],['Depth',shallow+"'–"+deep+"' (avg "+((parseFloat(shallow)+parseFloat(deep))/2).toFixed(1)+"')"],['Wall Type',wallType.charAt(0).toUpperCase()+wallType.slice(1)]];
+      if(poolShape==='circle') inputs.splice(1,0,['Diameter',document.getElementById('pool-dia').value+' ft']);
+      else inputs.splice(1,0,['Size',document.getElementById('pool-len').value+'×'+document.getElementById('pool-wid').value+' ft']);
+      inputs.forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v+'',80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('POOL VOLUME',14,115);doc.line(14,117,196,117);
+      const items=[
+        ['Volume',document.getElementById('res-gallons').textContent,true],
+        ['Cubic Feet',document.getElementById('res-cuft').textContent,false],
+        ['Fill Time',document.getElementById('res-fill').textContent,false],
+        ['Water Weight',document.getElementById('res-weight').textContent,false],
+        ['Chlorine (initial)',document.getElementById('res-chlorine').textContent,false],
+        ['Fill Cost',document.getElementById('res-fillcost').textContent,false]
+      ];
+      items.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,123+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,131+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v+'',130,131+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('pool-volume-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Pool — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('pool-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

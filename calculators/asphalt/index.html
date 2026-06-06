@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asphalt Paving Calculator — Tons &amp; Material Cost | BuildTakeoff</title>
+  <meta name="description" content="Free asphalt paving calculator. Enter length, width, and thickness to get tons of asphalt, square yards, and optional gravel base. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/asphalt/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Asphalt Paving Calculator</h1>
+      <p>Calculate tons of asphalt, square yards, and optional gravel base for driveways, parking lots, and roads.</p>
+      <div class="tag-row">
+        <span class="tag">Asphalt</span>
+        <span class="tag">Paving</span>
+        <span class="tag">Driveway</span>
+        <span class="tag">Parking Lot</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Area Dimensions</div>
+        <div class="field">
+          <label for="al">Length</label>
+          <div class="input-wrap">
+            <input type="number" id="al" value="50" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="aw">Width</label>
+          <div class="input-wrap">
+            <input type="number" id="aw" value="20" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="at">Thickness</label>
+          <div class="input-wrap">
+            <input type="number" id="at" value="2" min="0.5" step="0.5" />
+            <span class="input-unit">in</span>
+          </div>
+          <div class="field-hint">Residential driveway: 2"–3" · Parking lot: 3"–4"</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Mix Type</div>
+        <div class="field">
+          <label>Compacted Density</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="mix-hot" onclick="setMix('hot')">Hot Mix (145 lb/ft³)</button>
+            <button class="toggle-btn" id="mix-cold" onclick="setMix('cold')">Cold Patch (140 lb/ft³)</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Gravel Base</div>
+        <div class="field">
+          <label>Add 4" gravel base?</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="base-no" onclick="setBase(false)">No base</button>
+            <button class="toggle-btn" id="base-yes" onclick="setBase(true)">+ 4" gravel base</button>
+          </div>
+          <div class="field-hint">Most new installs need a 4"–6" compacted gravel base</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Pricing</div>
+        <div class="field">
+          <label for="aprice">Asphalt price per ton (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="aprice" value="" min="0" step="1" placeholder="90" />
+            <span class="input-unit">$/ton</span>
+          </div>
+          <div class="field-hint">Hot mix asphalt: $80–$130/ton delivered</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Waste Factor</div>
+        <div class="field">
+          <label for="awaste">Waste</label>
+          <div class="input-wrap">
+            <input type="number" id="awaste" value="5" min="0" max="20" step="1" />
+            <span class="input-unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Tons of Asphalt</div>
+          <div class="result-value" id="r-tons">—</div>
+          <div class="result-sub" id="r-tons-sub">Total asphalt needed</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Square Yards</div>
+          <div class="result-value" id="r-sqyd">—</div>
+          <div class="result-sub">Paving area</div>
+        </div>
+
+        <div class="result-item" id="gravel-row" style="display:none;">
+          <div class="result-label">Gravel Base</div>
+          <div class="result-value" id="r-gravel">—</div>
+          <div class="result-sub">4" compacted aggregate base</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Asphalt Cost</div>
+          <div class="result-value" id="r-cost">—</div>
+          <div class="result-sub">Material cost only</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.25" placeholder="5.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Asphalt paving: typically $3–$7/sq ft installed</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Asphalt Paving Tonnage</h2>
+      <p>Asphalt is ordered by the ton. This calculator converts your paving area and desired thickness into the exact tonnage needed, accounting for compacted density differences between hot mix and cold patch materials.</p>
+
+      <h3>The Formula</h3>
+      <p>Volume (cu ft) = Length × Width × (Thickness ÷ 12). Tons = Volume × Density (lb/cu ft) ÷ 2000. Hot mix asphalt compacts to approximately 145 lb/cu ft, while cold patch is roughly 140 lb/cu ft.</p>
+
+      <h3>Hot Mix vs. Cold Patch</h3>
+      <ul>
+        <li><strong>Hot mix asphalt (HMA)</strong> — heated to 300°F, compacted with rollers, used for driveways, roads, and parking lots. Lasts 15–20 years.</li>
+        <li><strong>Cold patch</strong> — pre-mixed, no heating required, used for pothole repair and small patches. Temporary fix lasting 1–3 years.</li>
+        <li>Hot mix requires professional equipment; cold patch can be DIY.</li>
+      </ul>
+
+      <h3>Asphalt Thickness by Application</h3>
+      <ul>
+        <li><strong>Residential driveway</strong> — 2"–3" over a 4"–6" gravel base</li>
+        <li><strong>Commercial parking lot</strong> — 3"–4" over a 6"–8" base</li>
+        <li><strong>Overlay / resurfacing</strong> — 1.5"–2" over existing pavement</li>
+        <li><strong>Heavy truck traffic</strong> — 4"–6" full depth with engineered base</li>
+      </ul>
+
+      <h3>Gravel Base Requirements</h3>
+      <p>Nearly all new asphalt installations require a compacted aggregate base. A 4" base is standard for driveways; commercial lots typically need 6"–8". The base provides drainage, prevents frost heave, and distributes load. Skipping the base is the #1 cause of premature asphalt failure.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Asphalt tonnage locked in?</h3>
+        <p>Build your paving quote in BuildQuotes or jump straight to invoicing.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calc</a>
+        <a href="../../calculators/excavation/" class="eco-link">Excavation Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let mixType = 'hot';
+    let addBase = false;
+    const densities = { hot: 145, cold: 140 };
+
+    function setMix(m) {
+      mixType = m;
+      document.getElementById('mix-hot').classList.toggle('active', m==='hot');
+      document.getElementById('mix-cold').classList.toggle('active', m==='cold');
+      calculate();
+    }
+    function setBase(v) {
+      addBase = v;
+      document.getElementById('base-no').classList.toggle('active', !v);
+      document.getElementById('base-yes').classList.toggle('active', v);
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('al').value) || 0;
+      const W = parseFloat(document.getElementById('aw').value) || 0;
+      const T = parseFloat(document.getElementById('at').value) || 0;
+      const price = parseFloat(document.getElementById('aprice').value) || 0;
+      const waste = parseFloat(document.getElementById('awaste').value) || 0;
+
+      if (!L || !W || !T) { setResult('r-tons','—'); setResult('r-sqyd','—'); return; }
+
+      const sqft = L * W;
+      const sqyd = sqft / 9;
+      const factor = 1 + waste / 100;
+      const volCuFt = L * W * (T / 12);
+      const density = densities[mixType];
+      const tons = (volCuFt * density / 2000) * factor;
+
+      // Gravel base: 4" depth
+      const gravelCY = addBase ? (L * W * (4 / 12) / 27) * factor : 0;
+
+      setResult('r-tons', tons.toFixed(2) + ' tons');
+      setResult('r-sqyd', sqyd.toFixed(1) + ' sq yd');
+      document.getElementById('r-tons-sub').textContent = (mixType==='hot'?'Hot mix':'Cold patch') + ' @ ' + density + ' lb/ft³' + (waste>0?' · +'+waste+'% waste':'');
+
+      if (addBase) {
+        document.getElementById('gravel-row').style.display = '';
+        setResult('r-gravel', gravelCY.toFixed(2) + ' cu yd');
+      } else {
+        document.getElementById('gravel-row').style.display = 'none';
+      }
+
+      const matCost = price > 0 ? tons * price : 0;
+      updateLabor(sqft, sqft.toLocaleString() + ' sq ft', matCost, 'sq ft');
+
+      if (price > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('r-cost', '$' + matCost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('al').value)||0;
+      const W=parseFloat(document.getElementById('aw').value)||0;
+      const T=parseFloat(document.getElementById('at').value)||0;
+      const waste=parseFloat(document.getElementById('awaste').value)||0;
+      const price=parseFloat(document.getElementById('aprice').value)||0;
+      const factor=1+waste/100;
+      const density=densities[mixType];
+      const tons=(L*W*(T/12)*density/2000)*factor;
+      const sqyd=L*W/9;
+      const gravelCY=addBase?(L*W*(4/12)/27)*factor:0;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Asphalt Paving Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Length',L+' ft'],['Width',W+' ft'],['Thickness',T+' inches'],['Mix Type',mixType==='hot'?'Hot Mix Asphalt':'Cold Patch'],['Gravel Base',addBase?'Yes (4")':'None'],['Waste',waste+'%']];
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);
+        doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');
+      });
+      let qy=135;
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,qy);doc.line(14,qy+2,196,qy+2);
+      const results=[['Tons of Asphalt',tons.toFixed(2)+' tons',true],['Square Yards',sqyd.toFixed(1)+' sq yd',false]];
+      if(addBase) results.push(['Gravel Base',gravelCY.toFixed(2)+' cu yd',false]);
+      if(price>0) results.push(['Estimated Cost','$'+(tons*price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),false]);
+      results.forEach(([k,v,bold],i)=>{
+        const y=qy+11+i*14;
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,y-5,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,y+3);doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,y+3);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('asphalt-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('al').value)||0;
+      const W=parseFloat(document.getElementById('aw').value)||0;
+      const T=parseFloat(document.getElementById('at').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Asphalt Paving — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Area:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft @ '+T+'" '+(mixType==='hot'?'hot mix':'cold patch'),80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('asphalt-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retaining Wall Calculator — Blocks, Gravel &amp; Materials | BuildTakeoff</title>
+  <meta name="description" content="Free retaining wall calculator. Enter wall length and height to get block count, cap blocks, drainage gravel, geogrid, and total cost. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/retaining-wall/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Retaining Wall Calculator</h1>
+      <p>Calculate blocks, cap blocks, drainage gravel, pipe, geogrid, and landscape fabric for segmental retaining walls. Includes waste factor.</p>
+      <div class="tag-row">
+        <span class="tag">Retaining Wall</span>
+        <span class="tag">Landscape Block</span>
+        <span class="tag">Drainage</span>
+        <span class="tag">Hardscape</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+
+      <!-- INPUTS -->
+      <div class="panel">
+        <div class="panel-title">Wall Dimensions</div>
+
+        <div class="field">
+          <label for="wall-length">Wall Length</label>
+          <div class="input-wrap">
+            <input type="number" id="wall-length" value="30" min="0" step="1" placeholder="30" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="wall-height">Wall Height</label>
+          <div class="input-wrap">
+            <input type="number" id="wall-height" value="3" min="0.5" step="0.5" placeholder="3" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Walls over 4 ft typically require engineering and geogrid</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Block Type</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="type-std" onclick="setBlockType('standard')">Standard (12×4×8)</button>
+          <button class="toggle-btn" id="type-lrg" onclick="setBlockType('large')">Large (18×6×12)</button>
+        </div>
+        <div class="field-hint" id="block-hint" style="margin-top:0.4rem;">Standard: 12" deep × 4" tall × 8" wide face — most common residential</div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Options</div>
+        <div class="field">
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="opt-cap-on" onclick="setCap(true)">Cap Blocks ✓</button>
+            <button class="toggle-btn" id="opt-cap-off" onclick="setCap(false)">No Caps</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="opt-drain-on" onclick="setDrain(true)">Drainage Gravel ✓</button>
+            <button class="toggle-btn" id="opt-drain-off" onclick="setDrain(false)">No Drainage</button>
+          </div>
+        </div>
+        <div class="field">
+          <div class="toggle-group">
+            <button class="toggle-btn" id="opt-geo-on" onclick="setGeo(true)">Geogrid ✓</button>
+            <button class="toggle-btn active" id="opt-geo-off" onclick="setGeo(false)">No Geogrid</button>
+          </div>
+          <div class="field-hint">Required for walls over 4 ft tall in most jurisdictions</div>
+        </div>
+
+        <div class="field" style="margin-top:1.25rem;">
+          <label for="block-price">Block price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="block-price" value="" min="0" step="0.25" placeholder="3.50" />
+            <span class="input-unit">$/each</span>
+          </div>
+          <div class="field-hint" id="price-hint">Standard retaining wall block: $3–$6 each</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Waste Factor</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="waste-off" onclick="setWaste(false)">No waste</button>
+          <button class="toggle-btn" id="waste-on" onclick="setWaste(true)">+10% waste</button>
+        </div>
+        <div class="waste-notice" id="waste-notice" style="margin-top:0.75rem;">
+          ✓ 10% waste included — accounts for cuts and breakage
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Wall Blocks</div>
+          <div class="result-value" id="res-blocks">—</div>
+          <div class="result-sub" id="res-blocks-sub">Enter dimensions above</div>
+        </div>
+
+        <div class="result-item" id="cap-row">
+          <div class="result-label">Cap Blocks</div>
+          <div class="result-value" id="res-caps">—</div>
+          <div class="result-sub">Top course finishing caps</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Courses</div>
+          <div class="result-value" id="res-courses">—</div>
+          <div class="result-sub" id="res-courses-sub">Rows of blocks</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-item" id="gravel-row">
+          <div class="result-label">Drainage Gravel</div>
+          <div class="result-value" id="res-gravel">—</div>
+          <div class="result-sub">Clean ¾" crushed stone backfill</div>
+        </div>
+
+        <div class="result-item" id="pipe-row">
+          <div class="result-label">Drainage Pipe</div>
+          <div class="result-value" id="res-pipe">—</div>
+          <div class="result-sub">4" perforated pipe at base</div>
+        </div>
+
+        <div class="result-item" id="fabric-row">
+          <div class="result-label">Landscape Fabric</div>
+          <div class="result-value" id="res-fabric">—</div>
+          <div class="result-sub">Behind wall to separate soil from gravel</div>
+        </div>
+
+        <div class="result-item" id="geo-row" style="display:none;">
+          <div class="result-label">Geogrid</div>
+          <div class="result-value" id="res-geo">—</div>
+          <div class="result-sub">Reinforcement layers extending into soil</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <div class="result-item">
+          <div class="result-label">Wall Face Area</div>
+          <div class="result-value" id="res-sqft">—</div>
+          <div class="result-sub">Total visible face area</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Estimated Block Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Block cost only — gravel, pipe, caps extra</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice this job? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per sq ft</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="1" placeholder="25" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/sq ft</span>
+            </div>
+            <div class="field-hint">Retaining wall installation: typically $15–$35/sq ft face area</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="16" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO CONTENT -->
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Materials for a Retaining Wall</h2>
+      <p>Retaining walls hold back soil and prevent erosion on sloped properties. Accurate material estimation requires knowing the block dimensions, wall size, and whether drainage and reinforcement are needed.</p>
+
+      <h3>The Block Count Formula</h3>
+      <p>Blocks per course = Wall Length × 12 ÷ Block Face Width. Total courses = Wall Height × 12 ÷ Block Face Height. Total blocks = Blocks per course × Courses.</p>
+      <p><strong>Example:</strong> A 30 ft long × 3 ft tall wall using standard 8" face blocks = (30 × 12/8) × (3 × 12/4) = 45 × 9 = <strong>405 blocks</strong>.</p>
+
+      <h3>Gravity vs. Reinforced Walls</h3>
+      <ul>
+        <li><strong>Gravity walls (under 4 ft)</strong> — Rely on weight and setback alone to resist soil pressure</li>
+        <li><strong>Reinforced walls (over 4 ft)</strong> — Require geogrid layers extending into the retained soil</li>
+        <li>Most municipalities require engineering for walls over 4 feet tall</li>
+        <li>Geogrid layers typically placed every 2 courses (8"–12") for walls 4–8 ft tall</li>
+        <li>Geogrid extends into retained soil at least 60% of the wall height</li>
+      </ul>
+
+      <h3>Drainage Behind Retaining Walls</h3>
+      <ul>
+        <li>Water pressure is the #1 cause of retaining wall failure — drainage is critical</li>
+        <li>12" minimum width of clean ¾" crushed stone behind the wall, full height</li>
+        <li>4" perforated drain pipe at the base, sloped to daylight at ends</li>
+        <li>Landscape fabric separates native soil from drainage gravel to prevent clogging</li>
+        <li>Gravel volume: approximately 1 cu ft per linear foot per foot of wall height</li>
+      </ul>
+
+      <h3>Permit Requirements</h3>
+      <ul>
+        <li>Walls under 4 ft generally don't require a permit in most areas (check locally)</li>
+        <li>Walls 4 ft and taller typically require an engineered design and building permit</li>
+        <li>Walls near property lines may require setbacks — verify with your local zoning department</li>
+        <li>Walls supporting surcharge loads (driveways, structures) may require engineering regardless of height</li>
+        <li>Always call 811 before digging to locate underground utilities</li>
+      </ul>
+
+      <h3>Base Preparation</h3>
+      <ul>
+        <li>Excavate a level trench 6"–8" deep and 24" wide for the base course</li>
+        <li>Compact 4"–6" of crushed stone base material (not pea gravel)</li>
+        <li>First course should be partially buried for stability — at least half the block height</li>
+        <li>Each course should set back (batter) ¼" to ¾" for structural stability</li>
+      </ul>
+    </div>
+
+    <!-- ECOSYSTEM STRIP -->
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Wall materials calculated?</h3>
+        <p>Turn these quantities into a professional quote at BuildQuotes.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let blockType = 'standard'; // standard: 12×4×8, large: 18×6×12
+    let useCaps = true, useDrain = true, useGeo = false;
+    let includeWaste = false;
+
+    const blockSpecs = {
+      standard: { depth: 12, height: 4, faceW: 8, label: 'Standard 12×4×8' },
+      large:    { depth: 18, height: 6, faceW: 12, label: 'Large 18×6×12' }
+    };
+
+    function setBlockType(t) {
+      blockType = t;
+      document.getElementById('type-std').classList.toggle('active', t === 'standard');
+      document.getElementById('type-lrg').classList.toggle('active', t === 'large');
+      const s = blockSpecs[t];
+      document.getElementById('block-hint').textContent = s.label + ' — ' + s.depth + '" deep × ' + s.height + '" tall × ' + s.faceW + '" wide face';
+      document.getElementById('price-hint').textContent = t === 'standard' ? 'Standard retaining wall block: $3–$6 each' : 'Large retaining wall block: $5–$10 each';
+      calculate();
+    }
+
+    function setCap(v) {
+      useCaps = v;
+      document.getElementById('opt-cap-on').classList.toggle('active', v);
+      document.getElementById('opt-cap-off').classList.toggle('active', !v);
+      calculate();
+    }
+    function setDrain(v) {
+      useDrain = v;
+      document.getElementById('opt-drain-on').classList.toggle('active', v);
+      document.getElementById('opt-drain-off').classList.toggle('active', !v);
+      calculate();
+    }
+    function setGeo(v) {
+      useGeo = v;
+      document.getElementById('opt-geo-on').classList.toggle('active', v);
+      document.getElementById('opt-geo-off').classList.toggle('active', !v);
+      document.getElementById('geo-row').style.display = v ? '' : 'none';
+      calculate();
+    }
+
+    function setWaste(val) {
+      includeWaste = val;
+      document.getElementById('waste-off').classList.toggle('active', !val);
+      document.getElementById('waste-on').classList.toggle('active', val);
+      document.getElementById('waste-notice').classList.toggle('show', val);
+      calculate();
+    }
+
+    function animateValue(el) { el.classList.remove('updated'); void el.offsetWidth; el.classList.add('updated'); }
+    function setResult(id, val) { const el = document.getElementById(id); if (el && el.textContent !== val) { el.textContent = val; animateValue(el); } }
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('wall-length').value) || 0;
+      const H = parseFloat(document.getElementById('wall-height').value) || 0;
+      const price = parseFloat(document.getElementById('block-price').value) || 0;
+
+      if (!L || !H) {
+        setResult('res-blocks', '—'); setResult('res-caps', '—'); setResult('res-courses', '—');
+        setResult('res-gravel', '—'); setResult('res-pipe', '—'); setResult('res-fabric', '—');
+        setResult('res-geo', '—'); setResult('res-sqft', '—');
+        document.getElementById('res-blocks-sub').textContent = 'Enter dimensions above';
+        document.getElementById('cost-row').style.display = 'none';
+        return;
+      }
+
+      const spec = blockSpecs[blockType];
+      const factor = includeWaste ? 1.10 : 1.0;
+
+      // Blocks per course
+      const blocksPerCourse = Math.ceil((L * 12) / spec.faceW);
+      // Total courses
+      const courses = Math.ceil((H * 12) / spec.height);
+      // Total wall blocks (not counting caps)
+      const totalBlocks = Math.ceil(blocksPerCourse * courses * factor);
+
+      // Cap blocks (same width as face)
+      const capBlocks = useCaps ? Math.ceil(blocksPerCourse * factor) : 0;
+
+      // Drainage gravel: 1 cu ft per LF per ft of height
+      const gravelCuFt = useDrain ? L * H * 1 : 0;
+      const gravelYards = gravelCuFt / 27;
+
+      // Drainage pipe: wall length + 5 ft for daylight
+      const pipeLength = useDrain ? L + 5 : 0;
+
+      // Landscape fabric: wall length × (wall height + 2 ft overlap)
+      const fabricSqFt = useDrain ? L * (H + 2) : 0;
+
+      // Geogrid: layers every 16" of height, extending 0.6 × wall height into soil
+      let geoLayers = 0, geoSqFt = 0;
+      if (useGeo) {
+        geoLayers = Math.max(Math.floor((H * 12) / 16), 1);
+        const geoExtension = Math.max(H * 0.6, 3); // min 3 ft extension
+        geoSqFt = geoLayers * L * geoExtension;
+      }
+
+      const faceArea = L * H;
+
+      setResult('res-blocks', totalBlocks.toLocaleString() + ' blocks');
+      setResult('res-caps', useCaps ? capBlocks.toLocaleString() + ' caps' : 'None');
+      setResult('res-courses', courses + ' courses');
+      setResult('res-gravel', useDrain ? gravelYards.toFixed(2) + ' cu yd' : 'None');
+      setResult('res-pipe', useDrain ? pipeLength + ' LF' : 'None');
+      setResult('res-fabric', useDrain ? fabricSqFt.toLocaleString() + ' sq ft' : 'None');
+      setResult('res-geo', useGeo ? geoSqFt.toLocaleString() + ' sq ft (' + geoLayers + ' layers)' : 'None');
+      setResult('res-sqft', faceArea.toLocaleString() + ' sq ft');
+
+      document.getElementById('res-blocks-sub').textContent =
+        blocksPerCourse + ' per course × ' + courses + ' courses' + (includeWaste ? ' + 10% waste' : '');
+      document.getElementById('res-courses-sub').textContent =
+        spec.height + '" tall blocks × ' + courses + ' courses = ' + (courses * spec.height) + '" (' + ((courses * spec.height) / 12).toFixed(1) + ' ft)';
+
+      // Show/hide drainage rows
+      document.getElementById('gravel-row').style.display = useDrain ? '' : 'none';
+      document.getElementById('pipe-row').style.display = useDrain ? '' : 'none';
+      document.getElementById('fabric-row').style.display = useDrain ? '' : 'none';
+      document.getElementById('cap-row').style.display = useCaps ? '' : 'none';
+
+      const matCost = price > 0 ? totalBlocks * price : 0;
+      updateLabor(faceArea, faceArea.toLocaleString() + ' sq ft face', matCost, 'sq ft');
+
+      if (price > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('res-cost', '$' + matCost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const L = parseFloat(document.getElementById('wall-length').value) || 0;
+      const H = parseFloat(document.getElementById('wall-height').value) || 0;
+      const spec = blockSpecs[blockType];
+      const factor = includeWaste ? 1.10 : 1.0;
+      const blocksPerCourse = Math.ceil((L * 12) / spec.faceW);
+      const courses = Math.ceil((H * 12) / spec.height);
+      const totalBlocks = Math.ceil(blocksPerCourse * courses * factor);
+      const capBlocks = useCaps ? Math.ceil(blocksPerCourse * factor) : 0;
+      const gravelYards = useDrain ? (L * H / 27).toFixed(2) : '0';
+      const pipeLength = useDrain ? L + 5 : 0;
+      const fabricSqFt = useDrain ? L * (H + 2) : 0;
+      const date = new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22); doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold'); doc.setTextColor(0,0,0);
+      doc.setFontSize(18); doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10); doc.text('Retaining Wall Calculator',14,20);
+      doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
+      doc.setFontSize(9); doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55); doc.setDrawColor(249,115,22); doc.line(14,57,196,57);
+      const inputs = [['Wall Length',L+' ft'],['Wall Height',H+' ft'],['Block Type',spec.label],['Cap Blocks',useCaps?'Yes':'No'],['Drainage',useDrain?'Yes':'No'],['Geogrid',useGeo?'Yes':'No'],['Waste',includeWaste?'10%':'None']];
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60); doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold'); doc.setTextColor(20,20,20);
+        doc.text(v,80,67+i*10); doc.setFont('helvetica','normal');
+      });
+
+      doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,145); doc.line(14,147,196,147);
+      const results = [
+        ['Wall Blocks',totalBlocks.toLocaleString(),true],
+        ['Cap Blocks',useCaps?capBlocks+'':'N/A',false],
+        ['Courses',courses+'',false],
+        ['Drainage Gravel',useDrain?gravelYards+' cu yd':'N/A',false],
+        ['Drain Pipe',useDrain?pipeLength+' LF':'N/A',false],
+        ['Landscape Fabric',useDrain?fabricSqFt+' sq ft':'N/A',false],
+        ['Face Area',(L*H)+' sq ft',false],
+      ];
+      results.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,153+i*12,184,10,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');
+        doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,160+i*12);
+        doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);
+        doc.text(String(v),130,160+i*12);
+      });
+
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('retaining-wall-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='sq ft';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'sq ft';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      if(laborMethod==='unit') document.getElementById('labor-rate-unit').textContent='$/'+laborUnit;
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('wall-length').value)||0;
+      const H=parseFloat(document.getElementById('wall-height').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Retaining Wall — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Wall:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);
+      doc.text(L+'x'+H+' ft, '+blockSpecs[blockType].label,80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('retaining-wall-estimate.pdf');
+    }
+
+    document.querySelectorAll('input').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

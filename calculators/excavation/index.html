@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Excavation Calculator — Cut Volume &amp; Truck Loads | BuildTakeoff</title>
+  <meta name="description" content="Free excavation calculator. Enter dimensions and swell factor to get bank cubic yards, loose cubic yards, and truck loads. Download a PDF takeoff report." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/excavation/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Excavation Calculator</h1>
+      <p>Calculate bank cubic yards, loose volume after swell, and truck loads for excavation, trenching, and site grading projects.</p>
+      <div class="tag-row">
+        <span class="tag">Excavation</span>
+        <span class="tag">Earthwork</span>
+        <span class="tag">Hauling</span>
+        <span class="tag">Site Work</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Excavation Shape</div>
+        <div class="field">
+          <label>Profile</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="shape-rect" onclick="setShape('rect')">Rectangular</button>
+            <button class="toggle-btn" id="shape-trap" onclick="setShape('trap')">Trapezoidal</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Dimensions</div>
+        <div class="field">
+          <label for="el">Length</label>
+          <div class="input-wrap">
+            <input type="number" id="el" value="40" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ew">Width (top)</label>
+          <div class="input-wrap">
+            <input type="number" id="ew" value="20" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+        <div class="field" id="bw-field" style="display:none;">
+          <label for="ebw">Bottom Width</label>
+          <div class="input-wrap">
+            <input type="number" id="ebw" value="14" min="0" step="1" />
+            <span class="input-unit">ft</span>
+          </div>
+          <div class="field-hint">Width at the bottom of the trapezoidal cut</div>
+        </div>
+        <div class="field">
+          <label for="ed">Depth</label>
+          <div class="input-wrap">
+            <input type="number" id="ed" value="4" min="0" step="0.5" />
+            <span class="input-unit">ft</span>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Swell Factor</div>
+        <div class="field">
+          <label for="eswell">Swell</label>
+          <div class="input-wrap">
+            <input type="number" id="eswell" value="25" min="0" max="80" step="5" />
+            <span class="input-unit">%</span>
+          </div>
+          <div class="field-hint">Clay: 30–40% · Sand/gravel: 10–15% · Loam: 20–30% · Rock: 50–80%</div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Hauling</div>
+        <div class="field">
+          <label>Truck Size</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" id="truck-10" onclick="setTruck(10)">10 yd³</button>
+            <button class="toggle-btn active" id="truck-14" onclick="setTruck(14)">14 yd³</button>
+            <button class="toggle-btn" id="truck-20" onclick="setTruck(20)">20 yd³</button>
+          </div>
+          <div class="field-hint">10 yd³ = single axle · 14 yd³ = tandem · 20 yd³ = tri-axle</div>
+        </div>
+        <div class="field">
+          <label for="eprice">Haul Price (optional)</label>
+          <div class="input-wrap">
+            <input type="number" id="eprice" value="" min="0" step="25" placeholder="350" />
+            <span class="input-unit">$/load</span>
+          </div>
+          <div class="field-hint">Typical: $250–$600/load depending on haul distance</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Bank Cubic Yards</div>
+          <div class="result-value" id="r-bank">—</div>
+          <div class="result-sub">In-place volume (before swell)</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Loose Cubic Yards</div>
+          <div class="result-value" id="r-loose">—</div>
+          <div class="result-sub" id="r-loose-sub">After swell factor</div>
+        </div>
+
+        <div class="result-item">
+          <div class="result-label">Truck Loads</div>
+          <div class="result-value" id="r-trucks">—</div>
+          <div class="result-sub" id="r-trucks-sub">Based on truck size</div>
+        </div>
+
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Total Haul Cost</div>
+          <div class="result-value" id="r-cost">—</div>
+          <div class="result-sub">Hauling only (no dig labor)</div>
+        </div>
+
+        <div class="result-divider"></div>
+
+        <button class="btn btn-primary" onclick="downloadPDF()">
+          ⬇ Download PDF Takeoff Report
+        </button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">
+          Ready to invoice? → BuildInvoice
+        </a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your labor rate to generate a complete job cost estimate with a combined materials + labor PDF.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per cu yd</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="0.50" placeholder="8.00" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/cu yd</span>
+            </div>
+            <div class="field-hint">Excavation: typically $3–$12/cu yd</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" />
+              <span class="input-unit">hrs</span>
+            </div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter dimensions above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Hauling</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Hauling + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Excavation Volume &amp; Truck Loads</h2>
+      <p>Excavation estimates require understanding two key volumes: bank cubic yards (material in-place, undisturbed) and loose cubic yards (the expanded volume once dug up). The difference — called "swell" — determines how many trucks you actually need to haul away the spoils.</p>
+
+      <h3>The Formula</h3>
+      <p>For rectangular cuts: Bank CY = Length × Width × Depth ÷ 27. For trapezoidal cuts: Bank CY = (Top Width + Bottom Width) ÷ 2 × Depth × Length ÷ 27. Loose CY = Bank CY × (1 + Swell %). Truck loads = Loose CY ÷ Truck capacity.</p>
+
+      <h3>Swell Factors by Soil Type</h3>
+      <ul>
+        <li><strong>Sand &amp; gravel</strong> — 10–15% swell, easy to excavate and compact</li>
+        <li><strong>Loam / common earth</strong> — 20–30% swell, most residential site conditions</li>
+        <li><strong>Clay</strong> — 30–40% swell, heavy, sticky when wet, difficult to work</li>
+        <li><strong>Shale &amp; soft rock</strong> — 40–65% swell, may require rock hammer</li>
+        <li><strong>Hard rock</strong> — 50–80% swell, blasting or hydraulic breaking required</li>
+      </ul>
+
+      <h3>Bank vs. Loose Measurement</h3>
+      <p>Earthwork contracts specify whether payment is "bank measure" (in-place volume) or "truck measure" (loose volume). Bank measure is more common for excavation contracts. Loose measure is used for hauling. Always clarify with your client which measurement applies — the difference can be 25–40% of the total quantity.</p>
+
+      <h3>Truck Sizing Guide</h3>
+      <ul>
+        <li><strong>Single-axle dump truck (10 yd³)</strong> — best for tight residential sites, lower weight on pavement</li>
+        <li><strong>Tandem dump truck (14 yd³)</strong> — most common for commercial earthwork</li>
+        <li><strong>Tri-axle dump truck (20 yd³)</strong> — maximum payload, requires good site access</li>
+        <li>Always verify weight limits — wet clay can exceed truck weight capacity before filling the bed</li>
+      </ul>
+
+      <h3>Cut vs. Fill</h3>
+      <p>When possible, balance your cut and fill on-site to minimize hauling. A "cut-to-fill" plan moves excavated material to another area of the site for grading, saving $15–$30 per cubic yard in hauling and disposal costs. Always test soil quality before using excavated material as structural fill.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Excavation volume locked in?</h3>
+        <p>Build your site work quote in BuildQuotes or jump straight to invoicing.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/gravel/" class="eco-link">Gravel Calc</a>
+        <a href="../../calculators/concrete-slab/" class="eco-link">Concrete Calc</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    let shape = 'rect';
+    let truckSize = 14;
+
+    function setShape(s) {
+      shape = s;
+      document.getElementById('shape-rect').classList.toggle('active', s==='rect');
+      document.getElementById('shape-trap').classList.toggle('active', s==='trap');
+      document.getElementById('bw-field').style.display = s==='trap' ? '' : 'none';
+      calculate();
+    }
+    function setTruck(s) {
+      truckSize = s;
+      [10,14,20].forEach(v => document.getElementById('truck-'+v).classList.toggle('active', v===s));
+      calculate();
+    }
+
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    function calculate() {
+      const L = parseFloat(document.getElementById('el').value) || 0;
+      const W = parseFloat(document.getElementById('ew').value) || 0;
+      const BW = parseFloat(document.getElementById('ebw').value) || 0;
+      const D = parseFloat(document.getElementById('ed').value) || 0;
+      const swell = parseFloat(document.getElementById('eswell').value) || 0;
+      const price = parseFloat(document.getElementById('eprice').value) || 0;
+
+      if (!L || !W || !D) { setResult('r-bank','—'); setResult('r-loose','—'); setResult('r-trucks','—'); return; }
+
+      let bankCY;
+      if (shape === 'trap') {
+        bankCY = ((W + BW) / 2) * D * L / 27;
+      } else {
+        bankCY = L * W * D / 27;
+      }
+
+      const looseCY = bankCY * (1 + swell / 100);
+      const trucks = Math.ceil(looseCY / truckSize);
+      const haulCost = price > 0 ? trucks * price : 0;
+
+      setResult('r-bank', bankCY.toFixed(2) + ' yd³');
+      setResult('r-loose', looseCY.toFixed(2) + ' yd³');
+      document.getElementById('r-loose-sub').textContent = 'Bank × ' + (1 + swell/100).toFixed(2) + ' (' + swell + '% swell)';
+      setResult('r-trucks', trucks + ' load' + (trucks !== 1 ? 's' : ''));
+      document.getElementById('r-trucks-sub').textContent = truckSize + ' yd³ ' + (truckSize===10?'single-axle':truckSize===14?'tandem':'tri-axle') + ' trucks';
+
+      updateLabor(bankCY, bankCY.toFixed(2) + ' bank cu yd', haulCost, 'cu yd');
+
+      if (price > 0) {
+        document.getElementById('cost-row').style.display = '';
+        setResult('r-cost', '$' + haulCost.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}));
+      } else {
+        document.getElementById('cost-row').style.display = 'none';
+      }
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('el').value)||0;
+      const W=parseFloat(document.getElementById('ew').value)||0;
+      const BW=parseFloat(document.getElementById('ebw').value)||0;
+      const D=parseFloat(document.getElementById('ed').value)||0;
+      const swell=parseFloat(document.getElementById('eswell').value)||0;
+      const price=parseFloat(document.getElementById('eprice').value)||0;
+      let bankCY;
+      if(shape==='trap'){bankCY=((W+BW)/2)*D*L/27;}else{bankCY=L*W*D/27;}
+      const looseCY=bankCY*(1+swell/100);
+      const trucks=Math.ceil(looseCY/truckSize);
+      const shapeLabel=shape==='rect'?'Rectangular':'Trapezoidal';
+      const truckLabel=truckSize===10?'Single-axle (10 yd³)':truckSize===14?'Tandem (14 yd³)':'Tri-axle (20 yd³)';
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);
+      doc.setFontSize(18);doc.text('MATERIAL TAKEOFF REPORT',14,12);
+      doc.setFontSize(10);doc.text('Excavation Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');
+      doc.setFontSize(9);doc.text('Generated by buildtakeoff.co',14,35);
+      doc.text('Date: '+date,14,42);
+
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('PROJECT INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const inputs=[['Shape',shapeLabel],['Length',L+' ft'],['Width (top)',W+' ft']];
+      if(shape==='trap') inputs.push(['Bottom Width',BW+' ft']);
+      inputs.push(['Depth',D+' ft'],['Swell Factor',swell+'%'],['Truck Size',truckLabel]);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);
+      inputs.forEach(([k,v],i)=>{
+        doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);
+        doc.text(String(v),80,67+i*10);doc.setFont('helvetica','normal');
+      });
+      let qy=67+inputs.length*10+10;
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('QUANTITIES',14,qy);doc.line(14,qy+2,196,qy+2);
+      const results=[['Bank Cubic Yards',bankCY.toFixed(2)+' yd³',true],['Loose Cubic Yards',looseCY.toFixed(2)+' yd³',false],['Truck Loads',trucks+' loads',false]];
+      if(price>0) results.push(['Total Haul Cost','$'+(trucks*price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}),false]);
+      results.forEach(([k,v,bold],i)=>{
+        const y=qy+9+i*14;
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,y-5,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,y+3);doc.setFont('helvetica','bold');
+        doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v,130,y+3);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('Generated free at buildtakeoff.co  ·  Create your invoice at buildinvoice.co',14,280);
+      doc.save('excavation-takeoff.pdf');
+    }
+
+    // ── LABOR ────────────────────────────────────
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='cu yd';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'cu yd';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter dimensions above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const L=parseFloat(document.getElementById('el').value)||0;
+      const W=parseFloat(document.getElementById('ew').value)||0;
+      const D=parseFloat(document.getElementById('ed').value)||0;
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const shapeLabel=shape==='rect'?'Rectangular':'Trapezoidal';
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Excavation ('+shapeLabel+') — Hauling + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(60,60,60);
+      doc.text('Excavation:',14,67);doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(L+'x'+W+' ft × '+D+' ft deep ('+shapeLabel+')',80,67);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,85);doc.line(14,87,196,87);
+      [['Hauling',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,97+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,97+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,123,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,134);doc.text(tot>0?fmt(tot):'—',130,134);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  buildinvoice.co',14,280);
+      doc.save('excavation-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

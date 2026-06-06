@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deck Material Estimating: The Complete Guide | BuildTakeoff</title>
+  <meta name="description" content="Complete deck estimating guide. Decking material comparison (PT, cedar, composite), joist sizing charts, beam span tables, hardware, fasteners, and code requirements." />
+  <link rel="canonical" href="https://buildtakeoff.co/guides/deck-building-guide/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .article-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .article-date { font-size: 0.83rem; color: var(--text-muted); }
+    .article-read-time { font-size: 0.83rem; color: var(--text-muted); }
+    .article-category { display: inline-block; background: var(--orange-dim); color: var(--orange-light); font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.65rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .article-body h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 2.5rem 0 0.75rem; }
+    .article-body h3 { font-size: 1.1rem; font-weight: 700; margin: 1.75rem 0 0.5rem; color: var(--text); }
+    .article-body p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.75; margin-bottom: 1rem; }
+    .article-body ul, .article-body ol { padding-left: 0; list-style: none; margin-bottom: 1rem; }
+    .article-body ul li, .article-body ol li { padding: 0.35rem 0 0.35rem 1.4rem; color: var(--text-dim); font-size: 0.95rem; line-height: 1.65; position: relative; }
+    .article-body ul li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-size: 0.85rem; }
+    .article-body strong { color: var(--text); font-weight: 700; }
+    .callout { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .callout.tip { border-left: 3px solid var(--orange); }
+    .callout.tip::before { content: '💡 Pro Tip'; display: block; font-size: 0.78rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .callout p { margin-bottom: 0; }
+    .cost-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    .cost-table th { text-align: left; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cost-table td { padding: 0.65rem 1rem; border: 1px solid var(--border); color: var(--text-dim); }
+    .cost-table tr:hover td { background: var(--card); }
+    .related-calc { background: var(--card); border: 1px solid var(--border-hover); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 1rem; transition: all 0.25s; }
+    .related-calc:hover { background: var(--card-hover); transform: translateY(-2px); box-shadow: var(--shadow-orange); }
+    .related-calc-icon { width: 48px; height: 48px; background: var(--orange-dim); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .related-calc-icon svg { width: 24px; height: 24px; stroke: var(--orange); stroke-width: 1.75; }
+    .related-calc-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .related-calc-text p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    .related-guides { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .related-guide-link { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+    .related-guide-link:hover { border-color: var(--border-hover); color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../../#calculators">Calculators</a>
+      <a href="../">Guides</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="article-container fade-up">
+    <a href="../" class="back-link">← Back to Guides</a>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem;">Deck Material Estimating: The Complete Guide</h1>
+    <div class="article-meta">
+      <span class="article-date">June 2026</span>
+      <span class="article-read-time">14 min read</span>
+      <span class="article-category">Decking</span>
+    </div>
+
+    <div class="article-body">
+      <p>Estimating a deck project means more than counting deck boards. Joists, beams, posts, footings, hardware, fasteners, and railing all need to be in your material list. This guide covers the full material stack from the ground up.</p>
+
+      <h2>Decking Material Comparison</h2>
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th>Cost/LF (5/4×6)</th>
+            <th>Cost/Sq Ft</th>
+            <th>Lifespan</th>
+            <th>Maintenance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Pressure-Treated (PT) Pine</strong></td><td>$1.50–$3.00</td><td>$3–$6</td><td>15–25 years</td><td>High (stain every 2–3 yrs)</td></tr>
+          <tr><td><strong>Western Red Cedar</strong></td><td>$3.00–$5.50</td><td>$6–$11</td><td>20–30 years</td><td>Moderate (oil/stain every 2–3 yrs)</td></tr>
+          <tr><td><strong>Redwood</strong></td><td>$4.00–$8.00</td><td>$8–$16</td><td>25–35 years</td><td>Moderate</td></tr>
+          <tr><td><strong>Composite (mid-range)</strong></td><td>$3.50–$6.00</td><td>$7–$12</td><td>25–50 years</td><td>Very Low (occasional wash)</td></tr>
+          <tr><td><strong>Composite (premium)</strong></td><td>$5.00–$9.00</td><td>$10–$18</td><td>30–50+ years</td><td>Very Low</td></tr>
+          <tr><td><strong>PVC/Cellular PVC</strong></td><td>$5.00–$10.00</td><td>$10–$20</td><td>30–50+ years</td><td>Very Low</td></tr>
+          <tr><td><strong>Ipe (Brazilian Hardwood)</strong></td><td>$6.00–$12.00</td><td>$12–$24</td><td>40–75+ years</td><td>Low (oil for color only)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Pressure-Treated (PT) Pine</h3>
+      <p>The most common and affordable decking material. Treated with micronized copper azole (MCA) or alkaline copper quaternary (ACQ) to resist rot and insects. Must be stained or sealed regularly to maintain appearance and prevent checking (surface cracking). Requires <strong>ground-contact rated lumber (UC4A minimum) for any wood within 6 inches of grade</strong>.</p>
+
+      <h3>Cedar</h3>
+      <p>Naturally rot-resistant due to oils in the heartwood. Lighter weight than PT pine (easier to handle), and has a warm color when freshly cut. However, cedar <strong>loses its color and turns gray without regular finishing</strong>. Heartwood-only grades (Select Tight Knot or better) are significantly more expensive than mixed heartwood/sapwood grades.</p>
+
+      <h3>Composite</h3>
+      <p>Made from a blend of wood fiber and plastic (polyethylene or polypropylene). Capped composites (the industry standard today) have a protective polymer shell that resists staining, scratching, and fading. <strong>The substructure (joists, beams, posts) is still built with pressure-treated lumber</strong> — composite is for the decking surface and sometimes railing only.</p>
+
+      <div class="callout tip">
+        <p>When comparing composite to wood, factor in the total cost of ownership. A $5/LF composite board may seem expensive vs a $2/LF PT board, but the PT board needs staining ($0.50–$1.00/sq ft) every 2–3 years. Over 20 years, composite often costs less overall and requires almost zero maintenance.</p>
+      </div>
+
+      <h2>Joist Sizing Charts</h2>
+      <p>Joist size depends on the span (distance between supports) and spacing. These are maximum spans for <strong>40 psf live load + 10 psf dead load</strong> (standard residential deck) using #2 grade lumber:</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Joist Size</th>
+            <th>12" OC Span</th>
+            <th>16" OC Span</th>
+            <th>24" OC Span</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2×6 (PT Southern Pine)</td><td>9'-11"</td><td>9'-0"</td><td>7'-7"</td></tr>
+          <tr><td>2×8 (PT Southern Pine)</td><td>13'-1"</td><td>11'-10"</td><td>9'-8"</td></tr>
+          <tr><td>2×10 (PT Southern Pine)</td><td>16'-2"</td><td>14'-0"</td><td>11'-5"</td></tr>
+          <tr><td>2×12 (PT Southern Pine)</td><td>18'-0"</td><td>16'-6"</td><td>13'-6"</td></tr>
+        </tbody>
+      </table>
+      <p><em>Note: These are general guideline spans for Southern Pine #2 grade. Always verify with your local building code and the specific lumber species/grade available in your market. Douglas Fir and Hem-Fir have slightly different spans.</em></p>
+
+      <h3>Composite Decking Joist Spacing</h3>
+      <p>Most composite decking manufacturers require <strong>maximum 16" on center joist spacing</strong> for standard installation and <strong>12" OC for diagonal or 45-degree board patterns</strong>. Some thinner composite boards require 12" OC even for perpendicular installation. Always check the manufacturer's installation guide — warranty claims require compliant joist spacing.</p>
+
+      <h2>Beam Span Tables</h2>
+      <p>Beams support the joists and transfer load to the posts. Beam size depends on the span between posts and the joist span (tributary area):</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Beam Size</th>
+            <th>Max Span (6' joist span)</th>
+            <th>Max Span (8' joist span)</th>
+            <th>Max Span (10' joist span)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Double 2×8</td><td>8'-0"</td><td>7'-0"</td><td>6'-0"</td></tr>
+          <tr><td>Double 2×10</td><td>10'-0"</td><td>9'-0"</td><td>8'-0"</td></tr>
+          <tr><td>Double 2×12</td><td>12'-0"</td><td>11'-0"</td><td>9'-6"</td></tr>
+          <tr><td>Triple 2×10</td><td>13'-0"</td><td>11'-6"</td><td>10'-0"</td></tr>
+          <tr><td>Triple 2×12</td><td>15'-0"</td><td>13'-6"</td><td>12'-0"</td></tr>
+        </tbody>
+      </table>
+      <p><em>Approximate values for #2 Southern Pine at 40+10 psf loading. Always verify with an engineer or span tables from your code authority (IRC Table R507.5 or local amendments).</em></p>
+
+      <h2>Hardware Requirements</h2>
+      <p>Modern deck codes require specific structural hardware. Don't forget these in your material list:</p>
+
+      <ul>
+        <li><strong>Joist hangers:</strong> One at each joist-to-beam or joist-to-ledger connection. Use Simpson LUS26, LUS28, or LUS210 depending on joist size. Cost: $1.50–$4.00 each.</li>
+        <li><strong>Post-to-beam connectors:</strong> Simpson BC/BCS series post caps. Required at every post-to-beam connection. Cost: $8–$20 each.</li>
+        <li><strong>Post bases:</strong> Simpson ABU/PBS series. Elevate post above concrete footing to prevent rot. Cost: $12–$30 each.</li>
+        <li><strong>Ledger board bolts:</strong> 1/2" diameter lag screws or through-bolts at 16" OC, staggered top and bottom. Use hot-dipped galvanized or stainless for ACQ-treated lumber compatibility.</li>
+        <li><strong>Ledger flashing:</strong> Self-adhesive flashing membrane (Grace Vycor or similar) behind and over the ledger to prevent water intrusion into the house framing. Critical — improper ledger flashing is the #1 cause of deck-related structural failure.</li>
+        <li><strong>Lateral load connectors:</strong> Required by IRC R507.2.3. Hold-down tension devices (Simpson DTT2Z or equivalent) at specific post locations to resist lateral forces.</li>
+      </ul>
+
+      <div class="callout tip">
+        <p>Hardware is easy to forget because plans often just show a note like "fasten per manufacturer's recommendations." A typical 300 sq ft deck needs $300–$600 in structural hardware alone. Always itemize it in your estimate — it's not pocket change.</p>
+      </div>
+
+      <h2>Fastener Types</h2>
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Fastener</th>
+            <th>Use</th>
+            <th>Count Per Sq Ft</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Deck screws (coated or stainless)</td><td>Face-fastening wood decking</td><td>~2 per sq ft (2 per joist crossing)</td></tr>
+          <tr><td>Hidden fastener clips</td><td>Grooved composite or hardwood decking</td><td>~1.5 per sq ft + edge screws</td></tr>
+          <tr><td>Structural screws (GRK, SDWS)</td><td>Ledger, beam, framing connections</td><td>Per connection spec</td></tr>
+          <tr><td>Joist hanger nails (10d×1-1/2")</td><td>Filling joist hanger nail holes</td><td>8–12 per hanger</td></tr>
+          <tr><td>Carriage bolts (1/2")</td><td>Post-to-beam connections</td><td>2 per connection</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Fastener compatibility is critical:</strong> ACQ and MCA pressure-treated lumber is corrosive to standard galvanized fasteners. Use hot-dipped galvanized (HDG), stainless steel, or rated ceramic-coated fasteners. Using the wrong fasteners with PT lumber voids structural integrity and can cause premature failure.</p>
+
+      <h2>Ledger Board Details</h2>
+      <p>The ledger board is the single most structurally critical component of an attached deck. Improper ledger attachment is the most common cause of deck collapse.</p>
+      <ul>
+        <li><strong>Size:</strong> Same depth as the joists (2×8 ledger for 2×8 joists)</li>
+        <li><strong>Attachment:</strong> 1/2" lag screws or through-bolts into the house rim joist at 16" OC in a staggered pattern (top row, bottom row alternating)</li>
+        <li><strong>Flashing:</strong> Must have self-adhesive membrane behind the ledger and metal Z-flashing above to prevent water from reaching the house framing</li>
+        <li><strong>Prohibited surfaces:</strong> Cannot be attached to cantilevered floor framing, brick veneer (must go through to the structure), or stucco without proper blocking behind</li>
+      </ul>
+
+      <h2>Code Requirements Summary</h2>
+      <ul>
+        <li><strong>Guardrail height:</strong> 36" minimum (residential, per IRC). Some jurisdictions require 42".</li>
+        <li><strong>Baluster spacing:</strong> Maximum 4" clear between balusters (a 4" sphere cannot pass through)</li>
+        <li><strong>Stair requirements:</strong> Maximum 7-3/4" rise, minimum 10" tread depth, 36" minimum width</li>
+        <li><strong>Footing depth:</strong> Below frost line in your jurisdiction</li>
+        <li><strong>Live load:</strong> 40 psf minimum for decks, 100 psf for stairs</li>
+        <li><strong>Permit:</strong> Required in virtually all jurisdictions for any attached or elevated deck</li>
+      </ul>
+
+      <h2>Calculate Your Deck Materials</h2>
+      <a href="../../calculators/deck/" class="related-calc">
+        <div class="related-calc-icon"><i data-lucide="layout-dashboard"></i></div>
+        <div class="related-calc-text">
+          <h4>Deck Calculator →</h4>
+          <p>Enter deck dimensions to get board count, joist quantities, and total board footage with cost estimate.</p>
+        </div>
+      </a>
+
+      <h2>Related Guides</h2>
+      <div class="related-guides">
+        <a href="../fence-job-pricing/" class="related-guide-link">How to Price Fence Jobs →</a>
+        <a href="../concrete-driveway-cost/" class="related-guide-link">Concrete Driveway Cost Guide →</a>
+        <a href="../takeoff-mistakes/" class="related-guide-link">7 Takeoff Mistakes That Kill Profit →</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;padding:0 2rem 2rem;">
+    <div class="ecosystem-strip">
+      <div>
+        <h3>Deck materials priced? Build the proposal.</h3>
+        <p>Use BuildQuotes to create a professional deck bid your customers will trust.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../#calculators">Calculators</a>
+        <a href="../">Guides</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close';
+          closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>

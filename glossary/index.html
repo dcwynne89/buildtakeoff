@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Construction Glossary — Terms & Definitions | BuildTakeoff</title>
+  <meta name="description" content="Comprehensive glossary of construction terms and definitions. From aggregate to waste factor — learn what every term means and which calculator uses it." />
+  <link rel="canonical" href="https://buildtakeoff.co/glossary/" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    .glossary-page { max-width: 900px; margin: 0 auto; padding: 2rem; }
+    .glossary-hero { text-align: center; padding: 3rem 0 2rem; }
+    .glossary-hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 0.75rem; }
+    .glossary-hero h1 em { font-style: normal; color: var(--orange); }
+    .glossary-hero p { color: var(--text-dim); font-size: 1rem; max-width: 550px; margin: 0 auto; }
+
+    /* Search */
+    .glossary-search { margin: 1.5rem 0 2rem; position: relative; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .glossary-search input {
+      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text); font-family: inherit; font-size: 1rem; font-weight: 500;
+      padding: 0.85rem 1rem 0.85rem 3rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .glossary-search input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px var(--orange-dim); }
+    .glossary-search input::placeholder { color: var(--text-muted); }
+    .glossary-search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.1rem; pointer-events: none; }
+    .search-count { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+
+    /* Letter Nav */
+    .letter-nav { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; margin-bottom: 2.5rem; padding: 1rem; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); }
+    .letter-nav a {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: var(--radius-sm);
+      font-size: 0.8rem; font-weight: 700; text-decoration: none;
+      color: var(--text-muted); background: var(--surface); border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .letter-nav a:hover, .letter-nav a.active { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); }
+    .letter-nav a.disabled { opacity: 0.3; pointer-events: none; }
+
+    /* Letter Section */
+    .letter-section { margin-bottom: 2.5rem; scroll-margin-top: 80px; }
+    .letter-heading {
+      font-size: 1.8rem; font-weight: 900; color: var(--orange); letter-spacing: -0.02em;
+      margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--orange-dim);
+    }
+
+    /* Term Card */
+    .term-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.25rem 1.5rem; margin-bottom: 0.75rem; transition: border-color 0.2s;
+    }
+    .term-card:hover { border-color: var(--border-hover); }
+    .term-card.hidden { display: none; }
+    .term-name { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 0.3rem; }
+    .term-name span { color: var(--orange); }
+    .term-def { font-size: 0.88rem; color: var(--text-dim); line-height: 1.65; margin-bottom: 0.5rem; }
+    .term-links { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+    .term-links-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-right: 0.25rem; }
+    .term-link {
+      display: inline-block; background: var(--orange-dim); color: var(--orange-light);
+      font-size: 0.72rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .term-link:hover { background: var(--orange-glow); color: var(--orange); }
+
+    .no-results { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.95rem; display: none; }
+    .no-results.show { display: block; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../#calculators">All Calculators</a>
+      <a href="../quiz/">Quiz</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="glossary-page">
+    <a href="../" class="back-link">← Home</a>
+
+    <div class="glossary-hero fade-up">
+      <div class="hero-badge">📖 Reference</div>
+      <h1>Construction <em>Glossary</em></h1>
+      <p>Every construction term you need to know — with definitions and links to the calculators that use them.</p>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="glossary-search fade-up delay-1">
+      <span class="glossary-search-icon">🔍</span>
+      <input type="text" id="glossarySearch" placeholder="Search terms... (e.g. rebar, pitch, cubic yard)" autocomplete="off" />
+      <div class="search-count" id="searchCount"></div>
+    </div>
+
+    <!-- LETTER NAV -->
+    <div class="letter-nav fade-up delay-2" id="letterNav"></div>
+
+    <!-- NO RESULTS -->
+    <div class="no-results" id="noResults">No terms match your search. Try a different keyword.</div>
+
+    <!-- TERMS (populated by JS) -->
+    <div id="glossaryTerms"></div>
+  </div>
+
+  <!-- ECOSYSTEM STRIP -->
+  <div style="max-width:900px;margin:0 auto;padding:0 2rem;">
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Need a calculator?</h3>
+        <p>Not sure which one to use? Take our quick quiz to find the right calculator for your project.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="../quiz/" class="eco-link">Calculator Quiz →</a>
+        <a href="../#calculators" class="eco-link">All Calculators</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../">All Calculators</a>
+        <a href="../quiz/">Quiz</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    // ── GLOSSARY DATA ──────────────────────────────
+    const terms = [
+      { term: "Aggregate", def: "Crusite particles (sand, gravel, crushed stone) mixed with cement and water to make concrete. Fine aggregate passes a #4 sieve; coarse aggregate is retained. The size and quality of aggregate directly affect concrete strength and workability.", links: [["Concrete Slab", "../calculators/concrete-slab/"], ["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "ADA Compliance", def: "Design standards from the Americans with Disabilities Act. For ramps, this means a maximum slope of 1:12 (one inch of rise per 12 inches of run), minimum 36\" clear width, and handrails on both sides for rises over 6 inches.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "Backfill", def: "Material used to fill an excavated area after foundation work, utility installation, or grading. Typically uses compacted gravel, sand, or native soil. Proper backfill prevents settling and structural damage.", links: [["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "Board Foot", def: "A unit of lumber volume equal to 144 cubic inches — essentially a board 1 foot long, 1 foot wide, and 1 inch thick (12\" × 12\" × 1\"). Used to price hardwoods and specialty lumber. Formula: (Thickness × Width × Length) ÷ 144.", links: [["Board Foot", "../calculators/board-foot/"]] },
+      { term: "BTU", def: "British Thermal Unit — the amount of heat required to raise the temperature of one pound of water by one degree Fahrenheit. Used to size HVAC systems. A typical home needs 20–60 BTU per square foot depending on climate, insulation, and window area.", links: [] },
+      { term: "Bundle", def: "A package of roofing shingles. Standard asphalt shingles come 3 bundles per square (100 sq ft of roof coverage). Architectural shingles often require 4–5 bundles per square due to their heavier weight and layered design.", links: [["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "CMU", def: "Concrete Masonry Unit — commonly called a cinder block or concrete block. Standard size is 8×8×16 inches (nominal). Used for foundation walls, retaining walls, and commercial construction. One CMU covers approximately 0.89 sq ft of wall area.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "Cold Joint", def: "An unintended joint that forms when fresh concrete is poured against previously placed concrete that has already begun to set. Cold joints are structural weak points and can allow water infiltration. Prevented by continuous pours and proper planning.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "Compressive Strength", def: "The maximum load per unit area that concrete can withstand before failure, measured in PSI (pounds per square inch). Residential concrete is typically 3,000–4,000 PSI. Commercial slabs often require 4,500–6,000 PSI. Measured by crushing cylinder samples at 28 days.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "Cubic Yard", def: "A volume measurement equal to 27 cubic feet (3ft × 3ft × 3ft). The standard unit for ordering ready-mix concrete. One cubic yard of concrete weighs approximately 4,050 lbs and covers 81 sq ft at 4\" thick.", links: [["Concrete Slab", "../calculators/concrete-slab/"], ["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "Cure Time", def: "The period required for concrete to reach its design strength through hydration. Concrete reaches ~70% strength at 7 days and full design strength at 28 days. Proper curing requires keeping the surface moist and above 50°F.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "DWV", def: "Drain-Waste-Vent — the piping system that carries wastewater and sewage out of a building while allowing air in to prevent vacuum locks. Uses larger-diameter pipe (1.5\"–4\") than supply lines. Must be properly sloped at ¼\" per foot for drainage.", links: [] },
+      { term: "Deadman", def: "A buried anchor (typically a timber or concrete block) used to stabilize a retaining wall by tying it back into the retained soil. Deadmen are installed perpendicular to the wall face and extend into the backfill, providing resistance against overturning.", links: [["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "Eave", def: "The lower edge of a roof that overhangs the exterior wall. Eave length affects roofing material quantities and is where drip edge, ice-and-water shield, and gutters are installed. Typical eave overhang is 12–24 inches.", links: [["Roofing Squares", "../calculators/roofing-squares/"], ["Roof Pitch", "../calculators/roof-pitch/"]] },
+      { term: "Expansion Joint", def: "A gap deliberately left in concrete, masonry, or other rigid materials to allow for thermal expansion and contraction. In slabs, expansion joints are placed every 8–12 feet and filled with compressible material. Without them, uncontrolled cracking occurs.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "Fascia", def: "The vertical board mounted along the lower edge of the roof, directly behind the gutter. Fascia covers the exposed rafter tails and provides a mounting surface for gutters. Typically 1×6 or 1×8 lumber, often wrapped in aluminum for durability.", links: [["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Flashing", def: "Thin metal (aluminum, copper, or galvanized steel) installed at roof intersections, valleys, chimneys, walls, and penetrations to prevent water infiltration. Proper flashing is critical — most roof leaks originate at flashing failures, not shingle damage.", links: [["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Footing", def: "The base of a foundation that spreads the building load over a wider area of soil. Continuous footings run under walls; pad footings support columns. Footing width is typically twice the wall thickness, and depth must extend below the frost line.", links: [["Concrete Slab", "../calculators/concrete-slab/"], ["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "Frost Line", def: "The maximum depth at which the ground freezes in winter. Foundation footings and fence posts must be set below the frost line to prevent heaving. Frost line depth varies from 0\" (southern Florida) to 80\"+ (northern Minnesota).", links: [["Concrete Slab", "../calculators/concrete-slab/"], ["Fence", "../calculators/fence/"]] },
+      { term: "Geogrid", def: "A synthetic mesh material placed within soil layers to provide tensile reinforcement. Used in retaining walls, roads, and slopes to improve soil stability. Geogrids interlock with backfill material to create a mechanically stabilized earth structure.", links: [["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "Grade Beam", def: "A reinforced concrete beam at or just below ground level that connects pile caps or piers to form a continuous foundation. Grade beams transfer building loads to deep foundation elements when surface soil is too weak to support spread footings.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "Grout", def: "A fluid mixture of cement, water, and sometimes sand used to fill gaps, voids, and joints. In tile work, grout fills the spaces between tiles. In masonry, grout fills CMU cores around rebar. Grout is not mortar — it's more fluid and designed to flow.", links: [["Tile", "../calculators/tile/"]] },
+      { term: "Header", def: "A horizontal structural member that spans an opening (door, window, or arch) and transfers the load above the opening to the jack studs on either side. Header size depends on span and load — typically doubled 2×8, 2×10, or 2×12 lumber for residential construction.", links: [["Framing Studs", "../calculators/framing-studs/"]] },
+      { term: "HVAC Load", def: "The heating or cooling capacity required for a space, measured in BTUs per hour or tons of cooling (1 ton = 12,000 BTU/hr). Load calculations consider square footage, insulation R-value, window area, climate zone, occupancy, and solar orientation.", links: [] },
+      { term: "In-Place Volume", def: "The actual volume of material needed in its final compacted position, before accounting for swell or shrinkage factors. Also called \"bank volume.\" Soil expands 20-40% when excavated (swell factor) and compresses when placed and compacted.", links: [["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "Joist", def: "A horizontal structural member that supports floors or ceilings. Floor joists are typically 2×8, 2×10, or 2×12 lumber (or engineered I-joists) spaced 12\" or 16\" on center. Joist size and spacing depend on span, load, and species.", links: [["Deck", "../calculators/deck/"], ["Framing Studs", "../calculators/framing-studs/"]] },
+      { term: "J-Channel", def: "A J-shaped trim piece used in vinyl and aluminum siding installation. Installed around windows, doors, and at wall transitions to receive and hide the cut edges of siding panels. Also used with soffit panels.", links: [] },
+      { term: "King Stud", def: "A full-height wall stud that runs from the bottom plate to the top plate alongside a window or door opening. King studs support the ends of the header and provide nailing for trim and drywall. Every opening has two king studs — one on each side.", links: [["Framing Studs", "../calculators/framing-studs/"]] },
+      { term: "K-Style Gutter", def: "The most common residential gutter profile, named for its K-shaped cross section. Available in 5\" and 6\" widths. K-style gutters hold more water than half-round gutters and are compatible with most fascia-mounted brackets.", links: [] },
+      { term: "Lap Splice", def: "The overlapping of two pieces of rebar to maintain structural continuity. Minimum lap splice length depends on bar size and concrete strength — typically 40 bar diameters. For #4 rebar, the minimum splice is 24\". Splices must be tied with wire.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "Linear Foot", def: "A measurement of length equal to one foot (12 inches), used regardless of width or thickness. Used to price lumber, fencing, gutters, trim, and piping. Distinguished from board foot (which includes width and thickness) and square foot (which includes width).", links: [["Fence", "../calculators/fence/"], ["Framing Studs", "../calculators/framing-studs/"], ["Board Foot", "../calculators/board-foot/"]] },
+      { term: "Loose Volume", def: "The volume of material after it has been excavated or dumped, before compaction. Loose volume is always greater than in-place volume due to the swell factor. Gravel swells ~15%, clay ~30%, and rock ~50-60% when excavated.", links: [["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "Markup", def: "The percentage added to direct costs (materials + labor) to cover overhead and profit. A 50% markup on $1,000 in costs results in a $1,500 selling price. Markup is not the same as margin — a 50% markup yields a 33.3% margin.", links: [["Markup & Margin", "../calculators/markup/"]] },
+      { term: "Margin", def: "The percentage of the selling price that is profit. Calculated as (Selling Price − Cost) ÷ Selling Price × 100. A 33.3% margin means $333 profit on a $1,000 sale. Margin is always lower than the equivalent markup percentage.", links: [["Markup & Margin", "../calculators/markup/"]] },
+      { term: "Mortar", def: "A mixture of cement, lime, sand, and water used to bond bricks, blocks, or stone. Unlike concrete, mortar contains no coarse aggregate. Mortar types (M, S, N, O) differ in compressive strength — Type S (1,800 PSI) is most common for below-grade and structural work.", links: [["Tile", "../calculators/tile/"]] },
+      { term: "Multiplier", def: "A factor applied to a base measurement to account for roof pitch, waste, or other adjustments. A 6/12 pitch has a multiplier of 1.118 — meaning the actual roof area is 11.8% larger than the footprint. Higher pitches have larger multipliers.", links: [["Roofing Squares", "../calculators/roofing-squares/"], ["Roof Pitch", "../calculators/roof-pitch/"]] },
+      { term: "NM-B (Romex)", def: "Non-metallic sheathed cable, commonly known by the brand name Romex. The standard residential wiring used in most US homes. NM-B 14/2 (14-gauge, 2-conductor) is used for 15-amp lighting circuits; 12/2 for 20-amp receptacle circuits.", links: [] },
+      { term: "OC (On Center)", def: "A spacing measurement taken from the center of one structural member to the center of the next. Standard stud spacing is 16\" OC for load-bearing walls and 24\" OC for non-load-bearing. Joist and rafter spacing also uses OC measurements.", links: [["Framing Studs", "../calculators/framing-studs/"], ["Deck", "../calculators/deck/"]] },
+      { term: "Overage", def: "Extra material ordered beyond the calculated quantity to account for waste, cuts, breakage, and errors. Industry standards: 10% for concrete, 10-15% for tile, 5-10% for flooring, 10% for roofing. Also called waste factor or waste allowance.", links: [["Concrete Slab", "../calculators/concrete-slab/"], ["Tile", "../calculators/tile/"], ["Flooring", "../calculators/flooring/"], ["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Pier", def: "A vertical structural support, typically concrete, that transfers building loads to deeper soil layers. Piers can be drilled shafts (caissons), driven piles, or formed concrete columns. Used when surface soil is unsuitable for spread footings.", links: [["Concrete Slab", "../calculators/concrete-slab/"], ["Deck", "../calculators/deck/"]] },
+      { term: "Pitch", def: "The slope of a roof expressed as a ratio of rise to run. A 6/12 pitch means the roof rises 6 inches for every 12 inches of horizontal run. Pitch affects material quantities (higher pitch = more area), walkability, and water shedding ability.", links: [["Roofing Squares", "../calculators/roofing-squares/"], ["Roof Pitch", "../calculators/roof-pitch/"]] },
+      { term: "PSI", def: "Pounds per Square Inch — the unit used to measure concrete compressive strength. Standard residential concrete is 3,000–4,000 PSI. Driveways typically require 4,000 PSI. Commercial and structural work may specify 5,000–8,000+ PSI.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "Rafter", def: "A sloped structural member that forms the framework of a roof. Rafters run from the ridge board at the peak down to the wall's top plate. Common rafter sizes are 2×6, 2×8, and 2×10, spaced 16\" or 24\" OC depending on span and load.", links: [["Roof Pitch", "../calculators/roof-pitch/"], ["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Rebar", def: "Reinforcing steel bar embedded in concrete to provide tensile strength. Concrete is strong in compression but weak in tension — rebar handles the tension loads. Common sizes: #3 (⅜\"), #4 (½\"), #5 (⅝\"). Rebar must have 3\" of concrete cover minimum.", links: [["Concrete Slab", "../calculators/concrete-slab/"]] },
+      { term: "R-Value", def: "A measure of thermal resistance used to rate insulation effectiveness. Higher R-value = better insulation. Requirements vary by climate zone: attics need R-38 to R-60, walls R-13 to R-21. R-values are additive when layering insulation.", links: [["Drywall", "../calculators/drywall/"]] },
+      { term: "Ridge", def: "The highest horizontal line of a roof where two sloped surfaces meet. The ridge board or ridge beam provides a nailing surface for rafter tops. Ridge venting (a gap at the ridge with a cap) provides passive attic ventilation.", links: [["Roof Pitch", "../calculators/roof-pitch/"], ["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Rough Opening", def: "The framed opening in a wall for a door or window, sized slightly larger than the unit being installed. Standard rough openings are 2\" wider and 2–2.5\" taller than the door/window size to allow for shimming, leveling, and insulation.", links: [["Framing Studs", "../calculators/framing-studs/"]] },
+      { term: "Roofing Square", def: "A unit of area equal to 100 square feet, used exclusively in the roofing industry. A 2,000 sq ft roof = 20 squares. Materials (shingles, underlayment, etc.) are priced and ordered by the square. One square of 3-tab shingles = 3 bundles.", links: [["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Sill Plate", def: "The lowest horizontal member of a wall frame, anchored to the foundation with anchor bolts or concrete nails. In wood-frame construction, the sill plate is typically a pressure-treated 2×4 or 2×6 that sits directly on the concrete foundation.", links: [["Framing Studs", "../calculators/framing-studs/"]] },
+      { term: "Soffit", def: "The finished underside of a roof overhang (eave). Soffits provide ventilation to the attic through perforated panels and protect rafter tails from weather. Typically aluminum or vinyl, 12–24\" wide, attached to a subfascia or lookout framing.", links: [["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Sonotube", def: "A brand name (now generic) for cylindrical cardboard forms used to pour concrete columns and piers. Common diameters: 8\", 10\", 12\", and 16\". Used for deck footings, fence posts, and pier foundations. The tube is left in place after pouring.", links: [["Deck", "../calculators/deck/"], ["Fence", "../calculators/fence/"]] },
+      { term: "Square (100 sq ft)", def: "A unit of measurement used in roofing equal to 100 square feet of roof surface area. Not to be confused with a square foot. Roofing materials, labor, and pricing are all quoted per square. A typical residential roof is 15–30 squares.", links: [["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Stringer", def: "The notched or cut diagonal board that supports stair treads and risers. Stringers are typically cut from 2×12 lumber. A standard stairway requires 3 stringers — two on the outside edges and one in the center for spans over 30\".", links: [["Deck", "../calculators/deck/"]] },
+      { term: "Swell Factor", def: "The percentage increase in volume when soil or rock is excavated from its natural (bank) state to a loose state. Sand swells 10-15%, clay 20-40%, and rock 50-70%. Used to calculate how much truck capacity is needed to haul excavated material.", links: [["Gravel & Fill", "../calculators/gravel/"]] },
+      { term: "Tread", def: "The horizontal surface of a stair step that you walk on. Standard tread depth is 10–11 inches (measured nose to nose). Building codes require a minimum 10\" tread depth. Treads and risers must be uniform — maximum ⅜\" variation between any two.", links: [["Deck", "../calculators/deck/"]] },
+      { term: "Trimmer Stud", def: "A shortened stud (also called a jack stud) that supports the end of a header at a door or window opening. Trimmer studs are nailed to the full-height king studs and carry the header load down to the bottom plate. Every opening needs two.", links: [["Framing Studs", "../calculators/framing-studs/"]] },
+      { term: "Underlayment", def: "A protective layer installed between the roof deck and the shingles. Felt paper (15 lb or 30 lb) is traditional; synthetic underlayment is lighter, stronger, and more water-resistant. Ice-and-water shield is a self-adhesive membrane used at eaves in cold climates.", links: [["Roofing Squares", "../calculators/roofing-squares/"]] },
+      { term: "Vapor Barrier", def: "A material (typically 6-mil or 10-mil polyethylene sheeting) that resists the passage of water vapor. Installed under concrete slabs to prevent moisture wicking up from the ground, and inside wall assemblies to prevent condensation. Placement depends on climate zone.", links: [["Concrete Slab", "../calculators/concrete-slab/"], ["Drywall", "../calculators/drywall/"]] },
+      { term: "Waste Factor", def: "The percentage of extra material added to a takeoff to account for cutting waste, breakage, defects, and installation losses. Industry standards: Concrete 5-10%, Tile 10-15%, Flooring 5-10%, Roofing 10-15%, Lumber 5-10%. Complex layouts require higher waste factors.", links: [["Concrete Slab", "../calculators/concrete-slab/"], ["Tile", "../calculators/tile/"], ["Flooring", "../calculators/flooring/"], ["Roofing Squares", "../calculators/roofing-squares/"], ["Paint", "../calculators/paint/"]] },
+    ];
+
+    // ── RENDER ──────────────────────────────────────
+    const container = document.getElementById('glossaryTerms');
+    const letterNav = document.getElementById('letterNav');
+    const searchInput = document.getElementById('glossarySearch');
+    const searchCount = document.getElementById('searchCount');
+    const noResults = document.getElementById('noResults');
+
+    // Group terms by first letter
+    const grouped = {};
+    terms.forEach(t => {
+      const letter = t.term[0].toUpperCase();
+      if (!grouped[letter]) grouped[letter] = [];
+      grouped[letter].push(t);
+    });
+
+    // Build letter nav
+    const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    const activeLetters = Object.keys(grouped);
+    allLetters.forEach(l => {
+      const a = document.createElement('a');
+      a.textContent = l;
+      a.href = '#letter-' + l;
+      if (!activeLetters.includes(l)) a.classList.add('disabled');
+      letterNav.appendChild(a);
+    });
+
+    // Render terms
+    activeLetters.sort().forEach(letter => {
+      const section = document.createElement('div');
+      section.className = 'letter-section';
+      section.id = 'letter-' + letter;
+
+      const heading = document.createElement('div');
+      heading.className = 'letter-heading';
+      heading.textContent = letter;
+      section.appendChild(heading);
+
+      grouped[letter].forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'term-card';
+        card.dataset.term = t.term.toLowerCase();
+        card.dataset.def = t.def.toLowerCase();
+
+        let linksHTML = '';
+        if (t.links.length > 0) {
+          linksHTML = '<div class="term-links"><span class="term-links-label">Used in:</span>' +
+            t.links.map(([name, url]) => `<a href="${url}" class="term-link">${name}</a>`).join('') +
+            '</div>';
+        }
+
+        card.innerHTML = `
+          <div class="term-name">${t.term}</div>
+          <div class="term-def">${t.def}</div>
+          ${linksHTML}
+        `;
+        section.appendChild(card);
+      });
+
+      container.appendChild(section);
+    });
+
+    // ── SEARCH / FILTER ────────────────────────────
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      const cards = container.querySelectorAll('.term-card');
+      let visible = 0;
+
+      cards.forEach(card => {
+        const match = !query || card.dataset.term.includes(query) || card.dataset.def.includes(query);
+        card.classList.toggle('hidden', !match);
+        if (match) visible++;
+      });
+
+      // Show/hide letter sections
+      container.querySelectorAll('.letter-section').forEach(section => {
+        const hasVisible = section.querySelectorAll('.term-card:not(.hidden)').length > 0;
+        section.style.display = hasVisible ? '' : 'none';
+      });
+
+      noResults.classList.toggle('show', visible === 0 && query.length > 0);
+      searchCount.textContent = query ? `${visible} term${visible !== 1 ? 's' : ''} found` : '';
+    });
+
+    // Nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close'; closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;'; closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>

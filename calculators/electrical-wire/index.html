@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electrical Wire Calculator — Wire Gauge & Footage | BuildTakeoff</title>
+  <meta name="description" content="Free electrical wire calculator. Select circuit amperage to get wire gauge, total footage, rolls needed, and cost. NM-B Romex and THHN supported. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/electrical-wire/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Electrical Wire Calculator</h1>
+      <p>Get the right wire gauge, total footage, and roll count for any residential or commercial circuit. Supports NM-B (Romex) and THHN wire types.</p>
+      <div class="tag-row">
+        <span class="tag">Electrical</span>
+        <span class="tag">Wire</span>
+        <span class="tag">NEC Code</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">Circuit Details</div>
+        <div class="field">
+          <label>Circuit Amperage</label>
+          <div class="toggle-group" style="flex-wrap:wrap;">
+            <button class="toggle-btn active" id="amp-15" onclick="setAmp(15)">15A</button>
+            <button class="toggle-btn" id="amp-20" onclick="setAmp(20)">20A</button>
+            <button class="toggle-btn" id="amp-30" onclick="setAmp(30)">30A</button>
+            <button class="toggle-btn" id="amp-40" onclick="setAmp(40)">40A</button>
+            <button class="toggle-btn" id="amp-50" onclick="setAmp(50)">50A</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ew-dist">Wire Run Distance (panel to device)</label>
+          <div class="input-wrap"><input type="number" id="ew-dist" value="50" min="0" step="1" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">Measured from panel to furthest device</div>
+        </div>
+        <div class="field">
+          <label for="ew-circuits">Number of Circuits</label>
+          <div class="input-wrap"><input type="number" id="ew-circuits" value="1" min="1" step="1" /><span class="input-unit">circuits</span></div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Wire Type & Options</div>
+        <div class="field">
+          <label>Wire Type</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="wt-nmb" onclick="setWireType('nmb')">NM-B (Romex)</button>
+            <button class="toggle-btn" id="wt-thhn" onclick="setWireType('thhn')">THHN</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Conduit Required</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="cond-no" onclick="setConduit(false)">No</button>
+            <button class="toggle-btn" id="cond-yes" onclick="setConduit(true)">Yes</button>
+          </div>
+          <div class="field-hint">THHN wire requires conduit; NM-B does not</div>
+        </div>
+        <div class="field">
+          <label for="ew-price">Wire Price (optional)</label>
+          <div class="input-wrap"><input type="number" id="ew-price" value="" min="0" step="0.01" placeholder="0.50" /><span class="input-unit">$/ft</span></div>
+          <div class="field-hint" id="price-hint">14/2 NM-B: $0.35–$0.65/ft</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Wire Gauge</div>
+          <div class="result-value" id="res-gauge">—</div>
+          <div class="result-sub" id="res-gauge-sub">NEC minimum for circuit</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Wire / Cable</div>
+          <div class="result-value" id="res-footage">—</div>
+          <div class="result-sub" id="res-footage-sub">Includes 20% routing extra</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Ground Wire</div>
+          <div class="result-value" id="res-ground">—</div>
+          <div class="result-sub" id="res-ground-sub">Equipment grounding conductor</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Rolls / Spools</div>
+          <div class="result-value" id="res-rolls">—</div>
+          <div class="result-sub" id="res-rolls-sub">Standard 250 ft rolls</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Junction Boxes</div>
+          <div class="result-value" id="res-boxes">—</div>
+          <div class="result-sub">Estimate: 1 per 50 ft + 1 per circuit end</div>
+        </div>
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Wire Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Wire only (no boxes, breakers, etc.)</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your electrical rough-in labor rate to generate a complete job cost estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per circuit</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="5" placeholder="150" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/circuit</span>
+            </div>
+            <div class="field-hint">Electrical rough-in $100–$250/circuit typical</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter details above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Calculate Electrical Wire for Residential Circuits</h2>
+      <p>Selecting the right wire gauge is critical for safety and code compliance. Undersized wire can overheat, trip breakers, or cause fires. The National Electrical Code (NEC) sets minimum wire sizes based on circuit amperage, and local codes may be stricter.</p>
+
+      <h3>Wire Gauge by Amperage (NEC Table 310.16)</h3>
+      <ul>
+        <li><strong>15-amp circuit:</strong> 14 AWG (most lighting circuits, general-use receptacles)</li>
+        <li><strong>20-amp circuit:</strong> 12 AWG (kitchen, bathroom, garage receptacles)</li>
+        <li><strong>30-amp circuit:</strong> 10 AWG (dryers, water heaters, large window AC)</li>
+        <li><strong>40-amp circuit:</strong> 8 AWG (electric ranges, cooktops)</li>
+        <li><strong>50-amp circuit:</strong> 6 AWG (ranges, EV chargers, sub-panels)</li>
+      </ul>
+
+      <h3>NM-B (Romex) vs THHN</h3>
+      <ul>
+        <li><strong>NM-B (Romex):</strong> Non-metallic sheathed cable. Contains 2 or 3 insulated conductors + bare ground in a plastic jacket. Used in dry residential locations. Cannot be used in conduit (wastes space), outdoors, or in commercial buildings.</li>
+        <li><strong>THHN:</strong> Individual insulated conductors pulled through conduit. Required in commercial, exposed, or wet locations. More labor-intensive but allows future wire replacement.</li>
+      </ul>
+
+      <h3>NEC Code Requirements</h3>
+      <ul>
+        <li><strong>Kitchen:</strong> Minimum two 20A small-appliance circuits (12 AWG)</li>
+        <li><strong>Bathroom:</strong> Dedicated 20A GFCI circuit</li>
+        <li><strong>Garage/outdoor:</strong> GFCI protection required</li>
+        <li><strong>Smoke/CO detectors:</strong> Interconnected on dedicated circuit</li>
+        <li><strong>AFCI protection:</strong> Required in bedrooms, living rooms, family rooms (2020 NEC)</li>
+      </ul>
+
+      <h3>Voltage Drop Considerations</h3>
+      <p>For long wire runs, voltage drop becomes a concern. NEC recommends no more than 3% voltage drop for branch circuits and 5% total (feeder + branch). For runs over 100 feet at 120V, consider upsizing the wire gauge. Use the formula: <strong>Voltage Drop = (2 × Length × Current × Resistance per ft) / 1000</strong>.</p>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Wire quantities figured out?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/plumbing-pipe/" class="eco-link">Plumbing Calculator</a>
+        <a href="../../calculators/framing-studs/" class="eco-link">Framing Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let amperage=15, wireType='nmb', useConduit=false;
+    const gaugeMap={15:'14 AWG',20:'12 AWG',30:'10 AWG',40:'8 AWG',50:'6 AWG'};
+    const conductorsNMB={15:'14/2',20:'12/2',30:'10/2',40:'8/3',50:'6/3'};
+    const rollSize=250; // standard NM-B roll
+
+    function setAmp(a){amperage=a;[15,20,30,40,50].forEach(v=>document.getElementById('amp-'+v).classList.toggle('active',v===a));calculate();}
+    function setWireType(t){wireType=t;document.getElementById('wt-nmb').classList.toggle('active',t==='nmb');document.getElementById('wt-thhn').classList.toggle('active',t==='thhn');if(t==='thhn'){setConduit(true);}calculate();}
+    function setConduit(c){useConduit=c;document.getElementById('cond-no').classList.toggle('active',!c);document.getElementById('cond-yes').classList.toggle('active',c);calculate();}
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcCircuits=0, calcMatCost=0;
+    function calculate(){
+      const dist=parseFloat(document.getElementById('ew-dist').value)||0;
+      const circuits=parseInt(document.getElementById('ew-circuits').value)||1;
+      const price=parseFloat(document.getElementById('ew-price').value)||0;
+      if(!dist){setResult('res-gauge','—');setResult('res-footage','—');setResult('res-ground','—');setResult('res-rolls','—');setResult('res-boxes','—');return;}
+
+      const gauge=gaugeMap[amperage]||'14 AWG';
+      // Wire count per circuit: NM-B = 1 cable (contains 2 conductors + ground), THHN = 3 individual wires (hot, neutral, ground)
+      const wiresPerCircuit=wireType==='thhn'?3:1;
+      const routingFactor=1.2; // 20% extra for routing
+      const totalWire=Math.ceil(dist*wiresPerCircuit*circuits*routingFactor);
+      const groundWire=wireType==='thhn'?Math.ceil(dist*circuits*routingFactor):0; // ground included in NM-B
+      const rolls=Math.ceil(totalWire/rollSize);
+      const boxes=circuits*(Math.ceil(dist/50)+1);
+
+      calcCircuits=circuits;
+
+      const cableLabel=wireType==='nmb'?conductorsNMB[amperage]+' NM-B':gauge+' THHN';
+      setResult('res-gauge',gauge);
+      document.getElementById('res-gauge-sub').textContent=cableLabel+' · '+amperage+'A circuit';
+
+      setResult('res-footage',totalWire.toLocaleString()+' ft');
+      document.getElementById('res-footage-sub').textContent=wireType==='nmb'?'Cable footage (includes 20% routing)':'Individual conductor footage (×3, includes 20%)';
+
+      if(wireType==='thhn'){
+        setResult('res-ground',groundWire.toLocaleString()+' ft');
+        document.getElementById('res-ground-sub').textContent='Separate ground conductor';
+      } else {
+        setResult('res-ground','Included');
+        document.getElementById('res-ground-sub').textContent='Ground is inside NM-B cable jacket';
+      }
+
+      setResult('res-rolls',rolls+' roll'+(rolls>1?'s':''));
+      document.getElementById('res-rolls-sub').textContent=wireType==='nmb'?'Standard '+rollSize+' ft rolls':'250 ft spools';
+
+      setResult('res-boxes',boxes+' boxes');
+
+      // Price hint update
+      const hints={15:'14/2 NM-B: $0.35–$0.65/ft',20:'12/2 NM-B: $0.45–$0.85/ft',30:'10/2 NM-B: $0.85–$1.50/ft',40:'8/3 NM-B: $1.50–$2.50/ft',50:'6/3 NM-B: $2.00–$3.50/ft'};
+      document.getElementById('price-hint').textContent=wireType==='nmb'?(hints[amperage]||''):(gauge+' THHN: varies by market');
+
+      calcMatCost=price>0?totalWire*price:0;
+      if(price>0){document.getElementById('cost-row').style.display='';setResult('res-cost','$'+calcMatCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));}
+      else{document.getElementById('cost-row').style.display='none';}
+
+      updateLabor(circuits,circuits+' circuit'+(circuits>1?'s':''),calcMatCost,'circuit');
+    }
+
+    // — LABOR —
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='circuit';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'circuit';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter details above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('Electrical Wire Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      const dist=document.getElementById('ew-dist').value;const circuits=document.getElementById('ew-circuits').value;
+      [['Amperage',amperage+'A'],['Wire Type',wireType==='nmb'?'NM-B (Romex)':'THHN'],['Run Distance',dist+' ft'],['Circuits',circuits]].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v+'',80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,115);doc.line(14,117,196,117);
+      const items=[
+        ['Wire Gauge',document.getElementById('res-gauge').textContent,true],
+        ['Total Wire',document.getElementById('res-footage').textContent,false],
+        ['Rolls/Spools',document.getElementById('res-rolls').textContent,false],
+        ['Junction Boxes',document.getElementById('res-boxes').textContent,false]
+      ];
+      if(calcMatCost>0) items.push(['Wire Cost',fmt(calcMatCost),false]);
+      items.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,123+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,131+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v+'',130,131+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('electrical-wire-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Electrical Wire — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('electrical-wire-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

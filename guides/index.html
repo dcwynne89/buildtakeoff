@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contractor Guides & Resources | BuildTakeoff</title>
+  <meta name="description" content="Practical construction guides for contractors. Learn estimating techniques, material costs, takeoff tips, and bidding strategies to win more jobs and protect your profit." />
+  <meta property="og:title" content="Contractor Guides & Resources | BuildTakeoff" />
+  <meta property="og:description" content="Practical construction guides for contractors. Estimating, material costs, takeoff tips, and bidding strategies." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://buildtakeoff.co/guides/" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    .guides-hero {
+      text-align: center;
+      padding: 5rem 2rem 3rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .guides-hero h1 {
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .guides-hero h1 em { font-style: normal; color: var(--orange); }
+    .guides-hero p {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .guide-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    .guide-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--orange), transparent);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .guide-card:hover {
+      background: var(--card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow), var(--shadow-orange);
+    }
+    .guide-card:hover::before { opacity: 1; }
+    .guide-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .guide-card-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .guide-card-category {
+      display: inline-block;
+      background: var(--orange-dim);
+      color: var(--orange-light);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .guide-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+    .guide-card p {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      flex: 1;
+    }
+    .guide-card-arrow {
+      color: var(--orange);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: all 0.25s;
+    }
+    .guide-card:hover .guide-card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../#calculators">Calculators</a>
+      <a href="./">Guides</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="guides-hero fade-up">
+    <div class="hero-badge">📖 Free Guides · No Signup Required</div>
+    <h1>Contractor Guides &amp; <em>Resources</em></h1>
+    <p>Practical construction knowledge to help you estimate accurately, bid confidently, and protect your profit on every job.</p>
+  </section>
+
+  <!-- GUIDES GRID -->
+  <section class="section" id="guides">
+    <div class="section-header">
+      <h2>All Guides</h2>
+      <p>Estimating tips, material comparisons, and bidding strategies from the field</p>
+    </div>
+    <div class="calc-grid">
+
+      <a href="concrete-driveway-cost/" class="guide-card fade-up delay-1">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Concrete</span>
+        </div>
+        <h3>How Much Does a Concrete Driveway Cost in 2026?</h3>
+        <p>Price ranges from $8–$18/sq ft installed, cost factors, material vs labor breakdown, decorative options, and when to DIY vs hire a contractor.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="roofing-material-comparison/" class="guide-card fade-up delay-2">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Roofing</span>
+        </div>
+        <h3>Roofing Material Comparison: Asphalt vs Metal vs Tile</h3>
+        <p>Cost per square, lifespan, weight, climate suitability, insurance impact, and ROI analysis for the three most popular roofing materials.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="how-to-estimate-paint-job/" class="guide-card fade-up delay-3">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Painting</span>
+        </div>
+        <h3>How to Estimate a Paint Job for Bidding</h3>
+        <p>Wall area formulas, coverage rates by paint type, labor rate guidance, pricing for different surfaces, and common bid mistakes to avoid.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="contractor-markup-guide/" class="guide-card fade-up delay-1">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Business</span>
+        </div>
+        <h3>Contractor Markup: How Much Should You Charge?</h3>
+        <p>Markup vs margin explained, industry standards by trade, hidden overhead costs, break-even calculations, and pricing psychology.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="how-to-read-plans/" class="guide-card fade-up delay-2">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Estimating</span>
+        </div>
+        <h3>How to Read a Set of Plans for Takeoff</h3>
+        <p>Scale reading, plan sheet types, common symbols, dimension reading, notes and callouts, and where material quantities hide in a set of drawings.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="takeoff-mistakes/" class="guide-card fade-up delay-3">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Estimating</span>
+        </div>
+        <h3>7 Common Takeoff Mistakes That Kill Your Profit</h3>
+        <p>Forgetting waste, wrong conversions, missing accessories, and four more estimating errors that eat into your margins on every job.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="drywall-estimating/" class="guide-card fade-up delay-1">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Drywall</span>
+        </div>
+        <h3>Drywall Estimating: A Complete Guide for Contractors</h3>
+        <p>Sheet sizing, mud and tape quantities, screw calculations, corner bead, fire-rated assemblies, and moisture-resistant options.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="fence-job-pricing/" class="guide-card fade-up delay-2">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Fencing</span>
+        </div>
+        <h3>How to Price Fence Jobs Without Losing Money</h3>
+        <p>Material cost per linear foot by style, labor rates, post spacing, gate pricing, terrain adjustments, and common profit killers.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="deck-building-guide/" class="guide-card fade-up delay-3">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Decking</span>
+        </div>
+        <h3>Deck Material Estimating: The Complete Guide</h3>
+        <p>Decking material comparison, joist sizing charts, beam span tables, hardware requirements, fastener types, and code requirements.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+      <a href="insulation-r-value-guide/" class="guide-card fade-up delay-1">
+        <div class="guide-card-meta">
+          <span class="guide-card-date">Jun 2026</span>
+          <span class="guide-card-category">Insulation</span>
+        </div>
+        <h3>Insulation R-Values by Climate Zone: What You Need</h3>
+        <p>Climate zone requirements, R-value code minimums, insulation type comparison, vapor barrier placement, and cost per R-value analysis.</p>
+        <div class="guide-card-arrow">Read Guide →</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ECOSYSTEM STRIP -->
+  <section class="section">
+    <div class="ecosystem-strip">
+      <div>
+        <h3>The full Build ecosystem</h3>
+        <p>Every tool you need from takeoff to final invoice — all in one suite.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice</a>
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes</a>
+        <a href="https://buildchangeorder.co" class="eco-link" target="_blank">BuildChangeOrder</a>
+        <a href="https://buildpdf.co" class="eco-link" target="_blank">BuildPDF</a>
+        <a href="https://buildcertificates.com" class="eco-link" target="_blank">BuildCertificates</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../#calculators">Calculators</a>
+        <a href="./">Guides</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+        <a href="https://buildpdf.co" target="_blank">BuildPDF</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close';
+          closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>

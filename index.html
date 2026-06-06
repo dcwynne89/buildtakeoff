@@ -9,6 +9,8 @@
   <meta property="og:description" content="Instant material quantity calculators for contractors and builders. Concrete, roofing, paint, flooring, gravel, and more. Download PDF takeoff reports." />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://buildtakeoff.co/" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#F97316" />
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -21,6 +23,8 @@
     </a>
     <div class="nav-links" id="siteNav">
       <a href="#calculators">Calculators</a>
+      <a href="guides/">Guides</a>
+      <a href="glossary/">Glossary</a>
       <a href="#how-it-works">How It Works</a>
       <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
     </div>
@@ -34,7 +38,7 @@
     <p>Stop guessing. Get exact quantities for concrete, roofing, paint, flooring, and more — then download a professional PDF takeoff report in seconds.</p>
     <div class="hero-stats">
       <div class="hero-stat">
-        <div class="hero-stat-num">12</div>
+        <div class="hero-stat-num">32+</div>
         <div class="hero-stat-label">Calculators</div>
       </div>
       <div class="hero-stat">
@@ -48,14 +52,24 @@
     </div>
   </section>
 
+  <!-- QUICK LINKS -->
+  <section class="section" style="padding-top:0;padding-bottom:1rem;">
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;justify-content:center;">
+      <a href="quiz/" class="btn-sm" style="flex:initial;">🧭 What Calculator Do I Need?</a>
+      <a href="guides/" class="btn-sm" style="flex:initial;">📖 Contractor Guides</a>
+      <a href="glossary/" class="btn-sm" style="flex:initial;">📘 Construction Glossary</a>
+    </div>
+  </section>
+
   <!-- CALCULATORS GRID -->
   <section class="section" id="calculators">
+
+    <!-- ═══ CONCRETE & FOUNDATION ═══ -->
     <div class="section-header">
       <h2>Concrete &amp; Foundation</h2>
       <p>Calculate exact material quantities for any concrete work</p>
     </div>
     <div class="calc-grid">
-
       <a href="calculators/concrete-slab/" class="calc-card fade-up delay-1">
         <div class="calc-card-icon"><i data-lucide="layers"></i></div>
         <h3>Concrete Slab Calculator</h3>
@@ -67,7 +81,6 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
       <a href="calculators/gravel/" class="calc-card fade-up delay-2">
         <div class="calc-card-icon"><i data-lucide="mountain"></i></div>
         <h3>Gravel &amp; Fill Calculator</h3>
@@ -79,19 +92,85 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
+      <a href="calculators/concrete-footing/" class="calc-card fade-up delay-3">
+        <div class="calc-card-icon"><i data-lucide="box"></i></div>
+        <h3>Concrete Footing Calculator</h3>
+        <p>Continuous and pier footings — get cubic yards, bag count, and cost for any foundation.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Continuous</span>
+          <span class="calc-card-tag">Pier</span>
+          <span class="calc-card-tag">Cubic Yards</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/concrete-column/" class="calc-card fade-up delay-1">
+        <div class="calc-card-icon"><i data-lucide="cylinder"></i></div>
+        <h3>Concrete Column Calculator</h3>
+        <p>Sonotube volumes — get cubic yards and bag count for any diameter and height column.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Sonotube</span>
+          <span class="calc-card-tag">Volume</span>
+          <span class="calc-card-tag">Bags</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
     </div>
   </section>
 
   <div class="divider" style="max-width:1200px;margin:0 auto;"></div>
 
+  <!-- ═══ MASONRY ═══ -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Masonry</h2>
+      <p>Block, brick, rebar, and retaining wall material quantities</p>
+    </div>
+    <div class="calc-grid">
+      <a href="calculators/brick-block/" class="calc-card fade-up delay-1">
+        <div class="calc-card-icon"><i data-lucide="brick-wall"></i></div>
+        <h3>Brick &amp; Block Calculator</h3>
+        <p>Calculate block count, mortar bags, rebar, and wall ties for any CMU or brick wall.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Block Count</span>
+          <span class="calc-card-tag">Mortar</span>
+          <span class="calc-card-tag">Rebar</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/rebar/" class="calc-card fade-up delay-2">
+        <div class="calc-card-icon"><i data-lucide="grid-3x3"></i></div>
+        <h3>Rebar Calculator</h3>
+        <p>Spacing grid, total linear feet, weight, and tie wire for any slab or wall.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Linear Feet</span>
+          <span class="calc-card-tag">Weight</span>
+          <span class="calc-card-tag">Tie Wire</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/retaining-wall/" class="calc-card fade-up delay-3">
+        <div class="calc-card-icon"><i data-lucide="wall"></i></div>
+        <h3>Retaining Wall Calculator</h3>
+        <p>Blocks, drainage gravel, geogrid, and landscape fabric for any retaining wall project.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Blocks</span>
+          <span class="calc-card-tag">Gravel</span>
+          <span class="calc-card-tag">Geogrid</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="divider" style="max-width:1200px;margin:0 auto;"></div>
+
+  <!-- ═══ ROOFING ═══ -->
   <section class="section">
     <div class="section-header">
       <h2>Roofing</h2>
       <p>Estimate shingles, squares, and materials for any roof</p>
     </div>
     <div class="calc-grid">
-
       <a href="calculators/roofing-squares/" class="calc-card fade-up delay-1">
         <div class="calc-card-icon"><i data-lucide="home"></i></div>
         <h3>Roofing Squares Calculator</h3>
@@ -103,7 +182,6 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
       <a href="calculators/roof-pitch/" class="calc-card fade-up delay-2">
         <div class="calc-card-icon"><i data-lucide="triangle"></i></div>
         <h3>Roof Pitch Calculator</h3>
@@ -115,19 +193,29 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
+      <a href="calculators/gutter/" class="calc-card fade-up delay-3">
+        <div class="calc-card-icon"><i data-lucide="droplets"></i></div>
+        <h3>Gutter Calculator</h3>
+        <p>Linear feet, downspouts, hangers, elbows, end caps, and cost for any gutter project.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Gutters</span>
+          <span class="calc-card-tag">Downspouts</span>
+          <span class="calc-card-tag">Hangers</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
     </div>
   </section>
 
   <div class="divider" style="max-width:1200px;margin:0 auto;"></div>
 
+  <!-- ═══ FRAMING & LUMBER ═══ -->
   <section class="section">
     <div class="section-header">
       <h2>Framing &amp; Lumber</h2>
-      <p>Stud counts, board feet, and lumber quantities</p>
+      <p>Stud counts, board feet, headers, and lumber quantities</p>
     </div>
     <div class="calc-grid">
-
       <a href="calculators/framing-studs/" class="calc-card fade-up delay-1">
         <div class="calc-card-icon"><i data-lucide="align-justify"></i></div>
         <h3>Framing Stud Calculator</h3>
@@ -139,7 +227,6 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
       <a href="calculators/board-foot/" class="calc-card fade-up delay-2">
         <div class="calc-card-icon"><i data-lucide="ruler"></i></div>
         <h3>Board Foot Calculator</h3>
@@ -150,19 +237,40 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
+      <a href="calculators/window-door-rough-opening/" class="calc-card fade-up delay-3">
+        <div class="calc-card-icon"><i data-lucide="door-open"></i></div>
+        <h3>Rough Opening Calculator</h3>
+        <p>Headers, king studs, jack studs, and cripples for any window or door framing.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Headers</span>
+          <span class="calc-card-tag">Jack Studs</span>
+          <span class="calc-card-tag">LF</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/stair/" class="calc-card fade-up delay-1">
+        <div class="calc-card-icon"><i data-lucide="arrow-up-right"></i></div>
+        <h3>Stair Calculator</h3>
+        <p>Rise, run, tread count, stringer length, and code compliance for any stair build.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Rise/Run</span>
+          <span class="calc-card-tag">Stringer</span>
+          <span class="calc-card-tag">Code Check</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
     </div>
   </section>
 
   <div class="divider" style="max-width:1200px;margin:0 auto;"></div>
 
+  <!-- ═══ FINISHES & INTERIOR ═══ -->
   <section class="section">
     <div class="section-header">
       <h2>Finishes &amp; Interior</h2>
-      <p>Paint, tile, and flooring material estimates</p>
+      <p>Paint, tile, flooring, drywall, and insulation material estimates</p>
     </div>
     <div class="calc-grid">
-
       <a href="calculators/paint/" class="calc-card fade-up delay-1">
         <div class="calc-card-icon"><i data-lucide="paintbrush"></i></div>
         <h3>Paint Calculator</h3>
@@ -174,7 +282,6 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
       <a href="calculators/tile/" class="calc-card fade-up delay-2">
         <div class="calc-card-icon"><i data-lucide="grid-2x2"></i></div>
         <h3>Tile Calculator</h3>
@@ -186,7 +293,6 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
       <a href="calculators/flooring/" class="calc-card fade-up delay-3">
         <div class="calc-card-icon"><i data-lucide="layout-grid"></i></div>
         <h3>Flooring Calculator</h3>
@@ -198,7 +304,6 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
       <a href="calculators/drywall/" class="calc-card fade-up delay-1">
         <div class="calc-card-icon"><i data-lucide="square-stack"></i></div>
         <h3>Drywall Calculator</h3>
@@ -210,19 +315,29 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
+      <a href="calculators/insulation/" class="calc-card fade-up delay-2">
+        <div class="calc-card-icon"><i data-lucide="thermometer"></i></div>
+        <h3>Insulation Calculator</h3>
+        <p>R-value by zone, batts vs blown-in vs spray foam, coverage per bag, and cost estimate.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">R-Value</span>
+          <span class="calc-card-tag">Batts/Bags</span>
+          <span class="calc-card-tag">Coverage</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
     </div>
   </section>
 
   <div class="divider" style="max-width:1200px;margin:0 auto;"></div>
 
+  <!-- ═══ EXTERIOR ═══ -->
   <section class="section">
     <div class="section-header">
-      <h2>Exterior</h2>
-      <p>Fence, deck, and site material estimates</p>
+      <h2>Exterior &amp; Site</h2>
+      <p>Fence, deck, siding, mulch, asphalt, and site material estimates</p>
     </div>
     <div class="calc-grid">
-
       <a href="calculators/fence/" class="calc-card fade-up delay-1">
         <div class="calc-card-icon"><i data-lucide="fence"></i></div>
         <h3>Fence Calculator</h3>
@@ -234,7 +349,6 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
       <a href="calculators/deck/" class="calc-card fade-up delay-2">
         <div class="calc-card-icon"><i data-lucide="layout-dashboard"></i></div>
         <h3>Deck Calculator</h3>
@@ -246,12 +360,157 @@
         </div>
         <span class="calc-card-arrow">→</span>
       </a>
-
+      <a href="calculators/mulch/" class="calc-card fade-up delay-3">
+        <div class="calc-card-icon"><i data-lucide="tree-deciduous"></i></div>
+        <h3>Mulch &amp; Topsoil Calculator</h3>
+        <p>Calculate cubic yards, bags, and tons of mulch, topsoil, or compost for any project.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Cubic Yards</span>
+          <span class="calc-card-tag">Bags</span>
+          <span class="calc-card-tag">Tons</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/siding/" class="calc-card fade-up delay-1">
+        <div class="calc-card-icon"><i data-lucide="panel-left"></i></div>
+        <h3>Siding Calculator</h3>
+        <p>Squares of siding, starter strips, J-channel, and corners for any exterior project.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Squares</span>
+          <span class="calc-card-tag">J-Channel</span>
+          <span class="calc-card-tag">Corners</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/asphalt/" class="calc-card fade-up delay-2">
+        <div class="calc-card-icon"><i data-lucide="car"></i></div>
+        <h3>Asphalt Calculator</h3>
+        <p>Tons of hot mix, base gravel, and square yards for any paving project.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Tons</span>
+          <span class="calc-card-tag">Sq Yards</span>
+          <span class="calc-card-tag">Base</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/landscape-fabric/" class="calc-card fade-up delay-3">
+        <div class="calc-card-icon"><i data-lucide="scan-line"></i></div>
+        <h3>Landscape Fabric &amp; Edging</h3>
+        <p>Rolls of fabric, staple count, and edging linear feet for any landscaping bed.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Rolls</span>
+          <span class="calc-card-tag">Staples</span>
+          <span class="calc-card-tag">Edging</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/excavation/" class="calc-card fade-up delay-1">
+        <div class="calc-card-icon"><i data-lucide="shovel"></i></div>
+        <h3>Excavation Calculator</h3>
+        <p>Cut/fill volume, loose cubic yards after swell, truck loads, and haul cost.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Bank CY</span>
+          <span class="calc-card-tag">Loose CY</span>
+          <span class="calc-card-tag">Loads</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
     </div>
   </section>
 
   <div class="divider" style="max-width:1200px;margin:0 auto;"></div>
 
+  <!-- ═══ MECHANICAL ═══ -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Mechanical &amp; Electrical</h2>
+      <p>Electrical wire, plumbing pipe, and HVAC load estimates</p>
+    </div>
+    <div class="calc-grid">
+      <a href="calculators/electrical-wire/" class="calc-card fade-up delay-1">
+        <div class="calc-card-icon"><i data-lucide="zap"></i></div>
+        <h3>Electrical Wire Calculator</h3>
+        <p>Wire gauge by amperage, total footage, rolls needed, and junction box count.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Wire Gauge</span>
+          <span class="calc-card-tag">Footage</span>
+          <span class="calc-card-tag">Rolls</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/plumbing-pipe/" class="calc-card fade-up delay-2">
+        <div class="calc-card-icon"><i data-lucide="pipette"></i></div>
+        <h3>Plumbing Pipe Calculator</h3>
+        <p>Supply and DWV pipe footage, fittings, and pipe sizing by fixture count.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Supply</span>
+          <span class="calc-card-tag">DWV</span>
+          <span class="calc-card-tag">Fittings</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/hvac-load/" class="calc-card fade-up delay-3">
+        <div class="calc-card-icon"><i data-lucide="fan"></i></div>
+        <h3>HVAC Load Calculator</h3>
+        <p>Simplified Manual J — get cooling/heating BTU, tonnage, and system sizing.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">BTU</span>
+          <span class="calc-card-tag">Tonnage</span>
+          <span class="calc-card-tag">CFM</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="divider" style="max-width:1200px;margin:0 auto;"></div>
+
+  <!-- ═══ SPECIALTY ═══ -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Specialty</h2>
+      <p>ADA ramps, pool volume, and solar panel calculators</p>
+    </div>
+    <div class="calc-grid">
+      <a href="calculators/ramp-ada/" class="calc-card fade-up delay-1">
+        <div class="calc-card-icon"><i data-lucide="accessibility"></i></div>
+        <h3>ADA Ramp Calculator</h3>
+        <p>Slope, length, landings, handrail, and materials for ADA-compliant ramp construction.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Slope</span>
+          <span class="calc-card-tag">Landings</span>
+          <span class="calc-card-tag">Handrail</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/pool-volume/" class="calc-card fade-up delay-2">
+        <div class="calc-card-icon"><i data-lucide="waves"></i></div>
+        <h3>Pool Volume Calculator</h3>
+        <p>Gallons for rectangular, circular, oval, and kidney pools with fill time estimate.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Gallons</span>
+          <span class="calc-card-tag">Fill Time</span>
+          <span class="calc-card-tag">Chemicals</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+      <a href="calculators/solar-panel/" class="calc-card fade-up delay-3">
+        <div class="calc-card-icon"><i data-lucide="sun"></i></div>
+        <h3>Solar Panel Calculator</h3>
+        <p>Panel count, system size, annual production, and savings based on roof area and usage.</p>
+        <div class="tag-row">
+          <span class="calc-card-tag">Panel Count</span>
+          <span class="calc-card-tag">kW System</span>
+          <span class="calc-card-tag">Savings</span>
+        </div>
+        <span class="calc-card-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="divider" style="max-width:1200px;margin:0 auto;"></div>
+
+  <!-- ═══ BUSINESS TOOLS ═══ -->
   <section class="section">
     <div class="section-header">
       <h2>Business Tools</h2>
@@ -302,6 +561,37 @@
     </div>
   </section>
 
+  <!-- GUIDES PREVIEW -->
+  <section class="section">
+    <div class="section-header">
+      <h2>Contractor Guides</h2>
+      <p>Practical construction knowledge to help you bid, build, and estimate better</p>
+    </div>
+    <div class="guide-grid">
+      <a href="guides/concrete-driveway-cost/" class="guide-card fade-up delay-1">
+        <div class="guide-card-meta"><span class="tag">Concrete</span><span>5 min read</span></div>
+        <h3>How Much Does a Concrete Driveway Cost in 2026?</h3>
+        <p>Price ranges, cost factors, material vs labor breakdown, and when to DIY vs hire a contractor.</p>
+        <div class="guide-card-cta">Read Guide →</div>
+      </a>
+      <a href="guides/contractor-markup-guide/" class="guide-card fade-up delay-2">
+        <div class="guide-card-meta"><span class="tag">Business</span><span>6 min read</span></div>
+        <h3>Contractor Markup: How Much Should You Charge?</h3>
+        <p>Industry standard markups by trade, overhead you're forgetting, and pricing strategies that protect your margin.</p>
+        <div class="guide-card-cta">Read Guide →</div>
+      </a>
+      <a href="guides/takeoff-mistakes/" class="guide-card fade-up delay-3">
+        <div class="guide-card-meta"><span class="tag">Estimating</span><span>4 min read</span></div>
+        <h3>7 Common Takeoff Mistakes That Kill Your Profit</h3>
+        <p>The most expensive errors contractors make during material estimation — and how to avoid them.</p>
+        <div class="guide-card-cta">Read Guide →</div>
+      </a>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem;">
+      <a href="guides/" class="btn-sm" style="display:inline-flex;flex:initial;">View All 10 Guides →</a>
+    </div>
+  </section>
+
   <!-- ECOSYSTEM STRIP -->
   <section class="section">
     <div class="ecosystem-strip">
@@ -326,6 +616,9 @@
       <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
       <div class="footer-links">
         <a href="#calculators">Calculators</a>
+        <a href="guides/">Guides</a>
+        <a href="glossary/">Glossary</a>
+        <a href="quiz/">Quiz</a>
         <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
         <a href="https://buildpdf.co" target="_blank">BuildPDF</a>
       </div>
@@ -360,6 +653,11 @@
         } else { closeNav(); }
       });
       siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
   </script>
 </body>

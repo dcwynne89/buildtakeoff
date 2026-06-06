@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plumbing Pipe Calculator — Supply & DWV Piping | BuildTakeoff</title>
+  <meta name="description" content="Free plumbing pipe calculator. Enter fixtures to get total pipe footage, fitting counts, and pipe size breakdown for supply and DWV systems. Download PDF takeoff." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/plumbing-pipe/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+<body>
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links">
+      <a href="../../#calculators">All Calculators</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+  </nav>
+
+  <div class="calc-page">
+    <div class="calc-page-header fade-up">
+      <a href="../../#calculators" class="back-link">← All Calculators</a>
+      <h1>Plumbing Pipe Calculator</h1>
+      <p>Calculate total pipe footage, fitting counts, and pipe size breakdown for supply (PEX/Copper) and DWV (PVC/ABS) plumbing systems by fixture count.</p>
+      <div class="tag-row">
+        <span class="tag">Plumbing</span>
+        <span class="tag">PEX</span>
+        <span class="tag">DWV</span>
+      </div>
+    </div>
+
+    <div class="calc-workspace fade-up delay-1">
+      <div class="panel">
+        <div class="panel-title">System & Material</div>
+        <div class="field">
+          <label>Plumbing System</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="sys-supply" onclick="setSystem('supply')">Supply</button>
+            <button class="toggle-btn" id="sys-dwv" onclick="setSystem('dwv')">DWV (Drain-Waste-Vent)</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Pipe Material</label>
+          <div class="toggle-group" id="mat-group">
+            <button class="toggle-btn active" id="mat-1" onclick="setMaterial(0)">PEX</button>
+            <button class="toggle-btn" id="mat-2" onclick="setMaterial(1)">Copper</button>
+          </div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Fixtures</div>
+        <div class="field">
+          <label for="fix-toilet">Toilets</label>
+          <div class="input-wrap"><input type="number" id="fix-toilet" value="2" min="0" step="1" /><span class="input-unit">pcs</span></div>
+        </div>
+        <div class="field">
+          <label for="fix-sink">Sinks (kitchen + bath)</label>
+          <div class="input-wrap"><input type="number" id="fix-sink" value="3" min="0" step="1" /><span class="input-unit">pcs</span></div>
+        </div>
+        <div class="field">
+          <label for="fix-tub">Tubs / Showers</label>
+          <div class="input-wrap"><input type="number" id="fix-tub" value="2" min="0" step="1" /><span class="input-unit">pcs</span></div>
+        </div>
+        <div class="field">
+          <label for="fix-dish">Dishwashers</label>
+          <div class="input-wrap"><input type="number" id="fix-dish" value="1" min="0" step="1" /><span class="input-unit">pcs</span></div>
+        </div>
+        <div class="field">
+          <label for="fix-wash">Washing Machines</label>
+          <div class="input-wrap"><input type="number" id="fix-wash" value="1" min="0" step="1" /><span class="input-unit">pcs</span></div>
+        </div>
+
+        <div class="panel-title" style="margin-top:1.5rem;">Run & Pricing</div>
+        <div class="field">
+          <label for="pp-run">Average Run Per Fixture</label>
+          <div class="input-wrap"><input type="number" id="pp-run" value="15" min="1" step="1" /><span class="input-unit">ft</span></div>
+          <div class="field-hint">Typical 10–20 ft from main line to fixture</div>
+        </div>
+        <div class="field">
+          <label for="pp-price">Pipe Price (optional)</label>
+          <div class="input-wrap"><input type="number" id="pp-price" value="" min="0" step="0.01" placeholder="1.50" /><span class="input-unit">$/ft</span></div>
+          <div class="field-hint" id="price-hint">PEX: $0.50–$1.50/ft · Copper: $3–$8/ft</div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-title">Your Takeoff</div>
+
+        <div class="result-item highlight">
+          <div class="result-label">Total Pipe</div>
+          <div class="result-value" id="res-total">—</div>
+          <div class="result-sub" id="res-total-sub">All pipe sizes combined</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label" id="lbl-main">Main Line (3/4")</div>
+          <div class="result-value" id="res-main">—</div>
+          <div class="result-sub" id="res-main-sub">Trunk line from source</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label" id="lbl-branch">Branches (1/2")</div>
+          <div class="result-value" id="res-branch">—</div>
+          <div class="result-sub" id="res-branch-sub">Individual fixture supply lines</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Fittings Estimate</div>
+          <div class="result-value" id="res-fittings">—</div>
+          <div class="result-sub">Elbows, tees, couplings (~3 per fixture)</div>
+        </div>
+        <div class="result-item">
+          <div class="result-label">Total Fixtures</div>
+          <div class="result-value" id="res-fixtures">—</div>
+          <div class="result-sub" id="res-fixtures-sub">Fixture count</div>
+        </div>
+        <div class="result-item" id="cost-row" style="display:none;">
+          <div class="result-label">Pipe Cost</div>
+          <div class="result-value" id="res-cost">—</div>
+          <div class="result-sub">Pipe only (no fittings)</div>
+        </div>
+
+        <div class="result-divider"></div>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF Takeoff Report</button>
+        <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">Ready to invoice? → BuildInvoice</a>
+      </div>
+    </div>
+
+    <!-- LABOR ESTIMATE -->
+    <div class="labor-section fade-up delay-2">
+      <div class="labor-section-header">
+        <h2>Labor Estimate <span class="optional-badge">Optional</span></h2>
+        <p>Add your plumbing rough-in labor rate to generate a complete job cost estimate.</p>
+      </div>
+      <div class="labor-workspace">
+        <div class="panel">
+          <div class="panel-title">Your Labor Rate</div>
+          <div class="field">
+            <label>Billing Method</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="lm-unit" onclick="setLaborMethod('unit')">Per fixture</button>
+              <button class="toggle-btn" id="lm-hour" onclick="setLaborMethod('hour')">Per hour</button>
+              <button class="toggle-btn" id="lm-flat" onclick="setLaborMethod('flat')">Flat rate</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="labor-rate">Your rate</label>
+            <div class="input-wrap">
+              <input type="number" id="labor-rate" min="0" step="5" placeholder="250" oninput="calcLabor()" />
+              <span class="input-unit" id="labor-rate-unit">$/fixture</span>
+            </div>
+            <div class="field-hint">Plumbing rough-in $150–$400/fixture</div>
+          </div>
+          <div class="field" id="lfield-hours" style="display:none;">
+            <label for="labor-hours">Estimated hours</label>
+            <div class="input-wrap"><input type="number" id="labor-hours" min="0" step="0.5" placeholder="8" oninput="calcLabor()" /><span class="input-unit">hrs</span></div>
+          </div>
+          <div class="labor-context"><span id="labor-ctx">Enter fixtures above to see your quantity</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Total Job Cost</div>
+          <div class="summary-line"><span>Materials</span><span id="sum-mat">—</span></div>
+          <div class="summary-line"><span>Labor</span><span id="sum-lab">—</span></div>
+          <div class="summary-divider"></div>
+          <div class="summary-total">
+            <span class="total-label">Total Job</span>
+            <span class="total-value" id="sum-tot">—</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:1.5rem;" onclick="downloadFullPDF()">⬇ Full Estimate PDF (Materials + Labor)</button>
+          <a href="https://buildinvoice.co" target="_blank" class="btn btn-ghost">→ Turn Into Invoice at BuildInvoice</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="seo-block fade-up delay-2">
+      <h2>How to Estimate Plumbing Pipe for Supply & DWV Systems</h2>
+      <p>Plumbing rough-in is one of the most labor-intensive phases of construction. Accurate pipe takeoffs help you order the right materials, estimate costs, and avoid mid-project supply runs. The two main systems — supply and DWV — use different pipe sizes, materials, and layouts.</p>
+
+      <h3>PEX vs Copper Comparison</h3>
+      <ul>
+        <li><strong>PEX (Cross-linked polyethylene):</strong> Flexible, freeze-resistant, easy to install, lower cost. Uses crimp or push-fit connections. Cannot be used outdoors (UV degradation). Most common in new residential construction.</li>
+        <li><strong>Copper:</strong> Durable, proven track record, recyclable. Requires soldering (sweat) or press-fit connections. Higher material and labor cost. Still preferred in some commercial applications.</li>
+        <li><strong>CPVC:</strong> Rigid plastic alternative to copper. Lower cost but more brittle. Common in warmer climates.</li>
+      </ul>
+
+      <h3>DWV Pipe Sizing</h3>
+      <ul>
+        <li><strong>Toilet drain:</strong> 3" minimum (4" for building drain)</li>
+        <li><strong>Sink drain:</strong> 1-1/2" typical</li>
+        <li><strong>Tub/shower drain:</strong> 2" typical</li>
+        <li><strong>Washing machine:</strong> 2" drain, 2" standpipe</li>
+        <li><strong>Main building drain:</strong> 4" (carries all fixtures to sewer/septic)</li>
+        <li><strong>Vent stack:</strong> Minimum same size as largest drain served</li>
+      </ul>
+
+      <h3>Fixture Unit Counts (IPC)</h3>
+      <p>The International Plumbing Code uses Drainage Fixture Units (DFU) to size drain pipes. A lavatory = 1 DFU, a toilet = 3–4 DFU, a bathtub = 2 DFU. The total DFU count determines the minimum pipe diameter for drain lines and vent sizing.</p>
+
+      <h3>Venting Requirements</h3>
+      <ul>
+        <li><strong>Every trap needs a vent:</strong> Prevents siphoning and allows proper drainage</li>
+        <li><strong>Wet venting:</strong> Allows one vent to serve multiple fixtures within limits</li>
+        <li><strong>AAV (Air Admittance Valves):</strong> Code-approved in many jurisdictions as an alternative to traditional vents</li>
+        <li><strong>Vent termination:</strong> Must extend through roof, 6" above roofline minimum</li>
+      </ul>
+    </div>
+
+    <div class="ecosystem-strip fade-up">
+      <div>
+        <h3>Plumbing takeoff complete?</h3>
+        <p>Build the full proposal in BuildQuotes or invoice the job directly.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="../../calculators/electrical-wire/" class="eco-link">Electrical Wire Calculator</a>
+        <a href="../../calculators/framing-studs/" class="eco-link">Framing Calculator</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../">All Calculators</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    let plumbSystem='supply', matIndex=0;
+    const supplyMats=['PEX','Copper'];
+    const dwvMats=['PVC','ABS'];
+
+    function setSystem(s){
+      plumbSystem=s;
+      document.getElementById('sys-supply').classList.toggle('active',s==='supply');
+      document.getElementById('sys-dwv').classList.toggle('active',s==='dwv');
+      matIndex=0;
+      const mats=s==='supply'?supplyMats:dwvMats;
+      document.getElementById('mat-1').textContent=mats[0];
+      document.getElementById('mat-2').textContent=mats[1];
+      document.getElementById('mat-1').classList.add('active');
+      document.getElementById('mat-2').classList.remove('active');
+      // Update labels
+      if(s==='supply'){
+        document.getElementById('lbl-main').textContent='Main Line (3/4")';
+        document.getElementById('lbl-branch').textContent='Branches (1/2")';
+        document.getElementById('price-hint').textContent='PEX: $0.50–$1.50/ft · Copper: $3–$8/ft';
+      } else {
+        document.getElementById('lbl-main').textContent='Main Drain (3"–4")';
+        document.getElementById('lbl-branch').textContent='Branch Drains (1.5"–2")';
+        document.getElementById('price-hint').textContent='PVC: $0.50–$2.50/ft · ABS: $0.60–$2.00/ft';
+      }
+      calculate();
+    }
+    function setMaterial(idx){
+      matIndex=idx;
+      document.getElementById('mat-1').classList.toggle('active',idx===0);
+      document.getElementById('mat-2').classList.toggle('active',idx===1);
+      calculate();
+    }
+    function animateValue(el){el.classList.remove('updated');void el.offsetWidth;el.classList.add('updated');}
+    function setResult(id,val){const el=document.getElementById(id);if(el&&el.textContent!==val){el.textContent=val;animateValue(el);}}
+
+    let calcFixtures=0, calcMatCost=0;
+    function calculate(){
+      const toilet=parseInt(document.getElementById('fix-toilet').value)||0;
+      const sink=parseInt(document.getElementById('fix-sink').value)||0;
+      const tub=parseInt(document.getElementById('fix-tub').value)||0;
+      const dish=parseInt(document.getElementById('fix-dish').value)||0;
+      const wash=parseInt(document.getElementById('fix-wash').value)||0;
+      const avgRun=parseFloat(document.getElementById('pp-run').value)||15;
+      const price=parseFloat(document.getElementById('pp-price').value)||0;
+
+      const totalFixtures=toilet+sink+tub+dish+wash;
+      if(!totalFixtures){setResult('res-total','—');setResult('res-main','—');setResult('res-branch','—');setResult('res-fittings','—');setResult('res-fixtures','—');return;}
+
+      calcFixtures=totalFixtures;
+      const overhead=1.15; // 15% overhead for routing/waste
+
+      let mainPipe=0, branchPipe=0;
+      if(plumbSystem==='supply'){
+        // Supply: 3/4" main line run (longest fixture run + 10ft), 1/2" branches to each fixture
+        // Each fixture gets hot + cold (2 runs) except toilet (cold only) and dishwasher (hot only)
+        const coldFixtures=toilet+sink+tub+wash; // all get cold
+        const hotFixtures=sink+tub+dish+wash; // all except toilet get hot
+        branchPipe=Math.ceil((coldFixtures+hotFixtures)*avgRun*overhead);
+        mainPipe=Math.ceil((avgRun+10)*2*overhead); // main hot + cold trunk
+      } else {
+        // DWV: 3-4" main drain, 1.5-2" branches
+        // Toilet needs 3" branch, others need 1.5-2"
+        branchPipe=Math.ceil(totalFixtures*avgRun*overhead);
+        mainPipe=Math.ceil((avgRun*1.5+10)*overhead); // main drain run
+      }
+
+      const totalPipe=mainPipe+branchPipe;
+      const fittings=totalFixtures*3; // ~3 fittings per fixture
+
+      const mats=plumbSystem==='supply'?supplyMats:dwvMats;
+      setResult('res-total',totalPipe.toLocaleString()+' ft');
+      document.getElementById('res-total-sub').textContent=mats[matIndex]+' · includes 15% waste';
+
+      setResult('res-main',mainPipe+' ft');
+      document.getElementById('res-main-sub').textContent=plumbSystem==='supply'?'Hot + cold trunk lines':'Main drain to sewer/septic';
+
+      setResult('res-branch',branchPipe+' ft');
+      document.getElementById('res-branch-sub').textContent=plumbSystem==='supply'?'Individual hot/cold fixture runs':'Individual fixture drain lines';
+
+      setResult('res-fittings',fittings+' pcs');
+      setResult('res-fixtures',totalFixtures+' fixtures');
+      document.getElementById('res-fixtures-sub').textContent=toilet+' toilet, '+sink+' sink, '+tub+' tub/shower, '+dish+' DW, '+wash+' WM';
+
+      calcMatCost=price>0?totalPipe*price:0;
+      if(price>0){document.getElementById('cost-row').style.display='';setResult('res-cost','$'+calcMatCost.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));}
+      else{document.getElementById('cost-row').style.display='none';}
+
+      updateLabor(totalFixtures,totalFixtures+' fixture'+(totalFixtures>1?'s':''),calcMatCost,'fixture');
+    }
+
+    // — LABOR —
+    let laborMethod='unit',laborQty=0,laborMat=0,laborUnit='fixture';
+    function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setLaborMethod(m){
+      laborMethod=m;
+      ['unit','hour','flat'].forEach(id=>document.getElementById('lm-'+id).classList.toggle('active',id===m));
+      document.getElementById('lfield-hours').style.display=m==='hour'?'':'none';
+      document.getElementById('labor-rate-unit').textContent=m==='unit'?('$/'+laborUnit):m==='hour'?'$/hr':'$';
+      calcLabor();
+    }
+    function updateLabor(qty,label,mat,unit){
+      laborQty=qty||0;laborMat=mat||0;laborUnit=unit||'fixture';
+      document.getElementById('labor-ctx').innerHTML=qty?'Using <strong>'+label+'</strong> from your calculation':'Enter fixtures above';
+      calcLabor();
+    }
+    function calcLabor(){
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      document.getElementById('sum-mat').textContent=laborMat>0?fmt(laborMat):'—';
+      document.getElementById('sum-lab').textContent=lab>0?fmt(lab):'—';
+      document.getElementById('sum-tot').textContent=(lab>0||laborMat>0)?fmt(laborMat+lab):'—';
+    }
+
+    function downloadPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      const mats=plumbSystem==='supply'?supplyMats:dwvMats;
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('MATERIAL TAKEOFF REPORT',14,12);doc.setFontSize(10);doc.text('Plumbing Pipe Calculator',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('INPUTS',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['System',plumbSystem==='supply'?'Supply':'DWV'],['Material',mats[matIndex]],['Fixtures',calcFixtures+''],['Avg Run',document.getElementById('pp-run').value+' ft']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*10);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v+'',80,67+i*10);
+      });
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('MATERIAL QUANTITIES',14,115);doc.line(14,117,196,117);
+      const items=[
+        ['Total Pipe',document.getElementById('res-total').textContent,true],
+        ['Main Line',document.getElementById('res-main').textContent,false],
+        ['Branches',document.getElementById('res-branch').textContent,false],
+        ['Fittings',document.getElementById('res-fittings').textContent,false]
+      ];
+      if(calcMatCost>0) items.push(['Pipe Cost',fmt(calcMatCost),false]);
+      items.forEach(([k,v,bold],i)=>{
+        if(bold){doc.setFillColor(255,237,213);doc.roundedRect(12,123+i*14,184,12,2,2,'F');}
+        doc.setFont('helvetica',bold?'bold':'normal');doc.setTextColor(bold?180:60,bold?80:60,bold?0:60);
+        doc.text(k+':',16,131+i*14);doc.setFont('helvetica','bold');doc.setTextColor(bold?180:20,bold?80:20,bold?0:20);doc.text(v+'',130,131+i*14);
+      });
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('plumbing-pipe-takeoff.pdf');
+    }
+
+    function downloadFullPDF(){
+      const {jsPDF}=window.jspdf;const doc=new jsPDF();
+      const rate=parseFloat(document.getElementById('labor-rate').value)||0;
+      const hrs=parseFloat(document.getElementById('labor-hours').value)||0;
+      const lab=laborMethod==='unit'?laborQty*rate:laborMethod==='hour'?hrs*rate:rate;
+      const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      doc.setFillColor(249,115,22);doc.rect(0,0,210,28,'F');
+      doc.setFont('helvetica','bold');doc.setTextColor(0,0,0);doc.setFontSize(18);
+      doc.text('JOB ESTIMATE',14,12);doc.setFontSize(10);doc.text('Plumbing — Materials + Labor',14,20);
+      doc.setTextColor(60,60,60);doc.setFont('helvetica','normal');doc.setFontSize(9);
+      doc.text('buildtakeoff.co',14,35);doc.text('Date: '+date,14,42);
+      doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(20,20,20);
+      doc.text('ESTIMATE BREAKDOWN',14,55);doc.setDrawColor(249,115,22);doc.line(14,57,196,57);
+      [['Materials',laborMat>0?fmt(laborMat):'Not priced'],['Labor',lab>0?fmt(lab):'Not priced']].forEach(([k,v],i)=>{
+        doc.setFont('helvetica','normal');doc.setTextColor(60,60,60);doc.text(k+':',14,67+i*14);
+        doc.setFont('helvetica','bold');doc.setTextColor(20,20,20);doc.text(v,130,67+i*14);
+      });
+      const tot=laborMat+lab;
+      doc.setFillColor(255,237,213);doc.roundedRect(12,93,184,16,2,2,'F');
+      doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(180,80,0);
+      doc.text('TOTAL JOB:',16,104);doc.text(tot>0?fmt(tot):'—',130,104);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(150,150,150);
+      doc.text('buildtakeoff.co  ·  BuildInvoice.co',14,280);doc.save('plumbing-estimate.pdf');
+    }
+
+    document.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calculate));
+    calculate();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

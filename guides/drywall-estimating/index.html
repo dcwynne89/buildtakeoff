@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drywall Estimating: A Complete Guide for Contractors | BuildTakeoff</title>
+  <meta name="description" content="Complete drywall estimating guide. Sheet sizing, mud and tape quantities, screw calculations, corner bead, fire-rated assemblies, and moisture-resistant options." />
+  <link rel="canonical" href="https://buildtakeoff.co/guides/drywall-estimating/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .article-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .article-date { font-size: 0.83rem; color: var(--text-muted); }
+    .article-read-time { font-size: 0.83rem; color: var(--text-muted); }
+    .article-category { display: inline-block; background: var(--orange-dim); color: var(--orange-light); font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.65rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .article-body h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 2.5rem 0 0.75rem; }
+    .article-body h3 { font-size: 1.1rem; font-weight: 700; margin: 1.75rem 0 0.5rem; color: var(--text); }
+    .article-body p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.75; margin-bottom: 1rem; }
+    .article-body ul, .article-body ol { padding-left: 0; list-style: none; margin-bottom: 1rem; }
+    .article-body ul li, .article-body ol li { padding: 0.35rem 0 0.35rem 1.4rem; color: var(--text-dim); font-size: 0.95rem; line-height: 1.65; position: relative; }
+    .article-body ul li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-size: 0.85rem; }
+    .article-body strong { color: var(--text); font-weight: 700; }
+    .callout { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .callout.tip { border-left: 3px solid var(--orange); }
+    .callout.tip::before { content: '💡 Pro Tip'; display: block; font-size: 0.78rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .callout p { margin-bottom: 0; }
+    .cost-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    .cost-table th { text-align: left; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cost-table td { padding: 0.65rem 1rem; border: 1px solid var(--border); color: var(--text-dim); }
+    .cost-table tr:hover td { background: var(--card); }
+    .formula-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; font-family: 'Courier New', monospace; color: var(--orange); font-size: 1rem; font-weight: 700; text-align: center; }
+    .related-calc { background: var(--card); border: 1px solid var(--border-hover); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 1rem; transition: all 0.25s; }
+    .related-calc:hover { background: var(--card-hover); transform: translateY(-2px); box-shadow: var(--shadow-orange); }
+    .related-calc-icon { width: 48px; height: 48px; background: var(--orange-dim); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .related-calc-icon svg { width: 24px; height: 24px; stroke: var(--orange); stroke-width: 1.75; }
+    .related-calc-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .related-calc-text p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    .related-guides { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .related-guide-link { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+    .related-guide-link:hover { border-color: var(--border-hover); color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../../#calculators">Calculators</a>
+      <a href="../">Guides</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="article-container fade-up">
+    <a href="../" class="back-link">← Back to Guides</a>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem;">Drywall Estimating: A Complete Guide for Contractors</h1>
+    <div class="article-meta">
+      <span class="article-date">June 2026</span>
+      <span class="article-read-time">11 min read</span>
+      <span class="article-category">Drywall</span>
+    </div>
+
+    <div class="article-body">
+      <p>Drywall is one of the highest-volume materials in residential construction, and estimating it accurately means the difference between a smooth job and scrambling for emergency deliveries. This guide covers everything from sheet selection to calculating mud, tape, and screws.</p>
+
+      <h2>Drywall Sheet Sizes</h2>
+      <p>Drywall sheets come in three standard widths (48 inches) and multiple lengths:</p>
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Sheet Size</th>
+            <th>Sq Ft/Sheet</th>
+            <th>Best Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>4' × 8'</td><td>32</td><td>Standard walls, 8' ceilings, DIY</td></tr>
+          <tr><td>4' × 10'</td><td>40</td><td>9' or 10' ceilings, fewer joints</td></tr>
+          <tr><td>4' × 12'</td><td>48</td><td>Long walls, ceilings, commercial — fewer joints, but heavy and harder to handle</td></tr>
+          <tr><td>4' × 14'</td><td>56</td><td>Specialty — for very tall walls (available by special order)</td></tr>
+          <tr><td>54" × 12'</td><td>54</td><td>Commercial ceilings — covers 9' walls horizontally with one sheet</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Sheet Thickness</h3>
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Thickness</th>
+            <th>Use</th>
+            <th>Approx. Price/Sheet</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1/4"</td><td>Curved walls, overlay on existing drywall</td><td>$9–$13</td></tr>
+          <tr><td>3/8"</td><td>Remodel overlay, low-traffic areas</td><td>$10–$14</td></tr>
+          <tr><td>1/2" (standard)</td><td>Most interior walls and ceilings</td><td>$12–$17</td></tr>
+          <tr><td>5/8" Type X</td><td>Fire-rated assemblies, garage walls, ceilings below living space</td><td>$15–$22</td></tr>
+          <tr><td>5/8" Type C</td><td>Enhanced fire-rated — 2-hour assemblies</td><td>$18–$26</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Estimating Sheet Count</h2>
+      <div class="formula-box">
+        Sheets Needed = Total Wall Area ÷ Sheet Size + Waste Factor
+      </div>
+
+      <h3>Step-by-Step Method</h3>
+      <ol>
+        <li><strong>Calculate total wall area:</strong> Measure the perimeter of each room and multiply by ceiling height. For a 12×14 room with 8' ceilings: (12+14+12+14) × 8 = 416 sq ft of wall.</li>
+        <li><strong>Add ceiling area if applicable:</strong> 12 × 14 = 168 sq ft. Total = 584 sq ft.</li>
+        <li><strong>Subtract openings (optional):</strong> Standard door = 21 sq ft. Standard window = 15 sq ft. Subtracting gives you a tighter quantity, but many estimators leave openings in to account for waste.</li>
+        <li><strong>Divide by sheet size:</strong> 584 ÷ 32 = 18.25 sheets (for 4×8). Round up to 19.</li>
+        <li><strong>Add waste:</strong> 19 × 1.10 = 20.9 → Order <strong>21 sheets</strong>.</li>
+      </ol>
+
+      <div class="callout tip">
+        <p>Choose sheet length to match ceiling height. For 8' ceilings, use 4×8 sheets hung horizontally — two sheets cover floor to ceiling with one horizontal joint. For 9' ceilings, use 4×10 sheets to eliminate a horizontal butt joint. Fewer joints = less taping and a smoother finish.</p>
+      </div>
+
+      <h2>Joint Compound (Mud) Quantities</h2>
+      <p>Joint compound is needed for taping joints, covering screws, and finishing corners. The amount depends on joint length and finish level:</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Quantity</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Per 1,000 sq ft of drywall</td><td>~3.5 gallons (one 4.5-gal bucket)</td><td>Standard Level 4 finish</td></tr>
+          <tr><td>Per 4×8 sheet</td><td>~0.07 gallons</td><td>Including 3 coats on joints and screws</td></tr>
+          <tr><td>Per linear foot of joint</td><td>~0.04 gallons</td><td>All three coats combined</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Rule of thumb:</strong> One 4.5-gallon bucket of pre-mixed all-purpose joint compound covers approximately <strong>1,000–1,200 sq ft of drywall</strong> for a standard Level 4 finish (tape, block coat, skim coat). For Level 5 finish (full skim coat), plan on 50% more.</p>
+
+      <h2>Tape Quantities</h2>
+      <ul>
+        <li><strong>Paper tape:</strong> Standard for most joints. A 500-foot roll costs $3–$6 and covers approximately 12–15 sheets of 4×8 drywall.</li>
+        <li><strong>Mesh tape:</strong> Self-adhesive fiberglass mesh. Easier to apply but requires setting-type compound (not pre-mixed) for proper strength. Used primarily on butt joints and patches.</li>
+        <li><strong>Estimation rule:</strong> You need approximately <strong>40 linear feet of tape per 4×8 sheet</strong> (covering two long edges and any butt joints). For a room with 21 sheets, that's about 840 LF of tape — roughly 2 rolls of 500-foot paper tape.</li>
+      </ul>
+
+      <h2>Screw Calculations</h2>
+      <p>Drywall screws should be placed every 12 inches along the edges of the sheet and every 16 inches in the field (center studs/joists):</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Sheet Size</th>
+            <th>Screws per Sheet</th>
+            <th>Screw Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>4×8 on walls (16" OC studs)</td><td>28–32</td><td>1-1/4" coarse thread (for wood framing)</td></tr>
+          <tr><td>4×8 on ceilings (16" OC joists)</td><td>32–40</td><td>1-1/4" coarse thread (closer spacing on ceilings)</td></tr>
+          <tr><td>4×12 on walls</td><td>40–48</td><td>1-1/4" coarse thread</td></tr>
+          <tr><td>5/8" Type X on walls</td><td>28–32</td><td>1-5/8" coarse thread (longer for thicker board)</td></tr>
+          <tr><td>Double-layer (2nd layer)</td><td>28–32</td><td>1-5/8" or 2" (must reach framing)</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Quick math:</strong> Plan on <strong>32 screws per 4×8 sheet</strong> as your default. A 1-lb box contains approximately 200 screws. So 21 sheets × 32 screws = 672 screws ≈ <strong>4 lbs (1-lb boxes) or 1 five-pound box</strong>.</p>
+
+      <h2>Corner Bead</h2>
+      <p>Every outside corner needs corner bead. Measure the total linear feet of outside corners:</p>
+      <ul>
+        <li><strong>Paper-faced corner bead:</strong> $2–$4 per 8' or 10' stick. Embedded with joint compound. Less prone to denting than metal.</li>
+        <li><strong>Metal corner bead:</strong> $1–$3 per 8' or 10' stick. Nailed or crimped in place. Classic and inexpensive.</li>
+        <li><strong>Vinyl corner bead:</strong> $3–$5 per stick. Adhesive or stapled. Resistant to cracking.</li>
+        <li><strong>Bull-nose bead:</strong> Rounded profile. $4–$8 per stick. Popular in modern/contemporary finishes.</li>
+      </ul>
+      <p>Don't forget <strong>J-bead</strong> (for exposed drywall edges at windows, beams, etc.) and <strong>L-bead</strong> (for drywall meeting dissimilar materials).</p>
+
+      <h2>Fire-Rated Assemblies</h2>
+      <p>Building code requires fire-rated drywall assemblies in specific locations:</p>
+      <ul>
+        <li><strong>Attached garage walls/ceiling adjacent to living space:</strong> Minimum 1/2" Type X on garage side (many jurisdictions require 5/8" Type X)</li>
+        <li><strong>Between dwelling units (duplexes, townhomes):</strong> 1-hour assembly minimum — typically 5/8" Type X each side of common wall</li>
+        <li><strong>Furnace/boiler room enclosures:</strong> 5/8" Type X minimum</li>
+        <li><strong>Stairwell enclosures in multi-story:</strong> 1-hour rated assembly</li>
+        <li><strong>Commercial corridor walls:</strong> 1-hour to 2-hour ratings depending on occupancy</li>
+      </ul>
+
+      <div class="callout tip">
+        <p>Fire-rated assemblies are system-rated, not just drywall-rated. The assembly includes the drywall type, stud type (wood vs steel), stud spacing, insulation, and fastener pattern. Using 5/8" Type X on non-rated framing spacing doesn't create a compliant fire-rated assembly. Always reference the specific UL assembly number specified in the plans.</p>
+      </div>
+
+      <h2>Moisture-Resistant Drywall</h2>
+      <p>Use moisture-resistant drywall in areas exposed to humidity (but NOT direct water contact):</p>
+      <ul>
+        <li><strong>Green board (moisture-resistant drywall):</strong> For bathroom walls NOT in the shower/tub surround area, laundry rooms, and kitchens. $14–$20 per 4×8 sheet.</li>
+        <li><strong>Purple board (mold-resistant):</strong> Superior mold and moisture resistance. $16–$24 per sheet. Good choice for all bathrooms.</li>
+        <li><strong>Cement board (Durock, Hardiebacker):</strong> Required behind tile in shower and tub surrounds. Not drywall, but often included in drywall scope. $10–$15 per 3×5 sheet.</li>
+        <li><strong>DensShield/DensArmor:</strong> Fiberglass-faced tile backer. Combines moisture resistance with tile substrate. $14–$20 per sheet.</li>
+      </ul>
+
+      <div class="callout tip">
+        <p>Standard drywall should never be used behind tile in wet areas. Even "moisture-resistant" green board is not approved for direct tile application in showers per most codes. Use cement board or a fiberglass-faced tile backer behind any tiled shower or tub surround.</p>
+      </div>
+
+      <h2>Calculate Your Drywall Quantities</h2>
+      <a href="../../calculators/drywall/" class="related-calc">
+        <div class="related-calc-icon"><i data-lucide="square-stack"></i></div>
+        <div class="related-calc-text">
+          <h4>Drywall Calculator →</h4>
+          <p>Enter room dimensions to get sheet count, joint compound, tape, and screws with waste factor.</p>
+        </div>
+      </a>
+
+      <h2>Related Guides</h2>
+      <div class="related-guides">
+        <a href="../how-to-estimate-paint-job/" class="related-guide-link">How to Estimate a Paint Job →</a>
+        <a href="../takeoff-mistakes/" class="related-guide-link">7 Takeoff Mistakes That Kill Profit →</a>
+        <a href="../insulation-r-value-guide/" class="related-guide-link">Insulation R-Value Guide →</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;padding:0 2rem 2rem;">
+    <div class="ecosystem-strip">
+      <div>
+        <h3>Got your drywall quantities? Turn them into a bid.</h3>
+        <p>Use BuildQuotes to build a professional drywall proposal in minutes.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../#calculators">Calculators</a>
+        <a href="../">Guides</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close';
+          closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>

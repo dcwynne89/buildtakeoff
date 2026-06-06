@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contractor Markup: How Much Should You Charge? | BuildTakeoff</title>
+  <meta name="description" content="Markup vs margin explained for contractors. Industry standard markups by trade, overhead costs, break-even calculation, and pricing psychology to protect your profit." />
+  <link rel="canonical" href="https://buildtakeoff.co/guides/contractor-markup-guide/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .article-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+    .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .article-date { font-size: 0.83rem; color: var(--text-muted); }
+    .article-read-time { font-size: 0.83rem; color: var(--text-muted); }
+    .article-category { display: inline-block; background: var(--orange-dim); color: var(--orange-light); font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.65rem; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .article-body h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin: 2.5rem 0 0.75rem; }
+    .article-body h3 { font-size: 1.1rem; font-weight: 700; margin: 1.75rem 0 0.5rem; color: var(--text); }
+    .article-body p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.75; margin-bottom: 1rem; }
+    .article-body ul, .article-body ol { padding-left: 0; list-style: none; margin-bottom: 1rem; }
+    .article-body ul li, .article-body ol li { padding: 0.35rem 0 0.35rem 1.4rem; color: var(--text-dim); font-size: 0.95rem; line-height: 1.65; position: relative; }
+    .article-body ul li::before { content: '→'; position: absolute; left: 0; color: var(--orange); font-size: 0.85rem; }
+    .article-body ol { counter-reset: ol-counter; }
+    .article-body ol li { counter-increment: ol-counter; }
+    .article-body ol li::before { content: counter(ol-counter) '.'; position: absolute; left: 0; color: var(--orange); font-weight: 700; font-size: 0.85rem; }
+    .article-body strong { color: var(--text); font-weight: 700; }
+    .callout { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+    .callout.tip { border-left: 3px solid var(--orange); }
+    .callout.tip::before { content: '💡 Pro Tip'; display: block; font-size: 0.78rem; font-weight: 700; color: var(--orange); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .callout.warning { border-left: 3px solid #EF4444; }
+    .callout.warning::before { content: '⚠️ Warning'; display: block; font-size: 0.78rem; font-weight: 700; color: #EF4444; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .callout p { margin-bottom: 0; }
+    .cost-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+    .cost-table th { text-align: left; padding: 0.75rem 1rem; background: var(--card); border: 1px solid var(--border); color: var(--text); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cost-table td { padding: 0.65rem 1rem; border: 1px solid var(--border); color: var(--text-dim); }
+    .cost-table tr:hover td { background: var(--card); }
+    .formula-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin: 1.5rem 0; font-family: 'Courier New', monospace; color: var(--orange); font-size: 1rem; font-weight: 700; text-align: center; }
+    .related-calc { background: var(--card); border: 1px solid var(--border-hover); border-radius: var(--radius); padding: 1.5rem; margin: 2rem 0; text-decoration: none; color: var(--text); display: flex; align-items: center; gap: 1rem; transition: all 0.25s; }
+    .related-calc:hover { background: var(--card-hover); transform: translateY(-2px); box-shadow: var(--shadow-orange); }
+    .related-calc-icon { width: 48px; height: 48px; background: var(--orange-dim); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .related-calc-icon svg { width: 24px; height: 24px; stroke: var(--orange); stroke-width: 1.75; }
+    .related-calc-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .related-calc-text p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
+    .related-guides { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .related-guide-link { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 1rem 1.25rem; text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+    .related-guide-link:hover { border-color: var(--border-hover); color: var(--orange); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../../#calculators">Calculators</a>
+      <a href="../">Guides</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="article-container fade-up">
+    <a href="../" class="back-link">← Back to Guides</a>
+    <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem;">Contractor Markup: How Much Should You Charge?</h1>
+    <div class="article-meta">
+      <span class="article-date">June 2026</span>
+      <span class="article-read-time">11 min read</span>
+      <span class="article-category">Business</span>
+    </div>
+
+    <div class="article-body">
+      <p>Most contractors who fail don't fail because of bad work — they fail because of bad pricing. Understanding markup and margin is the single most important business skill a contractor can develop. This guide breaks it down with real numbers.</p>
+
+      <h2>Markup vs Margin: They're Not the Same</h2>
+      <p>This is the most common source of confusion in construction pricing, and getting it wrong can cost you thousands:</p>
+
+      <div class="formula-box">
+        Markup = (Sell Price − Cost) ÷ Cost × 100<br>
+        Margin = (Sell Price − Cost) ÷ Sell Price × 100
+      </div>
+
+      <p><strong>Example:</strong> You spend $1,000 on materials and labor. You charge the customer $1,500.</p>
+      <ul>
+        <li><strong>Markup:</strong> ($1,500 − $1,000) ÷ $1,000 = <strong>50% markup</strong></li>
+        <li><strong>Margin:</strong> ($1,500 − $1,000) ÷ $1,500 = <strong>33.3% margin</strong></li>
+      </ul>
+      <p>Same exact job. Same numbers. But 50% markup only equals 33.3% margin. Many contractors think they're making 50% when they're actually only keeping 33 cents of every dollar.</p>
+
+      <div class="callout warning">
+        <p>A 20% markup is NOT a 20% profit margin. A 20% markup only produces a 16.7% margin. If your overhead is 18%, you're actually losing money on every job while thinking you're profitable.</p>
+      </div>
+
+      <h3>Quick Markup-to-Margin Conversion</h3>
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Markup %</th>
+            <th>Gross Margin %</th>
+            <th>Profit on $10,000 Job</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>10%</td><td>9.1%</td><td>$909</td></tr>
+          <tr><td>20%</td><td>16.7%</td><td>$1,667</td></tr>
+          <tr><td>30%</td><td>23.1%</td><td>$2,308</td></tr>
+          <tr><td>40%</td><td>28.6%</td><td>$2,857</td></tr>
+          <tr><td>50%</td><td>33.3%</td><td>$3,333</td></tr>
+          <tr><td>67%</td><td>40.0%</td><td>$4,000</td></tr>
+          <tr><td>100%</td><td>50.0%</td><td>$5,000</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Industry Standard Markups by Trade</h2>
+      <p>These ranges represent typical markups for established, profitable contractors. New contractors in competitive markets often price lower — and that's usually a mistake.</p>
+
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Trade</th>
+            <th>Typical Markup</th>
+            <th>Effective Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>General Contractor (residential)</td><td>35–50%</td><td>26–33%</td></tr>
+          <tr><td>General Contractor (commercial)</td><td>15–25%</td><td>13–20%</td></tr>
+          <tr><td>Electrician</td><td>40–60%</td><td>29–38%</td></tr>
+          <tr><td>Plumber</td><td>40–60%</td><td>29–38%</td></tr>
+          <tr><td>HVAC</td><td>40–65%</td><td>29–39%</td></tr>
+          <tr><td>Painting</td><td>30–50%</td><td>23–33%</td></tr>
+          <tr><td>Concrete</td><td>25–45%</td><td>20–31%</td></tr>
+          <tr><td>Roofing</td><td>30–50%</td><td>23–33%</td></tr>
+          <tr><td>Landscaping / Hardscape</td><td>40–65%</td><td>29–39%</td></tr>
+          <tr><td>Handyman / Small Jobs</td><td>50–100%</td><td>33–50%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <p>Small jobs need higher markups. The overhead to manage a $2,000 job (estimating, travel, invoicing, follow-up) is nearly the same as managing a $20,000 job. If you're doing small jobs at the same markup as large jobs, you're subsidizing small work with profit from big work.</p>
+      </div>
+
+      <h2>Overhead Costs You're Probably Forgetting</h2>
+      <p>When contractors say "I just need to cover materials and my hourly rate," they're forgetting that a construction business has real costs beyond the job site:</p>
+
+      <h3>Fixed Overhead (Monthly)</h3>
+      <ul>
+        <li><strong>Vehicle payments, insurance, fuel, maintenance:</strong> $500–$1,500/month per truck</li>
+        <li><strong>General liability insurance:</strong> $100–$500/month</li>
+        <li><strong>Workers' comp insurance:</strong> 5–30% of payroll depending on trade and state</li>
+        <li><strong>Tools and equipment:</strong> $200–$800/month (replacement, repair, new purchases)</li>
+        <li><strong>Phone, software, accounting:</strong> $100–$400/month</li>
+        <li><strong>Office or shop space:</strong> $500–$2,000/month</li>
+        <li><strong>Licenses and continuing education:</strong> $50–$200/month averaged</li>
+        <li><strong>Marketing (website, ads, signage):</strong> $200–$1,000/month</li>
+      </ul>
+
+      <h3>Job-Level Costs Often Missed</h3>
+      <ul>
+        <li><strong>Estimating time:</strong> You don't win every bid. If you win 1 in 3, your estimating time on the two losses must be recovered by the one win.</li>
+        <li><strong>Travel/mobilization:</strong> Drive time, fuel, loading/unloading tools</li>
+        <li><strong>Callbacks and warranty work:</strong> Budget 1–3% of revenue for callbacks</li>
+        <li><strong>Bad debt:</strong> Customers who don't pay. Budget 1–2%.</li>
+        <li><strong>Permit fees:</strong> Often forgotten on the bid, then paid out of your margin</li>
+        <li><strong>Dumpster/disposal fees:</strong> Especially on demo and renovation work</li>
+      </ul>
+
+      <h2>How to Calculate Your Break-Even Markup</h2>
+      <p>Your break-even markup is the minimum markup needed to cover your overhead and make zero profit. Every dollar above this is actual profit.</p>
+
+      <div class="formula-box">
+        Break-Even Markup = Annual Overhead ÷ Annual Direct Costs × 100
+      </div>
+
+      <p><strong>Example:</strong></p>
+      <ul>
+        <li>Annual overhead (all the costs listed above): $72,000/year</li>
+        <li>Annual direct job costs (materials + labor): $300,000/year</li>
+        <li>Break-even markup: $72,000 ÷ $300,000 = <strong>24% just to break even</strong></li>
+      </ul>
+      <p>That means a 24% markup produces zero profit — it just keeps the lights on. To actually earn a <strong>10% net profit</strong>, you need to add that 10% on top. Your real markup should be at least <strong>34–36%</strong> in this scenario.</p>
+
+      <h2>Pricing Psychology</h2>
+      <h3>Why Contractors Underprice</h3>
+      <ul>
+        <li><strong>Fear of losing the bid:</strong> You'd rather win at a low price than lose at a fair one. But winning unprofitable work is worse than not working.</li>
+        <li><strong>Comparing to employee wages:</strong> "I used to make $35/hr as an employee, so $50/hr for myself seems great." But as a business owner, $50/hr doesn't cover overhead.</li>
+        <li><strong>Not knowing their real costs:</strong> Without tracking overhead, you don't know what you actually need to charge.</li>
+      </ul>
+
+      <h3>When to Adjust Your Markup</h3>
+      <p>Your markup isn't one fixed number. Adjust it based on:</p>
+      <ol>
+        <li><strong>Job complexity:</strong> Higher risk = higher markup. Custom work, tight access, difficult clients — charge more.</li>
+        <li><strong>Your schedule:</strong> When you're busy, raise prices. When you're slow, you can be more competitive (but never below break-even).</li>
+        <li><strong>Material vs labor ratio:</strong> High-material jobs (like tile or stone) may use lower markup on materials and higher on labor. Clients can easily price-check materials.</li>
+        <li><strong>Repeat customers:</strong> A small discount for reliable, easy customers is fine — they cost less in overhead (no estimating time, no trust-building, no marketing cost).</li>
+        <li><strong>Specialty work:</strong> If you're one of three contractors in your area who can do a specific type of work, charge premium rates.</li>
+      </ol>
+
+      <h2>Calculate Your Markup Instantly</h2>
+      <a href="../../calculators/markup/" class="related-calc">
+        <div class="related-calc-icon"><i data-lucide="trending-up"></i></div>
+        <div class="related-calc-text">
+          <h4>Markup & Margin Calculator →</h4>
+          <p>Enter your costs and desired markup to see your bid price, gross profit, and effective margin.</p>
+        </div>
+      </a>
+
+      <h2>Related Guides</h2>
+      <div class="related-guides">
+        <a href="../takeoff-mistakes/" class="related-guide-link">7 Takeoff Mistakes That Kill Profit →</a>
+        <a href="../how-to-estimate-paint-job/" class="related-guide-link">How to Estimate a Paint Job →</a>
+        <a href="../fence-job-pricing/" class="related-guide-link">How to Price Fence Jobs →</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:800px;margin:0 auto;padding:0 2rem 2rem;">
+    <div class="ecosystem-strip">
+      <div>
+        <h3>Price it right. Invoice it fast.</h3>
+        <p>Use BuildInvoice to turn your markup calculations into professional invoices.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="https://buildquotes.co" class="eco-link" target="_blank">BuildQuotes →</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../#calculators">Calculators</a>
+        <a href="../">Guides</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close';
+          closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>
