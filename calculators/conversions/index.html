@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Construction Unit Converter — Length, Area, Volume & More | BuildTakeoff</title>
+  <meta name="description" content="Free construction unit converter. Convert between feet, yards, meters, square feet, cubic yards, gallons, tons, board feet, roofing squares, and more. Built for contractors." />
+  <link rel="canonical" href="https://buildtakeoff.co/calculators/conversions/" />
+  <link rel="stylesheet" href="../../css/styles.css" />
+  <style>
+    .conv-hero {
+      text-align: center;
+      padding: 2.5rem 2rem 1.5rem;
+    }
+    .conv-hero h1 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+    .conv-hero p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .conv-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: center;
+      padding: 0 2rem;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+    }
+    .conv-tab {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .conv-tab:hover {
+      border-color: var(--border-hover);
+      color: var(--text-dim);
+    }
+    .conv-tab.active {
+      background: var(--orange-dim);
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+    .conv-section {
+      display: none;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem 2rem;
+      animation: fadeUp 0.3s ease both;
+    }
+    .conv-section.active {
+      display: block;
+    }
+    .conv-section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+    .conv-section-desc {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+    .conv-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0.75rem;
+      align-items: start;
+    }
+    .conv-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .conv-card-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .conv-field {
+      margin-bottom: 0.75rem;
+    }
+    .conv-field:last-child {
+      margin-bottom: 0;
+    }
+    .conv-field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 0.3rem;
+    }
+    .conv-field .input-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .conv-field .input-wrap:focus-within {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px var(--orange-dim);
+    }
+    .conv-field input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 0.6rem 0.75rem;
+      outline: none;
+      min-width: 0;
+    }
+    .conv-field .input-unit {
+      padding: 0 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+      border-left: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+    }
+    .conv-swap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 1.5rem;
+    }
+    .conv-swap-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--orange);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .conv-swap-btn:hover {
+      background: var(--orange-dim);
+      border-color: var(--orange);
+      transform: rotate(180deg);
+    }
+    .conv-quick {
+      margin-top: 1.5rem;
+    }
+    .conv-quick-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .conv-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .conv-table th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      background: var(--surface);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+    }
+    .conv-table td {
+      padding: 0.55rem 0.75rem;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+    }
+    .conv-table tr:hover td {
+      background: var(--surface);
+    }
+    .conv-table .val {
+      font-weight: 700;
+      color: var(--orange);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* All-in-one multi-unit display */
+    .conv-all {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+    .conv-all-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .conv-all-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.5rem;
+    }
+    .conv-all-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.4rem 0.6rem;
+      background: var(--surface);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+    }
+    .conv-all-item .unit-name {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .conv-all-item .unit-val {
+      color: var(--orange);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 640px) {
+      .conv-grid {
+        grid-template-columns: 1fr;
+      }
+      .conv-swap {
+        padding: 0;
+        transform: rotate(90deg);
+      }
+      .conv-tabs {
+        padding: 0 1rem;
+        gap: 0.3rem;
+      }
+      .conv-tab {
+        font-size: 0.72rem;
+        padding: 0.4rem 0.75rem;
+      }
+      .conv-all-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="../../" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="../../#calculators">Calculators</a>
+      <a href="../../guides/">Guides</a>
+      <a href="../../glossary/">Glossary</a>
+      <a href="https://buildinvoice.co" target="_blank" class="nav-cta">BuildInvoice →</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="conv-hero fade-up">
+    <a href="../../" class="back-link">← All Calculators</a>
+    <h1>Construction Unit Converter</h1>
+    <p>Instantly convert between every unit you'll use on a jobsite. Length, area, volume, weight, concrete, roofing, lumber, and more.</p>
+  </section>
+
+  <!-- CATEGORY TABS -->
+  <div class="conv-tabs fade-up" id="convTabs">
+    <button class="conv-tab active" data-tab="length"><i data-lucide="ruler" style="width:14px;height:14px;"></i> Length</button>
+    <button class="conv-tab" data-tab="area"><i data-lucide="square" style="width:14px;height:14px;"></i> Area</button>
+    <button class="conv-tab" data-tab="volume"><i data-lucide="box" style="width:14px;height:14px;"></i> Volume</button>
+    <button class="conv-tab" data-tab="weight"><i data-lucide="weight" style="width:14px;height:14px;"></i> Weight</button>
+    <button class="conv-tab" data-tab="concrete"><i data-lucide="layers" style="width:14px;height:14px;"></i> Concrete</button>
+    <button class="conv-tab" data-tab="roofing"><i data-lucide="home" style="width:14px;height:14px;"></i> Roofing</button>
+    <button class="conv-tab" data-tab="lumber"><i data-lucide="align-justify" style="width:14px;height:14px;"></i> Lumber</button>
+    <button class="conv-tab" data-tab="temp"><i data-lucide="thermometer" style="width:14px;height:14px;"></i> Temperature</button>
+    <button class="conv-tab" data-tab="pressure"><i data-lucide="gauge" style="width:14px;height:14px;"></i> Pressure</button>
+    <button class="conv-tab" data-tab="slope"><i data-lucide="triangle" style="width:14px;height:14px;"></i> Slope / Grade</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- LENGTH -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section active" id="sec-length">
+    <h2 class="conv-section-title">Length Conversions</h2>
+    <p class="conv-section-desc">Convert between inches, feet, yards, miles, millimeters, centimeters, and meters.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Enter any value — all units update instantly</div>
+      <div class="conv-field">
+        <label>Inches (in)</label>
+        <div class="input-wrap"><input type="number" id="len-in" value="12" oninput="convLength('in')" /><span class="input-unit">in</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Feet (ft)</label>
+        <div class="input-wrap"><input type="number" id="len-ft" value="1" oninput="convLength('ft')" /><span class="input-unit">ft</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Yards (yd)</label>
+        <div class="input-wrap"><input type="number" id="len-yd" value="" oninput="convLength('yd')" /><span class="input-unit">yd</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Miles (mi)</label>
+        <div class="input-wrap"><input type="number" id="len-mi" value="" oninput="convLength('mi')" /><span class="input-unit">mi</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Millimeters (mm)</label>
+        <div class="input-wrap"><input type="number" id="len-mm" value="" oninput="convLength('mm')" /><span class="input-unit">mm</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Centimeters (cm)</label>
+        <div class="input-wrap"><input type="number" id="len-cm" value="" oninput="convLength('cm')" /><span class="input-unit">cm</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Meters (m)</label>
+        <div class="input-wrap"><input type="number" id="len-m" value="" oninput="convLength('m')" /><span class="input-unit">m</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Quick Reference</div>
+      <table class="conv-table">
+        <tr><th>From</th><th>To</th><th>Multiply By</th></tr>
+        <tr><td>Inches</td><td>Feet</td><td class="val">÷ 12</td></tr>
+        <tr><td>Feet</td><td>Yards</td><td class="val">÷ 3</td></tr>
+        <tr><td>Feet</td><td>Meters</td><td class="val">× 0.3048</td></tr>
+        <tr><td>Inches</td><td>Millimeters</td><td class="val">× 25.4</td></tr>
+        <tr><td>Yards</td><td>Meters</td><td class="val">× 0.9144</td></tr>
+        <tr><td>Miles</td><td>Feet</td><td class="val">× 5,280</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- AREA -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-area">
+    <h2 class="conv-section-title">Area Conversions</h2>
+    <p class="conv-section-desc">Convert between square inches, square feet, square yards, square meters, and acres.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Enter any value — all units update instantly</div>
+      <div class="conv-field">
+        <label>Square Inches (in²)</label>
+        <div class="input-wrap"><input type="number" id="area-sqin" value="144" oninput="convArea('sqin')" /><span class="input-unit">in²</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Square Feet (ft²)</label>
+        <div class="input-wrap"><input type="number" id="area-sqft" value="1" oninput="convArea('sqft')" /><span class="input-unit">ft²</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Square Yards (yd²)</label>
+        <div class="input-wrap"><input type="number" id="area-sqyd" value="" oninput="convArea('sqyd')" /><span class="input-unit">yd²</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Square Meters (m²)</label>
+        <div class="input-wrap"><input type="number" id="area-sqm" value="" oninput="convArea('sqm')" /><span class="input-unit">m²</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Acres</label>
+        <div class="input-wrap"><input type="number" id="area-acre" value="" oninput="convArea('acre')" /><span class="input-unit">acres</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Roofing Squares (1 square = 100 ft²)</label>
+        <div class="input-wrap"><input type="number" id="area-sq" value="" oninput="convArea('sq')" /><span class="input-unit">squares</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Quick Reference</div>
+      <table class="conv-table">
+        <tr><th>From</th><th>To</th><th>Multiply By</th></tr>
+        <tr><td>Sq Feet</td><td>Sq Yards</td><td class="val">÷ 9</td></tr>
+        <tr><td>Sq Feet</td><td>Sq Meters</td><td class="val">× 0.0929</td></tr>
+        <tr><td>Sq Feet</td><td>Acres</td><td class="val">÷ 43,560</td></tr>
+        <tr><td>Sq Yards</td><td>Sq Meters</td><td class="val">× 0.8361</td></tr>
+        <tr><td>Sq Feet</td><td>Roofing Squares</td><td class="val">÷ 100</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- VOLUME -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-volume">
+    <h2 class="conv-section-title">Volume Conversions</h2>
+    <p class="conv-section-desc">Convert between cubic inches, cubic feet, cubic yards, gallons, liters, and cubic meters.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Enter any value — all units update instantly</div>
+      <div class="conv-field">
+        <label>Cubic Inches (in³)</label>
+        <div class="input-wrap"><input type="number" id="vol-cuin" value="" oninput="convVolume('cuin')" /><span class="input-unit">in³</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Cubic Feet (ft³)</label>
+        <div class="input-wrap"><input type="number" id="vol-cuft" value="27" oninput="convVolume('cuft')" /><span class="input-unit">ft³</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Cubic Yards (yd³)</label>
+        <div class="input-wrap"><input type="number" id="vol-cuyd" value="1" oninput="convVolume('cuyd')" /><span class="input-unit">yd³</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Gallons (US)</label>
+        <div class="input-wrap"><input type="number" id="vol-gal" value="" oninput="convVolume('gal')" /><span class="input-unit">gal</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Liters (L)</label>
+        <div class="input-wrap"><input type="number" id="vol-liter" value="" oninput="convVolume('liter')" /><span class="input-unit">L</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Cubic Meters (m³)</label>
+        <div class="input-wrap"><input type="number" id="vol-cum" value="" oninput="convVolume('cum')" /><span class="input-unit">m³</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Quick Reference</div>
+      <table class="conv-table">
+        <tr><th>From</th><th>To</th><th>Multiply By</th></tr>
+        <tr><td>Cubic Yards</td><td>Cubic Feet</td><td class="val">× 27</td></tr>
+        <tr><td>Cubic Feet</td><td>Gallons</td><td class="val">× 7.481</td></tr>
+        <tr><td>Gallons</td><td>Liters</td><td class="val">× 3.785</td></tr>
+        <tr><td>Cubic Yards</td><td>Cubic Meters</td><td class="val">× 0.7646</td></tr>
+        <tr><td>Cubic Feet</td><td>Cubic Inches</td><td class="val">× 1,728</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- WEIGHT -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-weight">
+    <h2 class="conv-section-title">Weight Conversions</h2>
+    <p class="conv-section-desc">Convert between ounces, pounds, tons, kilograms, and metric tons.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Enter any value — all units update instantly</div>
+      <div class="conv-field">
+        <label>Ounces (oz)</label>
+        <div class="input-wrap"><input type="number" id="wt-oz" value="" oninput="convWeight('oz')" /><span class="input-unit">oz</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Pounds (lbs)</label>
+        <div class="input-wrap"><input type="number" id="wt-lb" value="2000" oninput="convWeight('lb')" /><span class="input-unit">lbs</span></div>
+      </div>
+      <div class="conv-field">
+        <label>US Tons (short tons)</label>
+        <div class="input-wrap"><input type="number" id="wt-ton" value="1" oninput="convWeight('ton')" /><span class="input-unit">tons</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Kilograms (kg)</label>
+        <div class="input-wrap"><input type="number" id="wt-kg" value="" oninput="convWeight('kg')" /><span class="input-unit">kg</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Metric Tons (tonnes)</label>
+        <div class="input-wrap"><input type="number" id="wt-mt" value="" oninput="convWeight('mt')" /><span class="input-unit">tonnes</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Common Material Weights</div>
+      <table class="conv-table">
+        <tr><th>Material</th><th>Weight per Cubic Yard</th><th>Weight per Cubic Foot</th></tr>
+        <tr><td>Concrete</td><td class="val">4,050 lbs</td><td>150 lbs</td></tr>
+        <tr><td>Gravel (dry)</td><td class="val">2,700 lbs</td><td>100 lbs</td></tr>
+        <tr><td>Sand (dry)</td><td class="val">2,700 lbs</td><td>100 lbs</td></tr>
+        <tr><td>Topsoil</td><td class="val">2,200 lbs</td><td>81 lbs</td></tr>
+        <tr><td>Mulch</td><td class="val">400-800 lbs</td><td>15-30 lbs</td></tr>
+        <tr><td>Asphalt (hot mix)</td><td class="val">3,915 lbs</td><td>145 lbs</td></tr>
+        <tr><td>Water</td><td class="val">1,685 lbs</td><td>62.4 lbs</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- CONCRETE -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-concrete">
+    <h2 class="conv-section-title">Concrete Conversions</h2>
+    <p class="conv-section-desc">Convert between cubic yards, cubic feet, bags (80lb &amp; 60lb), wheelbarrow loads, and mixer batches.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Enter any value — all units update instantly</div>
+      <div class="conv-field">
+        <label>Cubic Yards</label>
+        <div class="input-wrap"><input type="number" id="conc-cuyd" value="1" oninput="convConcrete('cuyd')" /><span class="input-unit">yd³</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Cubic Feet</label>
+        <div class="input-wrap"><input type="number" id="conc-cuft" value="27" oninput="convConcrete('cuft')" /><span class="input-unit">ft³</span></div>
+      </div>
+      <div class="conv-field">
+        <label>80 lb Bags (0.6 ft³ each)</label>
+        <div class="input-wrap"><input type="number" id="conc-80" value="" oninput="convConcrete('80')" /><span class="input-unit">bags</span></div>
+      </div>
+      <div class="conv-field">
+        <label>60 lb Bags (0.45 ft³ each)</label>
+        <div class="input-wrap"><input type="number" id="conc-60" value="" oninput="convConcrete('60')" /><span class="input-unit">bags</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Wheelbarrow Loads (~3 ft³ each)</label>
+        <div class="input-wrap"><input type="number" id="conc-wb" value="" oninput="convConcrete('wb')" /><span class="input-unit">loads</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Weight (lbs @ 150 lbs/ft³)</label>
+        <div class="input-wrap"><input type="number" id="conc-lbs" value="" oninput="convConcrete('lbs')" /><span class="input-unit">lbs</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Quick Reference</div>
+      <table class="conv-table">
+        <tr><th>Unit</th><th>Equivalent</th></tr>
+        <tr><td>1 Cubic Yard</td><td class="val">27 cubic feet</td></tr>
+        <tr><td>1 Cubic Yard</td><td class="val">45 × 80lb bags</td></tr>
+        <tr><td>1 Cubic Yard</td><td class="val">60 × 60lb bags</td></tr>
+        <tr><td>1 Cubic Yard</td><td class="val">~4,050 lbs</td></tr>
+        <tr><td>1 Cubic Yard</td><td class="val">9 wheelbarrow loads</td></tr>
+        <tr><td>1 Cubic Foot</td><td class="val">~150 lbs</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- ROOFING -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-roofing">
+    <h2 class="conv-section-title">Roofing Conversions</h2>
+    <p class="conv-section-desc">Convert between roofing squares, square feet, shingle bundles, and rolls.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Enter any value — all units update instantly</div>
+      <div class="conv-field">
+        <label>Roofing Squares (1 square = 100 ft²)</label>
+        <div class="input-wrap"><input type="number" id="roof-sq" value="1" oninput="convRoofing('sq')" /><span class="input-unit">squares</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Square Feet</label>
+        <div class="input-wrap"><input type="number" id="roof-sqft" value="100" oninput="convRoofing('sqft')" /><span class="input-unit">ft²</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Shingle Bundles (3 per square)</label>
+        <div class="input-wrap"><input type="number" id="roof-bun" value="" oninput="convRoofing('bun')" /><span class="input-unit">bundles</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Underlayment Rolls (4 ft × 250 ft = 1,000 ft²)</label>
+        <div class="input-wrap"><input type="number" id="roof-roll" value="" oninput="convRoofing('roll')" /><span class="input-unit">rolls</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Starter Strip (LF = perimeter)</label>
+        <div class="input-wrap"><input type="number" id="roof-starter" value="" oninput="convRoofing('starter')" /><span class="input-unit">LF</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Ridge Cap Bundles (25 LF per bundle)</label>
+        <div class="input-wrap"><input type="number" id="roof-ridge" value="" oninput="convRoofing('ridge')" /><span class="input-unit">bundles</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Pitch Multipliers</div>
+      <table class="conv-table">
+        <tr><th>Pitch</th><th>Multiplier</th><th>Degrees</th></tr>
+        <tr><td>3:12</td><td class="val">1.031</td><td>14.0°</td></tr>
+        <tr><td>4:12</td><td class="val">1.054</td><td>18.4°</td></tr>
+        <tr><td>5:12</td><td class="val">1.083</td><td>22.6°</td></tr>
+        <tr><td>6:12</td><td class="val">1.118</td><td>26.6°</td></tr>
+        <tr><td>8:12</td><td class="val">1.202</td><td>33.7°</td></tr>
+        <tr><td>10:12</td><td class="val">1.302</td><td>39.8°</td></tr>
+        <tr><td>12:12</td><td class="val">1.414</td><td>45.0°</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- LUMBER -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-lumber">
+    <h2 class="conv-section-title">Lumber Conversions</h2>
+    <p class="conv-section-desc">Board feet, linear feet, nominal vs actual dimensions, and sheet goods.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Board Foot Converter</div>
+      <div class="conv-field">
+        <label>Nominal Thickness (in)</label>
+        <div class="input-wrap"><input type="number" id="lum-thick" value="2" oninput="convLumber()" /><span class="input-unit">in</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Nominal Width (in)</label>
+        <div class="input-wrap"><input type="number" id="lum-width" value="4" oninput="convLumber()" /><span class="input-unit">in</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Length (ft)</label>
+        <div class="input-wrap"><input type="number" id="lum-length" value="8" oninput="convLumber()" /><span class="input-unit">ft</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Quantity (pieces)</label>
+        <div class="input-wrap"><input type="number" id="lum-qty" value="1" oninput="convLumber()" /><span class="input-unit">pcs</span></div>
+      </div>
+    </div>
+    <div class="conv-all" id="lum-results">
+      <div class="conv-all-title">Results</div>
+      <div class="conv-all-grid">
+        <div class="conv-all-item"><span class="unit-name">Board Feet</span><span class="unit-val" id="lum-bf">5.33</span></div>
+        <div class="conv-all-item"><span class="unit-name">Linear Feet</span><span class="unit-val" id="lum-lf">8</span></div>
+        <div class="conv-all-item"><span class="unit-name">Actual Size</span><span class="unit-val" id="lum-actual">1.5" × 3.5"</span></div>
+        <div class="conv-all-item"><span class="unit-name">Sq Ft Coverage</span><span class="unit-val" id="lum-sqft">2.33</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Nominal vs Actual Lumber Sizes</div>
+      <table class="conv-table">
+        <tr><th>Nominal</th><th>Actual</th><th>BF per Foot</th></tr>
+        <tr><td>2 × 4</td><td class="val">1.5" × 3.5"</td><td>0.667</td></tr>
+        <tr><td>2 × 6</td><td class="val">1.5" × 5.5"</td><td>1.0</td></tr>
+        <tr><td>2 × 8</td><td class="val">1.5" × 7.25"</td><td>1.333</td></tr>
+        <tr><td>2 × 10</td><td class="val">1.5" × 9.25"</td><td>1.667</td></tr>
+        <tr><td>2 × 12</td><td class="val">1.5" × 11.25"</td><td>2.0</td></tr>
+        <tr><td>4 × 4</td><td class="val">3.5" × 3.5"</td><td>1.333</td></tr>
+        <tr><td>6 × 6</td><td class="val">5.5" × 5.5"</td><td>3.0</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TEMPERATURE -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-temp">
+    <h2 class="conv-section-title">Temperature Conversions</h2>
+    <p class="conv-section-desc">Convert between Fahrenheit and Celsius. Important for concrete curing, adhesive application, and paint conditions.</p>
+    <div class="conv-grid">
+      <div class="conv-card">
+        <div class="conv-card-title">Fahrenheit</div>
+        <div class="conv-field">
+          <div class="input-wrap"><input type="number" id="temp-f" value="72" oninput="convTempF()" /><span class="input-unit">°F</span></div>
+        </div>
+      </div>
+      <div class="conv-swap"><button class="conv-swap-btn" onclick="swapTemp()">⇄</button></div>
+      <div class="conv-card">
+        <div class="conv-card-title">Celsius</div>
+        <div class="conv-field">
+          <div class="input-wrap"><input type="number" id="temp-c" value="22.2" oninput="convTempC()" /><span class="input-unit">°C</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Construction Temperature Thresholds</div>
+      <table class="conv-table">
+        <tr><th>Threshold</th><th>°F</th><th>°C</th><th>Relevance</th></tr>
+        <tr><td>Freezing</td><td class="val">32°F</td><td>0°C</td><td>No concrete pouring, no exterior paint</td></tr>
+        <tr><td>Cold weather concrete</td><td class="val">40°F</td><td>4°C</td><td>Requires heated enclosures or blankets</td></tr>
+        <tr><td>Min paint application</td><td class="val">50°F</td><td>10°C</td><td>Latex paint minimum temperature</td></tr>
+        <tr><td>Ideal concrete curing</td><td class="val">50–75°F</td><td>10–24°C</td><td>Best strength development range</td></tr>
+        <tr><td>Hot weather concrete</td><td class="val">90°F+</td><td>32°C+</td><td>Requires retarder, shade, cold water</td></tr>
+        <tr><td>Adhesive/sealant max</td><td class="val">95°F</td><td>35°C</td><td>Most adhesives lose bond above this</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PRESSURE -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-pressure">
+    <h2 class="conv-section-title">Pressure &amp; Concrete Strength</h2>
+    <p class="conv-section-desc">Convert between PSI, kPa, MPa, and common concrete mix strengths.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Enter any value — all units update instantly</div>
+      <div class="conv-field">
+        <label>PSI (lbs per square inch)</label>
+        <div class="input-wrap"><input type="number" id="pres-psi" value="3000" oninput="convPressure('psi')" /><span class="input-unit">PSI</span></div>
+      </div>
+      <div class="conv-field">
+        <label>kPa (kiloPascals)</label>
+        <div class="input-wrap"><input type="number" id="pres-kpa" value="" oninput="convPressure('kpa')" /><span class="input-unit">kPa</span></div>
+      </div>
+      <div class="conv-field">
+        <label>MPa (megaPascals)</label>
+        <div class="input-wrap"><input type="number" id="pres-mpa" value="" oninput="convPressure('mpa')" /><span class="input-unit">MPa</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Bar</label>
+        <div class="input-wrap"><input type="number" id="pres-bar" value="" oninput="convPressure('bar')" /><span class="input-unit">bar</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Common Concrete Mix Strengths</div>
+      <table class="conv-table">
+        <tr><th>Application</th><th>PSI</th><th>MPa</th></tr>
+        <tr><td>Residential footings</td><td class="val">2,500 PSI</td><td>17.2 MPa</td></tr>
+        <tr><td>Standard slabs & driveways</td><td class="val">3,000 PSI</td><td>20.7 MPa</td></tr>
+        <tr><td>Garage floors & sidewalks</td><td class="val">3,500 PSI</td><td>24.1 MPa</td></tr>
+        <tr><td>Commercial floors</td><td class="val">4,000 PSI</td><td>27.6 MPa</td></tr>
+        <tr><td>Structural columns</td><td class="val">5,000 PSI</td><td>34.5 MPa</td></tr>
+        <tr><td>High-strength structural</td><td class="val">6,000+ PSI</td><td>41.4+ MPa</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SLOPE / GRADE -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="conv-section" id="sec-slope">
+    <h2 class="conv-section-title">Slope &amp; Grade Conversions</h2>
+    <p class="conv-section-desc">Convert between rise:run ratios, percent grade, and degrees. Essential for grading, drainage, ramps, and roofing.</p>
+    <div class="conv-card">
+      <div class="conv-card-title">Enter rise and run — or any output to reverse-calculate</div>
+      <div class="conv-field">
+        <label>Rise (in or ft)</label>
+        <div class="input-wrap"><input type="number" id="slope-rise" value="6" oninput="convSlopeFromRR()" /><span class="input-unit">rise</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Run (in or ft, same unit as rise)</label>
+        <div class="input-wrap"><input type="number" id="slope-run" value="12" oninput="convSlopeFromRR()" /><span class="input-unit">run</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Percent Grade (%)</label>
+        <div class="input-wrap"><input type="number" id="slope-pct" value="" oninput="convSlopeFromPct()" /><span class="input-unit">%</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Degrees (°)</label>
+        <div class="input-wrap"><input type="number" id="slope-deg" value="" oninput="convSlopeFromDeg()" /><span class="input-unit">°</span></div>
+      </div>
+      <div class="conv-field">
+        <label>Ratio (X:12)</label>
+        <div class="input-wrap"><input type="number" id="slope-ratio" value="" readonly /><span class="input-unit">:12</span></div>
+      </div>
+    </div>
+    <div class="conv-quick">
+      <div class="conv-quick-title">Common Slopes in Construction</div>
+      <table class="conv-table">
+        <tr><th>Application</th><th>Slope</th><th>% Grade</th><th>Degrees</th></tr>
+        <tr><td>Flat roof (minimum)</td><td class="val">1/4" per ft</td><td>2.08%</td><td>1.2°</td></tr>
+        <tr><td>Drainage grading</td><td class="val">1" per ft</td><td>8.33%</td><td>4.8°</td></tr>
+        <tr><td>ADA ramp (max)</td><td class="val">1:12</td><td>8.33%</td><td>4.8°</td></tr>
+        <tr><td>Driveway (typical)</td><td class="val">1–8%</td><td>1–8%</td><td>0.6–4.6°</td></tr>
+        <tr><td>Low-slope roof</td><td class="val">3:12</td><td>25%</td><td>14.0°</td></tr>
+        <tr><td>Standard roof</td><td class="val">6:12</td><td>50%</td><td>26.6°</td></tr>
+        <tr><td>Steep roof</td><td class="val">12:12</td><td>100%</td><td>45.0°</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- SEO BLOCK -->
+  <section class="section">
+    <div class="seo-block" style="max-width:900px;margin:0 auto;">
+      <h2>Why Every Contractor Needs a Unit Converter</h2>
+      <p>Unit conversions are one of the most common sources of costly mistakes on construction projects. A simple error — confusing cubic feet with cubic yards, or square feet with roofing squares — can mean ordering 9× too much or too little material.</p>
+      <h3>Common Conversion Mistakes</h3>
+      <ul>
+        <li><strong>Cubic feet vs. cubic yards:</strong> 1 cubic yard = 27 cubic feet. Ordering "27" cubic yards when you meant cubic feet means 27× too much concrete.</li>
+        <li><strong>Roofing squares vs. square feet:</strong> 1 square = 100 sq ft. A 20-square roof is 2,000 sq ft, not 20 sq ft.</li>
+        <li><strong>Board feet vs. linear feet:</strong> Board footage accounts for width and thickness. A 2×12 at 8 feet is 16 board feet, not 8.</li>
+        <li><strong>Tons vs. cubic yards:</strong> Gravel is sold by the ton but measured by the cubic yard. You need to know the material density to convert.</li>
+      </ul>
+      <h3>Bookmark This Page</h3>
+      <p>Keep this converter handy on your phone or tablet for quick jobsite lookups. All conversions work offline once the page is loaded — no internet needed.</p>
+    </div>
+  </section>
+
+  <!-- ECOSYSTEM STRIP -->
+  <section class="section">
+    <div class="ecosystem-strip" style="max-width:900px;margin:0 auto;">
+      <div>
+        <h3>Need more than conversions?</h3>
+        <p>Use our full material calculators to get exact quantities and PDF takeoff reports.</p>
+      </div>
+      <div class="ecosystem-links">
+        <a href="../concrete-slab/" class="eco-link">Concrete Slab</a>
+        <a href="../roofing-squares/" class="eco-link">Roofing Squares</a>
+        <a href="../gravel/" class="eco-link">Gravel & Fill</a>
+        <a href="../board-foot/" class="eco-link">Board Foot</a>
+        <a href="https://buildinvoice.co" class="eco-link" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="../../#calculators">Calculators</a>
+        <a href="../../guides/">Guides</a>
+        <a href="../../glossary/">Glossary</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // ── TAB SWITCHING ────────────────────────
+    document.querySelectorAll('.conv-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.conv-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.conv-section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('sec-' + tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ── HELPERS ──────────────────────────────
+    function fmt(v, d) {
+      if (d === undefined) d = 4;
+      if (Math.abs(v) >= 1000) return v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      if (Math.abs(v) >= 1) return parseFloat(v.toFixed(d));
+      return parseFloat(v.toPrecision(4));
+    }
+    function gv(id) { return parseFloat(document.getElementById(id).value) || 0; }
+    function sv(id, v) { document.getElementById(id).value = fmt(v); }
+
+    // ── LENGTH ───────────────────────────────
+    function convLength(from) {
+      let inches;
+      switch (from) {
+        case 'in': inches = gv('len-in'); break;
+        case 'ft': inches = gv('len-ft') * 12; break;
+        case 'yd': inches = gv('len-yd') * 36; break;
+        case 'mi': inches = gv('len-mi') * 63360; break;
+        case 'mm': inches = gv('len-mm') / 25.4; break;
+        case 'cm': inches = gv('len-cm') / 2.54; break;
+        case 'm':  inches = gv('len-m') / 0.0254; break;
+      }
+      if (from !== 'in') sv('len-in', inches);
+      if (from !== 'ft') sv('len-ft', inches / 12);
+      if (from !== 'yd') sv('len-yd', inches / 36);
+      if (from !== 'mi') sv('len-mi', inches / 63360);
+      if (from !== 'mm') sv('len-mm', inches * 25.4);
+      if (from !== 'cm') sv('len-cm', inches * 2.54);
+      if (from !== 'm')  sv('len-m', inches * 0.0254);
+    }
+    convLength('ft');
+
+    // ── AREA ─────────────────────────────────
+    function convArea(from) {
+      let sqft;
+      switch (from) {
+        case 'sqin': sqft = gv('area-sqin') / 144; break;
+        case 'sqft': sqft = gv('area-sqft'); break;
+        case 'sqyd': sqft = gv('area-sqyd') * 9; break;
+        case 'sqm':  sqft = gv('area-sqm') / 0.0929; break;
+        case 'acre': sqft = gv('area-acre') * 43560; break;
+        case 'sq':   sqft = gv('area-sq') * 100; break;
+      }
+      if (from !== 'sqin') sv('area-sqin', sqft * 144);
+      if (from !== 'sqft') sv('area-sqft', sqft);
+      if (from !== 'sqyd') sv('area-sqyd', sqft / 9);
+      if (from !== 'sqm')  sv('area-sqm', sqft * 0.0929);
+      if (from !== 'acre') sv('area-acre', sqft / 43560);
+      if (from !== 'sq')   sv('area-sq', sqft / 100);
+    }
+    convArea('sqft');
+
+    // ── VOLUME ───────────────────────────────
+    function convVolume(from) {
+      let cuft;
+      switch (from) {
+        case 'cuin':  cuft = gv('vol-cuin') / 1728; break;
+        case 'cuft':  cuft = gv('vol-cuft'); break;
+        case 'cuyd':  cuft = gv('vol-cuyd') * 27; break;
+        case 'gal':   cuft = gv('vol-gal') / 7.481; break;
+        case 'liter': cuft = gv('vol-liter') / 28.317; break;
+        case 'cum':   cuft = gv('vol-cum') * 35.315; break;
+      }
+      if (from !== 'cuin')  sv('vol-cuin', cuft * 1728);
+      if (from !== 'cuft')  sv('vol-cuft', cuft);
+      if (from !== 'cuyd')  sv('vol-cuyd', cuft / 27);
+      if (from !== 'gal')   sv('vol-gal', cuft * 7.481);
+      if (from !== 'liter') sv('vol-liter', cuft * 28.317);
+      if (from !== 'cum')   sv('vol-cum', cuft / 35.315);
+    }
+    convVolume('cuyd');
+
+    // ── WEIGHT ───────────────────────────────
+    function convWeight(from) {
+      let lbs;
+      switch (from) {
+        case 'oz':  lbs = gv('wt-oz') / 16; break;
+        case 'lb':  lbs = gv('wt-lb'); break;
+        case 'ton': lbs = gv('wt-ton') * 2000; break;
+        case 'kg':  lbs = gv('wt-kg') * 2.2046; break;
+        case 'mt':  lbs = gv('wt-mt') * 2204.6; break;
+      }
+      if (from !== 'oz')  sv('wt-oz', lbs * 16);
+      if (from !== 'lb')  sv('wt-lb', lbs);
+      if (from !== 'ton') sv('wt-ton', lbs / 2000);
+      if (from !== 'kg')  sv('wt-kg', lbs / 2.2046);
+      if (from !== 'mt')  sv('wt-mt', lbs / 2204.6);
+    }
+    convWeight('ton');
+
+    // ── CONCRETE ─────────────────────────────
+    function convConcrete(from) {
+      let cuft;
+      switch (from) {
+        case 'cuyd': cuft = gv('conc-cuyd') * 27; break;
+        case 'cuft': cuft = gv('conc-cuft'); break;
+        case '80':   cuft = gv('conc-80') * 0.6; break;
+        case '60':   cuft = gv('conc-60') * 0.45; break;
+        case 'wb':   cuft = gv('conc-wb') * 3; break;
+        case 'lbs':  cuft = gv('conc-lbs') / 150; break;
+      }
+      if (from !== 'cuyd') sv('conc-cuyd', cuft / 27);
+      if (from !== 'cuft') sv('conc-cuft', cuft);
+      if (from !== '80')   sv('conc-80', Math.ceil(cuft / 0.6));
+      if (from !== '60')   sv('conc-60', Math.ceil(cuft / 0.45));
+      if (from !== 'wb')   sv('conc-wb', cuft / 3);
+      if (from !== 'lbs')  sv('conc-lbs', cuft * 150);
+    }
+    convConcrete('cuyd');
+
+    // ── ROOFING ──────────────────────────────
+    function convRoofing(from) {
+      let sqft;
+      switch (from) {
+        case 'sq':      sqft = gv('roof-sq') * 100; break;
+        case 'sqft':    sqft = gv('roof-sqft'); break;
+        case 'bun':     sqft = gv('roof-bun') * (100 / 3); break;
+        case 'roll':    sqft = gv('roof-roll') * 1000; break;
+        case 'starter': return; // starter is perimeter, not area
+        case 'ridge':   return; // ridge is linear, not area
+      }
+      if (from !== 'sq')   sv('roof-sq', sqft / 100);
+      if (from !== 'sqft') sv('roof-sqft', sqft);
+      if (from !== 'bun')  sv('roof-bun', Math.ceil(sqft / (100/3)));
+      if (from !== 'roll') sv('roof-roll', Math.ceil(sqft / 1000));
+    }
+    convRoofing('sq');
+
+    // ── LUMBER ───────────────────────────────
+    const actualSizes = {
+      '1': 0.75, '2': 1.5, '3': 2.5, '4': 3.5, '5': 4.5, '6': 5.5,
+      '8': 7.25, '10': 9.25, '12': 11.25, '14': 13.25, '16': 15.25
+    };
+    function convLumber() {
+      const t = gv('lum-thick'), w = gv('lum-width'), l = gv('lum-length'), q = gv('lum-qty');
+      const bf = (t * w * l * q) / 12;
+      const lf = l * q;
+      const at = actualSizes[String(t)] || (t - 0.5);
+      const aw = actualSizes[String(w)] || (w - 0.5);
+      const sqft = (aw / 12) * l * q;
+      document.getElementById('lum-bf').textContent = fmt(bf, 2);
+      document.getElementById('lum-lf').textContent = fmt(lf, 1);
+      document.getElementById('lum-actual').textContent = at + '" × ' + aw + '"';
+      document.getElementById('lum-sqft').textContent = fmt(sqft, 2);
+    }
+    convLumber();
+
+    // ── TEMPERATURE ──────────────────────────
+    function convTempF() {
+      const f = gv('temp-f');
+      sv('temp-c', (f - 32) * 5 / 9);
+    }
+    function convTempC() {
+      const c = gv('temp-c');
+      sv('temp-f', (c * 9 / 5) + 32);
+    }
+    function swapTemp() {
+      const f = gv('temp-f'), c = gv('temp-c');
+      document.getElementById('temp-f').value = c;
+      document.getElementById('temp-c').value = f;
+    }
+    convTempF();
+
+    // ── PRESSURE ─────────────────────────────
+    function convPressure(from) {
+      let psi;
+      switch (from) {
+        case 'psi': psi = gv('pres-psi'); break;
+        case 'kpa': psi = gv('pres-kpa') / 6.895; break;
+        case 'mpa': psi = gv('pres-mpa') * 145.038; break;
+        case 'bar': psi = gv('pres-bar') * 14.504; break;
+      }
+      if (from !== 'psi') sv('pres-psi', psi);
+      if (from !== 'kpa') sv('pres-kpa', psi * 6.895);
+      if (from !== 'mpa') sv('pres-mpa', psi / 145.038);
+      if (from !== 'bar') sv('pres-bar', psi / 14.504);
+    }
+    convPressure('psi');
+
+    // ── SLOPE / GRADE ────────────────────────
+    function convSlopeFromRR() {
+      const rise = gv('slope-rise'), run = gv('slope-run');
+      if (!run) return;
+      const pct = (rise / run) * 100;
+      const deg = Math.atan(rise / run) * (180 / Math.PI);
+      const ratio12 = (rise / run) * 12;
+      sv('slope-pct', pct);
+      sv('slope-deg', deg);
+      sv('slope-ratio', ratio12);
+    }
+    function convSlopeFromPct() {
+      const pct = gv('slope-pct');
+      const ratio = pct / 100;
+      const deg = Math.atan(ratio) * (180 / Math.PI);
+      sv('slope-rise', ratio);
+      sv('slope-run', 1);
+      sv('slope-deg', deg);
+      sv('slope-ratio', ratio * 12);
+    }
+    function convSlopeFromDeg() {
+      const deg = gv('slope-deg');
+      const ratio = Math.tan(deg * Math.PI / 180);
+      const pct = ratio * 100;
+      sv('slope-rise', ratio);
+      sv('slope-run', 1);
+      sv('slope-pct', pct);
+      sv('slope-ratio', ratio * 12);
+    }
+    convSlopeFromRR();
+
+    // ── NAV TOGGLE ───────────────────────────
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    if (navToggle && siteNav) {
+      const headerInner = navToggle.closest('.nav');
+      function closeNav() {
+        siteNav.classList.remove('open'); navToggle.classList.remove('open');
+        document.body.style.overflow = '';
+        const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+        setTimeout(() => headerInner.appendChild(siteNav), 300);
+      }
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close'; closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>
