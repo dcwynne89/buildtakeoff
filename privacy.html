@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — BuildTakeoff</title>
+  <meta name="description" content="BuildTakeoff privacy policy. Learn how we handle your data, our use of cookies, and your privacy rights." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://buildtakeoff.co/privacy.html" />
+  <meta name="theme-color" content="#F97316" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .page-container { max-width: 720px; margin: 0 auto; padding: 3rem 2rem; }
+    .page-container h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .page-container .last-updated { color: var(--text-muted, #94a3b8); font-size: 0.9rem; margin-bottom: 2.5rem; }
+    .page-container h2 { font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.75rem; }
+    .page-container p, .page-container li { color: var(--text-muted, #94a3b8); line-height: 1.8; margin-bottom: 1rem; }
+    .page-container ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+    .page-container a { color: var(--accent, #F97316); text-decoration: none; }
+    .page-container a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-brand">
+      <div class="nav-brand-icon"><i data-lucide="hard-hat"></i></div>
+      Build<span>Takeoff</span>
+    </a>
+    <div class="nav-links" id="siteNav">
+      <a href="/#calculators">Calculators</a>
+      <a href="/guides/">Guides</a>
+      <a href="/glossary/">Glossary</a>
+    </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="page-container">
+    <h1>Privacy Policy</h1>
+    <p class="last-updated">Last updated: June 7, 2026</p>
+
+    <h2>What We Collect</h2>
+    <p>BuildTakeoff processes all calculations locally in your browser. We do not collect, store, or transmit any project data, measurements, or calculation results.</p>
+
+    <h2>Optional Account & Data Storage</h2>
+    <p>All Build tools work fully without an account. If you choose to sign in, we store:</p>
+    <ul>
+      <li>Your email address and display name</li>
+      <li>Saved calculations and project data</li>
+      <li>Client contact information you enter</li>
+    </ul>
+    <p>This data is stored in Google Cloud Firestore and associated with your account. You can delete your account and all associated data at any time by emailing <a href="mailto:buildpdf.help@gmail.com">buildpdf.help@gmail.com</a>.</p>
+    <p>If you do not create an account, no data is stored. All calculations remain 100% client-side regardless of account status.</p>
+
+    <h2>Third-Party Services</h2>
+    <ul>
+      <li><strong>Netlify</strong> — hosting and CDN delivery; may collect anonymized access logs</li>
+      <li><strong>Google AdSense</strong> — displays advertisements and may set cookies for ad personalization</li>
+      <li><strong>Google Firebase</strong> — optional account authentication and data storage</li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>This site uses cookies set by Google AdSense to serve relevant advertisements. Google may use cookies to personalize ads based on your browsing activity. You can opt out at <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ad Settings</a>.</p>
+    <p>You can control cookie settings through your browser. Disabling cookies may affect the display of advertisements but will not affect calculator functionality.</p>
+
+    <h2>Contact</h2>
+    <p>If you have any questions about this Privacy Policy, please email us at <a href="mailto:buildpdf.help@gmail.com">buildpdf.help@gmail.com</a>.</p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">Build<span>Takeoff</span></div>
+      <div class="footer-copy">© 2026 BuildTakeoff · Free construction calculators</div>
+      <div class="footer-links">
+        <a href="/#calculators">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/glossary/">Glossary</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="https://buildinvoice.co" target="_blank">BuildInvoice</a>
+        <a href="https://buildpdf.co" target="_blank">BuildPDF</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>lucide.createIcons();</script>
+<script>
+    const navToggle = document.getElementById('navToggle');
+    const siteNav = document.getElementById('siteNav');
+    const headerInner = navToggle ? navToggle.closest('.nav') : null;
+    function closeNav() {
+      siteNav.classList.remove('open'); navToggle.classList.remove('open');
+      document.body.style.overflow = '';
+      const btn = siteNav.querySelector('.nav-close'); if (btn) btn.remove();
+      setTimeout(() => headerInner.appendChild(siteNav), 300);
+    }
+    if (navToggle && siteNav && headerInner) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.contains('open');
+        if (!isOpen) {
+          document.body.appendChild(siteNav);
+          const closeBtn = document.createElement('button');
+          closeBtn.className = 'nav-close';
+          closeBtn.setAttribute('aria-label', 'Close menu');
+          closeBtn.innerHTML = '&#x2715;';
+          closeBtn.addEventListener('click', closeNav);
+          siteNav.prepend(closeBtn);
+          requestAnimationFrame(() => { siteNav.classList.add('open'); navToggle.classList.add('open'); });
+          document.body.style.overflow = 'hidden';
+        } else { closeNav(); }
+      });
+      siteNav.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    }
+  </script>
+</body>
+</html>
